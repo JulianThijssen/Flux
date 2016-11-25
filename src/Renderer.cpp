@@ -2,8 +2,18 @@
 
 #include <glad/glad.h>
 
-void Renderer::update() {
-    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+#include "ShaderLoader.h"
 
-    glClear(GL_COLOR_BUFFER_BIT);
+void Renderer::create() {
+    shader = ShaderLoader::loadShaders("res/basic.vert", "res/basic.frag");
+
+    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+}
+
+void Renderer::update() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    shader.bind();
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    //shader->release();
 }

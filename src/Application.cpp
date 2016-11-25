@@ -9,6 +9,7 @@ int main() {
 }
 
 void Application::startGame() {
+    renderer.create();
     update();
 }
 
