@@ -2,17 +2,19 @@
 #include "Scene.h"
 #include "Renderer.h"
 
-class Application {
-public:
-    void startGame();
-    void update();
+namespace Flux {
+    class Application {
+    public:
+        void startGame();
+        void update();
 
-private:
-    Window window;
-    Scene currentScene;
-    Renderer renderer;
+    private:
+        Window window;
+        Scene currentScene;
+        Renderer renderer;
 
-    int framesPerSecond;
-    int maxSkip = 15;
-    int skipTime = 40;
-};
+        int framesPerSecond;
+        int maxSkip = 15;
+        int skipTime = 40;
+    };
+}

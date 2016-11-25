@@ -1,11 +1,15 @@
 #include "Shader.h"
+#include "Model.h"
 
-class Renderer {
-public:
-    Renderer() : shader(0) { }
-    void create();
-    void update();
+namespace Flux {
+    class Renderer {
+    public:
+        Renderer() : shader(0), model() { }
+        void create();
+        void update();
 
-private:
-    Shader shader;
-};
+    private:
+        Shader shader;
+        Model model;
+    };
+}

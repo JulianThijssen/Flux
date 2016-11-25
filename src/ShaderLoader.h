@@ -18,13 +18,15 @@
 
 #include <string>
 
-class ShaderLoader {
-public:
-    static const int LOG_SIZE;
+namespace Flux {
+    class ShaderLoader {
+    public:
+        static const int LOG_SIZE;
 
-    static Shader loadShaders(std::string vertPath, std::string fragPath);
-private:
-    static int loadShader(std::string path, int type);
-};
+        static Shader loadShaders(std::string vertPath, std::string fragPath);
+    private:
+        static int loadShader(std::string path, int type);
+    };
+}
 
 #endif /* SHADERLOADER_H */

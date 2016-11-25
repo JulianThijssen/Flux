@@ -3,26 +3,23 @@
 ** support, and with no warranty, express or implied, as to its usefulness for
 ** any purpose.
 **
-** Log.h
-** Declares a class containing static functions for logging
-** into some output stream.
+** Component.h
+** Declares the base class for all components
 **
 ** Author: Julian Thijssen
 ** -------------------------------------------------------------------------*/
 
 #pragma once
-#ifndef LOG_H
-#define LOG_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
-#include <string>
+//#include <nim/engine/Entity.hpp>
 
 namespace Flux {
-    class Log {
+    class Component {
     public:
-        static void info(const std::string message);
-        static void debug(const std::string message);
-        static void error(const std::string message);
+        //Entity owner;
     };
 }
 
-#endif /* LOG_H */
+#endif /* COMPONENT_H */

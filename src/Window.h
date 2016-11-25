@@ -19,26 +19,28 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-class Window {
-public:
-    Window();
-    Window(const char* title);
-    Window(const char* title, int width, int height);
+namespace Flux {
+    class Window {
+    public:
+        Window();
+        Window(const char* title);
+        Window(const char* title, int width, int height);
 
-    std::string getTitle();
-    void setTitle(std::string title);
-    void setSize(int width, int height);
-    void update();
-    void close();
-    bool isClosed();
-private:
-    GLFWwindow* window;
-    std::string title;
-    int width;
-    int height;
+        std::string getTitle();
+        void setTitle(std::string title);
+        void setSize(int width, int height);
+        void update();
+        void close();
+        bool isClosed();
+    private:
+        GLFWwindow* window;
+        std::string title;
+        int width;
+        int height;
 
-    void destroy();
-    static void onError(int error, const char* description);
-};
+        void destroy();
+        static void onError(int error, const char* description);
+    };
+}
 
 #endif /* WINDOW_H */

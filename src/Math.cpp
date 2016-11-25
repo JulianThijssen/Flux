@@ -3,26 +3,22 @@
 ** support, and with no warranty, express or implied, as to its usefulness for
 ** any purpose.
 **
-** Log.h
-** Declares a class containing static functions for logging
-** into some output stream.
+** Math.cpp
+** Implements the supplementary math functions
 **
 ** Author: Julian Thijssen
 ** -------------------------------------------------------------------------*/
 
-#pragma once
-#ifndef LOG_H
-#define LOG_H
-
-#include <string>
+#include "Math.h"
 
 namespace Flux {
-    class Log {
-    public:
-        static void info(const std::string message);
-        static void debug(const std::string message);
-        static void error(const std::string message);
-    };
-}
+    const float Math::PI = 3.14159265359f;
 
-#endif /* LOG_H */
+    float Math::toDegrees(const float radians) {
+        return radians * (180 / PI);
+    }
+
+    float Math::toRadians(const float degrees) {
+        return degrees * (PI / 180);
+    }
+}

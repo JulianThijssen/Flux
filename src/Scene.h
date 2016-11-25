@@ -1,7 +1,9 @@
 
-class Scene {
-public:
-    void update() {
+namespace Flux {
+    class Scene {
+    public:
+        void update() {
 
-    }
-};
+        }
+    };
+}
