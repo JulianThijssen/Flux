@@ -33,7 +33,7 @@ namespace Flux {
                 skipped++;
             }
 
-            renderer.update();
+            renderer.update(currentScene);
 
             window.update();
             frames++;

@@ -8,4 +8,4 @@ namespace Flux {
     };
 }
 
-#endif /* MODEL_H */
+#endif /* MATERIAL_H */
