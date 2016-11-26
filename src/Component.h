@@ -18,6 +18,7 @@
 namespace Flux {
     class Component {
     public:
+        virtual ~Component() { }
         //Entity owner;
     };
 }
