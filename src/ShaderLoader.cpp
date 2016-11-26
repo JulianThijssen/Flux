@@ -21,7 +21,7 @@
 namespace Flux {
     const int ShaderLoader::LOG_SIZE = 1024;
 
-    Shader ShaderLoader::loadShaders(std::string vertPath, std::string fragPath) {
+    Shader* ShaderLoader::loadShaders(std::string vertPath, std::string fragPath) {
         int vertexShader = loadShader(vertPath, GL_VERTEX_SHADER);
         int fragmentShader = loadShader(fragPath, GL_FRAGMENT_SHADER);
 
@@ -35,7 +35,7 @@ namespace Flux {
 
         int handle = shaderProgram;
 
-        Shader shader(handle);
+        Shader* shader = new Shader(handle);
 
         return shader;
     }
