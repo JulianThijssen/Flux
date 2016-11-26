@@ -4,13 +4,15 @@
 
 #include "Entity.h"
 #include "Transform.h"
+#include "Camera.h"
 
 namespace Flux {
     class Scene {
     public:
         Scene() : mainCamera()
         {
-            mainCamera.addComponent(Transform());
+            mainCamera.addComponent(new Transform());
+            mainCamera.addComponent(new Camera(60, 1, 0.1f, 100.f));
         }
 
         void update() {

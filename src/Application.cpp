@@ -5,6 +5,7 @@
 
 namespace Flux {
     void Application::startGame() {
+        currentScene.getMainCamera().getComponent<Transform>()->position.set(0, 0, 5);
         renderer.create();
         update();
     }

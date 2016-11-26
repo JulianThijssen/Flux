@@ -14,10 +14,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "Component.h"
+
 namespace Flux {
     class Matrix4f;
 
-    class Camera {
+    class Camera : public Component {
     public:
         Camera();
         Camera(float left, float right, float bottom, float top, float zNear, float zFar);

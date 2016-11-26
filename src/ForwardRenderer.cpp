@@ -7,6 +7,7 @@
 #include "Path.h"
 
 #include "Transform.h"
+#include "Camera.h"
 #include <iostream>
 
 namespace Flux {
@@ -16,7 +17,8 @@ namespace Flux {
         glBindVertexArray(model.meshes[0].handle);
         shader->bind();
 
-        Transform& ct = static_cast<Transform&>(scene.getMainCamera().getComponent<Transform>());
+        Transform ct = *static_cast<Transform*>(scene.getMainCamera().getComponent<Transform>());
+        scene.getMainCamera().getComponent<Camera>()->loadProjectionMatrix(projMatrix);
         viewMatrix.setIdentity();
         viewMatrix.translate(-ct.position);
 

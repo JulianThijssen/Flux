@@ -5,30 +5,29 @@
 #include "Component.h"
 #include "ComponentNotFoundException.h"
 
-#include <typeinfo>
 #include <vector>
 
 namespace Flux {
     class Entity {
     public:
-        void addComponent(Component component) {
+        void addComponent(Component* component) {
             components.push_back(component);
         }
 
         template <class T>
-        T& getComponent() {
+        T* getComponent() {
             for (int i = 0; i < components.size(); i++) {
-                Component& c = components[i];
+                Component* c = components[i];
 
-                if (static_cast<T*>(&c)) {
-                    return static_cast<T&>(c);
+                if (dynamic_cast<T*>(c)) {
+                    return dynamic_cast<T*>(c);
                 }
             }
             throw ComponentNotFoundException();
         }
 
     private:
-        std::vector<Component> components;
+        std::vector<Component*> components;
     };
 }
 
