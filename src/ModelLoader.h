@@ -9,9 +9,9 @@ namespace Flux {
 
     class ModelLoader {
     public:
-        static Model loadModel(const Path& path);
+        static Model* loadModel(const Path& path);
     private:
-        static Model uploadModel(const aiScene& scene);
+        static Model* uploadModel(const aiScene& scene);
     };
 }
 

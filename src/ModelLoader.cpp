@@ -14,7 +14,7 @@
 #include <cstdio>
 
 namespace Flux {
-    Model ModelLoader::loadModel(const Path& path) {
+    Model* ModelLoader::loadModel(const Path& path) {
         Assimp::Importer importer;
 
         unsigned int flags = aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_SortByPType | aiProcess_GenUVCoords;
@@ -24,12 +24,12 @@ namespace Flux {
             Log::error(importer.GetErrorString());
         }
 
-        Model model = uploadModel(*scene);
+        Model* model = uploadModel(*scene);
         return model;
     }
 
-    Model ModelLoader::uploadModel(const aiScene& scene) {
-        Model model;
+    Model* ModelLoader::uploadModel(const aiScene& scene) {
+        Model* model = new Model();
 
         for (unsigned int i = 0; i < scene.mNumMeshes; i++) {
             aiMesh* aiMesh = scene.mMeshes[i];
@@ -129,7 +129,7 @@ namespace Flux {
             mesh.handle = vao;
             mesh.numFaces = aiMesh->mNumFaces;
 
-            model.addMesh(mesh);
+            model->addMesh(mesh);
         }
 
         return model;
