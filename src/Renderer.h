@@ -15,8 +15,7 @@ namespace Flux {
             projMatrix(),
             viewMatrix(),
             modelMatrix(),
-            shader(0),
-            model() { }
+            shader(0) { }
 
         void create();
         virtual void update(const Scene& scene) = 0;
@@ -33,7 +32,6 @@ namespace Flux {
         Matrix4f modelMatrix;
 
         Shader* shader;
-        Model model;
     };
 }
 
