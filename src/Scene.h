@@ -6,6 +6,8 @@
 #include "Transform.h"
 #include "Camera.h"
 
+#include <vector>
+
 namespace Flux {
     class Scene {
     public:
@@ -22,6 +24,13 @@ namespace Flux {
         Entity getMainCamera() const {
             return mainCamera;
         }
+
+        void addEntity(Entity* entity) {
+            entities.push_back(entity);
+        }
+
+        std::vector<Entity*> entities;
+
     private:
         Entity mainCamera;
     };
