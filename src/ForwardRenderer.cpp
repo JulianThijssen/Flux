@@ -14,7 +14,6 @@ namespace Flux {
     void ForwardRenderer::update(const Scene& scene) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glBindVertexArray(model.meshes[0].handle);
         shader->bind();
 
         Transform ct = *static_cast<Transform*>(scene.getMainCamera().getComponent<Transform>());
@@ -24,9 +23,22 @@ namespace Flux {
 
         shader->uniformMatrix4f("projMatrix", projMatrix);
         shader->uniformMatrix4f("viewMatrix", viewMatrix);
-        shader->uniformMatrix4f("modelMatrix", modelMatrix);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        for (Entity* e : scene.entities) {
+            Transform* transform = e->getComponent<Transform>();
+            Model* model = e->getComponent<Model>();
+            glBindVertexArray(model->meshes[0].handle);
+
+            modelMatrix.setIdentity();
+            modelMatrix.translate(transform->position);
+            modelMatrix.rotate(transform->rotation);
+            modelMatrix.scale(transform->scale);
+            shader->uniformMatrix4f("modelMatrix", modelMatrix);
+
+            glDrawArrays(GL_TRIANGLES, 0, model->meshes[0].numFaces * 3);
+        }
+
         //shader->release();
     }
 }

@@ -28,15 +28,11 @@ namespace Flux {
         }
 
         const char* cont = contents.c_str();
+
         json j3 = json::parse(cont);
 
-        //for (json::iterator it = j3.begin(); it != j3.end(); ++it) {
-        //    std::cout << it.key() << " : " << it.value() << "\n";
-        //}
-
-        for (json& element : j3) {
-            //std::cout << element["name"] << std::endl;
-            //std::cout << element["components"] << std::endl;
+        for (json& element : j3["entities"]) {
+            std::cout << element.dump() << std::endl;
 
             Entity* e = new Entity();
 
