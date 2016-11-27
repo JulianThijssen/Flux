@@ -26,6 +26,18 @@ namespace Flux {
             throw ComponentNotFoundException();
         }
 
+        template <class T>
+        bool hasComponent() {
+            for (int i = 0; i < components.size(); i++) {
+                Component* c = components[i];
+
+                if (dynamic_cast<T*>(c)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     private:
         std::vector<Component*> components;
     };
