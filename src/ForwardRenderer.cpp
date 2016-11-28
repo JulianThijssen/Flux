@@ -25,6 +25,19 @@ namespace Flux {
         shader->uniformMatrix4f("viewMatrix", viewMatrix);
 
 
+        for (Entity* light : scene.lights) {
+            PointLight* point = light->getComponent<PointLight>();
+            Transform* transform = light->getComponent<Transform>();
+
+            shader->uniform3f("pointLight.position", transform->position.x, transform->position.y, transform->position.z);
+
+            renderScene(scene);
+        }
+
+        //shader->release();
+    }
+
+    void ForwardRenderer::renderScene(const Scene& scene) {
         for (Entity* e : scene.entities) {
             Transform* transform = e->getComponent<Transform>();
             Model* model = e->getComponent<Model>();
@@ -38,7 +51,5 @@ namespace Flux {
 
             glDrawArrays(GL_TRIANGLES, 0, model->meshes[0].numFaces * 3);
         }
-
-        //shader->release();
     }
 }

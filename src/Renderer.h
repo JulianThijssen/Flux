@@ -19,6 +19,7 @@ namespace Flux {
 
         void create();
         virtual void update(const Scene& scene) = 0;
+        virtual void renderScene(const Scene& scene) = 0;
 
         void setClearColor(float r, float g, float b, float a);
     protected:

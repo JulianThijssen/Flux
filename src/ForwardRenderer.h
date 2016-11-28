@@ -13,6 +13,7 @@ namespace Flux {
         ForwardRenderer() { }
 
         virtual void update(const Scene& scene);
+        virtual void renderScene(const Scene& scene);
     };
 }
 
