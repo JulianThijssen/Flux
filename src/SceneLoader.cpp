@@ -45,7 +45,16 @@ namespace Flux {
 
                     Path path(pathString);
                     Model* model = ModelLoader::loadModel(path);
-                    e->addComponent(model);
+
+                    for (int i = 0; i < model->meshes.size(); i++) {
+                        Entity* child = new Entity();
+
+                        Transform* childT = new Transform();
+                        child->addComponent(childT);
+
+                        child->addComponent(&model->meshes[i]);
+                        scene.addEntity(child);
+                    }
                 }
                 if (it.key() == "transform") {
                     Transform* transform = new Transform();

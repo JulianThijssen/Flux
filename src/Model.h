@@ -4,12 +4,11 @@
 
 #include "Mesh.h"
 #include "Material.h"
-#include "Component.h"
 
 #include <vector>
 
 namespace Flux {
-    class Model : public Component {
+    class Model {
     public:
         std::vector<Mesh> meshes;
         std::vector<Flux::Material> materials;
