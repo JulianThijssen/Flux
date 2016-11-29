@@ -12,8 +12,10 @@ namespace Flux {
     public:
         ForwardRenderer() { }
 
+        virtual void create();
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
+        virtual void renderMesh(Entity* e);
     };
 }
 

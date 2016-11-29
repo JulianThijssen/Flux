@@ -17,15 +17,13 @@ namespace Flux {
             modelMatrix(),
             shader(0) { }
 
-        void create();
+        virtual void create() = 0;
         virtual void update(const Scene& scene) = 0;
         virtual void renderScene(const Scene& scene) = 0;
+        virtual void renderMesh(Entity* entity) = 0;
 
         void setClearColor(float r, float g, float b, float a);
     protected:
-        //void renderScene(Shader shader, Transform transform, Camera camera);
-        //void drawMesh(Shader shader, Entity entity);
-
         Vector3f clearColor;
 
         Matrix4f projMatrix;
