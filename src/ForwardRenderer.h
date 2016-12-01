@@ -6,6 +6,7 @@
 
 #include "Shader.h"
 #include "Model.h"
+#include "Texture.h"
 
 namespace Flux {
     class ForwardRenderer : public Renderer {
@@ -16,6 +17,8 @@ namespace Flux {
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
         virtual void renderMesh(Entity* e);
+    private:
+        Texture* tex;
     };
 }
 

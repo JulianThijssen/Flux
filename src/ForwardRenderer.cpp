@@ -4,6 +4,7 @@
 
 #include "ShaderLoader.h"
 #include "ModelLoader.h"
+#include "TextureLoader.h"
 #include "Path.h"
 
 #include "Transform.h"
@@ -19,6 +20,8 @@ namespace Flux {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
+
+        tex = TextureLoader::loadTexture(Path("res/Test.jpg"));
     }
 
     void ForwardRenderer::update(const Scene& scene) {
@@ -34,6 +37,8 @@ namespace Flux {
         shader->uniformMatrix4f("projMatrix", projMatrix);
         shader->uniformMatrix4f("viewMatrix", viewMatrix);
 
+        tex->bind();
+        shader->uniform1i("diffuseTex", 0);
 
         for (Entity* light : scene.lights) {
             PointLight* point = light->getComponent<PointLight>();
