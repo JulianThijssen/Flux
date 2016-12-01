@@ -65,8 +65,6 @@ namespace Flux {
 
                     json t = it.value();
                     for (json::iterator it = t.begin(); it != t.end(); ++it) {
-                        //std::cout << it.key() << std::endl;
-                        std::cout << t[it.key()] << std::endl;
                         float x = t[it.key()][0];
                         float y = t[it.key()][1];
                         float z = t[it.key()][2];
@@ -87,5 +85,19 @@ namespace Flux {
             }
             scene.addEntity(e);
         }
+
+        Transform* camT = new Transform();
+        camT->position.set(0, 5, 15);
+        camT->rotation.set(-22.5f, 0, 0);
+        scene.mainCamera.addComponent(camT);
+        scene.mainCamera.addComponent(new Camera(60, 1, 0.1f, 100.f));
+
+        Entity* light = new Entity();
+        PointLight* point = new PointLight();
+        light->addComponent(point);
+        Transform* transform = new Transform();
+        transform->position.set(5, 2, 5);
+        light->addComponent(transform);
+        scene.lights.push_back(light);
     }
 }

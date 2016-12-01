@@ -30,10 +30,11 @@ namespace Flux {
 
         shader->bind();
 
-        Transform ct = *static_cast<Transform*>(scene.getMainCamera().getComponent<Transform>());
+        Transform* ct = scene.getMainCamera().getComponent<Transform>();
         scene.getMainCamera().getComponent<Camera>()->loadProjectionMatrix(projMatrix);
         viewMatrix.setIdentity();
-        viewMatrix.translate(-ct.position);
+        viewMatrix.translate(-ct->position);
+        viewMatrix.rotate(-ct->rotation);
 
         shader->uniformMatrix4f("projMatrix", projMatrix);
         shader->uniformMatrix4f("viewMatrix", viewMatrix);

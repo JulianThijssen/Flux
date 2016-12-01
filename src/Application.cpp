@@ -8,7 +8,6 @@
 namespace Flux {
     void Application::startGame() {
         SceneLoader::loadScene(currentScene);
-        currentScene.getMainCamera().getComponent<Transform>()->position.set(0, 0, 15);
         renderer.create();
         update();
     }
