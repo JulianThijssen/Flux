@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Model.h"
 #include "ModelLoader.h"
+#include "AttachedTo.h"
 #include "Path.h"
 
 #include "json.hpp"
@@ -51,6 +52,9 @@ namespace Flux {
 
                         Transform* childT = new Transform();
                         child->addComponent(childT);
+
+                        AttachedTo* attached = new AttachedTo(e);
+                        child->addComponent(attached);
 
                         child->addComponent(&model->meshes[i]);
                         scene.addEntity(child);

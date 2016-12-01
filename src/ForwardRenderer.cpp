@@ -9,6 +9,7 @@
 
 #include "Transform.h"
 #include "Camera.h"
+#include "AttachedTo.h"
 #include <iostream>
 
 namespace Flux {
@@ -67,6 +68,15 @@ namespace Flux {
         glBindVertexArray(mesh->handle);
 
         modelMatrix.setIdentity();
+
+        if (e->hasComponent<AttachedTo>()) {
+            Entity* parent = e->getComponent<AttachedTo>()->parent;
+            Transform* parentT = parent->getComponent<Transform>();
+            modelMatrix.translate(parentT->position);
+            modelMatrix.rotate(parentT->rotation);
+            modelMatrix.scale(parentT->scale);
+        }
+
         modelMatrix.translate(transform->position);
         modelMatrix.rotate(transform->rotation);
         modelMatrix.scale(transform->scale);
