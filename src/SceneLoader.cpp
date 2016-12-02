@@ -3,9 +3,13 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Model.h"
-#include "ModelLoader.h"
 #include "AttachedTo.h"
+#include "MeshRenderer.h"
 #include "Path.h"
+
+#include "ModelLoader.h"
+#include "TextureLoader.h"
+#include "AssetManager.h"
 
 #include "json.hpp"
 #include <fstream>
@@ -32,6 +36,16 @@ namespace Flux {
 
         json j3 = json::parse(cont);
 
+        for (json& element : j3["materials"]) {
+            std::cout << element.dump() << std::endl;
+            std::cout << element["path"] << std::endl;
+            std::cout << element["id"] << std::endl;
+            std::string pathString = element["path"].dump();
+            pathString = pathString.substr(1, pathString.size() - 2);
+            Material* material = new Material();
+            material->diffuseTex = TextureLoader::loadTexture(Path(pathString));
+            AssetManager::addMaterial(element["id"].dump(), material);
+        }
         for (json& element : j3["entities"]) {
             std::cout << element.dump() << std::endl;
 
@@ -81,6 +95,12 @@ namespace Flux {
                         }
                     }
                     e->addComponent(transform);
+                }
+                if (it.key() == "material") {
+                    MeshRenderer* meshRenderer = new MeshRenderer();
+                    meshRenderer->materialID = it.value()["id"].dump();
+
+                    e->addComponent(meshRenderer);
                 }
             }
             scene.addEntity(e);

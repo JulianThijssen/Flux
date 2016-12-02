@@ -10,6 +10,9 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "AttachedTo.h"
+#include "MeshRenderer.h"
+#include "AssetManager.h"
+
 #include <iostream>
 
 namespace Flux {
@@ -21,8 +24,6 @@ namespace Flux {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-
-        tex = TextureLoader::loadTexture(Path("res/Test.jpg"));
     }
 
     void ForwardRenderer::update(const Scene& scene) {
@@ -39,9 +40,6 @@ namespace Flux {
         shader->uniformMatrix4f("projMatrix", projMatrix);
         shader->uniformMatrix4f("viewMatrix", viewMatrix);
 
-        tex->bind();
-        shader->uniform1i("diffuseTex", 0);
-
         for (Entity* light : scene.lights) {
             PointLight* point = light->getComponent<PointLight>();
             Transform* transform = light->getComponent<Transform>();
@@ -55,6 +53,15 @@ namespace Flux {
     }
 
     void ForwardRenderer::renderScene(const Scene& scene) {
+        for (Entity* e : scene.entities) {
+            if (e->hasComponent<MeshRenderer>()) {
+                MeshRenderer* mr = e->getComponent<MeshRenderer>();
+                Material* material = AssetManager::getMaterial(mr->materialID);
+                material->diffuseTex->bind();
+                shader->uniform1i("diffuseTex", 0);
+            }
+        }
+        
         for (Entity* e : scene.entities) {
             if (!e->hasComponent<Mesh>())
                 continue;
