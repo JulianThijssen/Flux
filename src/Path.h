@@ -13,11 +13,13 @@
 #ifndef PATH_H
 #define PATH_H
 
+#include "String.h"
 #include <string>
 
 namespace Flux {
     class Path {
     public:
+        Path(String path);
         Path(std::string path);
 
         Path getCurrentFolder();

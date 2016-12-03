@@ -14,6 +14,10 @@
 #include <algorithm>
 
 namespace Flux {
+    Path::Path(String path) {
+        this->string = path.str();
+    }
+
     Path::Path(std::string path) {
         this->string = path;
         correctSlashes();
