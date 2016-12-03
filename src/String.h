@@ -37,6 +37,10 @@ namespace Flux {
             return s == str.str();
         }
 
+        bool operator==(const char* str) const {
+            return s == str;
+        }
+
         String operator+(const String& str) const {
             return String(s + str.str());
         }
