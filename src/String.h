@@ -13,13 +13,13 @@ namespace Flux {
     public:
         String(string s) : s(s) { }
 
-        vector<string> split(char delimiter) {
-            vector<string> tokens;
+        vector<String> split(char delimiter) {
+            vector<String> tokens;
             stringstream ss;
             ss.str(s);
             string item;
             while (getline(ss, item, delimiter)) {
-                tokens.push_back(item);
+                tokens.push_back(String(item));
             }
             return tokens;
         }
