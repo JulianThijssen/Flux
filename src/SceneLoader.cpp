@@ -8,6 +8,7 @@
 #include "Path.h"
 
 #include "ModelLoader.h"
+#include "MaterialLoader.h"
 #include "TextureLoader.h"
 #include "AssetManager.h"
 
@@ -37,14 +38,11 @@ namespace Flux {
         json j3 = json::parse(cont);
 
         for (json& element : j3["materials"]) {
-            std::cout << element.dump() << std::endl;
-            std::cout << element["path"] << std::endl;
-            std::cout << element["id"] << std::endl;
-            std::string pathString = element["path"].dump();
-            pathString = pathString.substr(1, pathString.size() - 2);
-            Material* material = new Material();
-            material->diffuseTex = TextureLoader::loadTexture(Path(pathString));
-            AssetManager::addMaterial(element["id"].dump(), material);
+            std::string id = element["id"].get<std::string>();
+            std::string path = element["path"].get<std::string>();
+
+            Material* material = MaterialLoader::loadMaterial(Path(path));
+            AssetManager::addMaterial(id, material);
         }
         for (json& element : j3["entities"]) {
             std::cout << element.dump() << std::endl;
@@ -55,11 +53,9 @@ namespace Flux {
                 std::cout << it.key() << " : " << it.value() << "\n";
                 
                 if (it.key() == "model") {
-                    std::string pathString = it.value()["path"].dump();
-                    pathString = pathString.substr(1, pathString.size() - 2);
+                    std::string path = it.value()["path"].get<std::string>();
 
-                    Path path(pathString);
-                    Model* model = ModelLoader::loadModel(path);
+                    Model* model = ModelLoader::loadModel(Path(path));
 
                     for (int i = 0; i < model->meshes.size(); i++) {
                         Entity* child = new Entity();
@@ -83,7 +79,6 @@ namespace Flux {
                         float y = t[it.key()][1];
                         float z = t[it.key()][2];
                         
-                        std::cout << x << y << z << std::endl;
                         if (it.key() == "position") {
                             transform->position.set(x, y, z);
                         }
@@ -97,8 +92,10 @@ namespace Flux {
                     e->addComponent(transform);
                 }
                 if (it.key() == "material") {
+                    std::string id = it.value()["id"].get<std::string>();
+
                     MeshRenderer* meshRenderer = new MeshRenderer();
-                    meshRenderer->materialID = it.value()["id"].dump();
+                    meshRenderer->materialID = id;
 
                     e->addComponent(meshRenderer);
                 }
