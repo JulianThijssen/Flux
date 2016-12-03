@@ -13,6 +13,8 @@
 #include "ShaderLoader.h"
 
 #include "Log.h"
+#include "File.h"
+#include "String.h"
 
 #include <glad/glad.h>
 
@@ -44,17 +46,8 @@ namespace Flux {
         int handle = 0;
 
         Log::info("Loading shader file: " + path);
-        // Read all lines and append together
-        std::ifstream file(path);
-        if (file.fail() || !file.is_open()) {
-            Log::error("No such file: " + path);
-        }
 
-        std::string source;
-        std::string line;
-        while (std::getline(file, line)) {
-            source.append(line + "\n");
-        }
+        String source = File::loadFile(path.c_str());
 
         const char* csource = source.c_str();
 
