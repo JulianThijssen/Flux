@@ -6,6 +6,7 @@
 #include "AttachedTo.h"
 #include "MeshRenderer.h"
 #include "Path.h"
+#include "File.h"
 
 #include "ModelLoader.h"
 #include "MaterialLoader.h"
@@ -21,17 +22,7 @@ using json = nlohmann::json;
 
 namespace Flux {
     void SceneLoader::loadScene(Scene& scene) {
-        std::string contents;
-        std::string line;
-        std::ifstream myfile("res/Indoors.json");
-        if (myfile.is_open())
-        {
-            while (getline(myfile, line))
-            {
-                contents += line + '\n';
-            }
-            myfile.close();
-        }
+        String contents = File::loadFile("res/Indoors.json");
 
         const char* cont = contents.c_str();
 
