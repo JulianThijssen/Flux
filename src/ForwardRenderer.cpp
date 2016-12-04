@@ -54,19 +54,28 @@ namespace Flux {
 
     void ForwardRenderer::renderScene(const Scene& scene) {
         for (Entity* e : scene.entities) {
-            if (e->hasComponent<MeshRenderer>()) {
-                MeshRenderer* mr = e->getComponent<MeshRenderer>();
-                Material* material = AssetManager::getMaterial(mr->materialID);
-                material->diffuseTex->bind();
-                shader->uniform1i("diffuseTex", 0);
-            }
-        }
-        
-        for (Entity* e : scene.entities) {
             if (!e->hasComponent<Mesh>())
                 continue;
 
+            if (e->hasComponent<MeshRenderer>()) {
+                MeshRenderer* mr = e->getComponent<MeshRenderer>();
+                Material* material = AssetManager::getMaterial(mr->materialID);
+
+                if (material) {
+                    if (material->diffuseTex) {
+                        material->diffuseTex->bind();
+                        shader->uniform1i("diffuseTex", 0);
+                        shader->uniform1i("hasAlbedo", 1);
+                    }
+                    else {
+                        shader->uniform1i("hasAlbedo", 0);
+                    }
+                }
+            }
+
             renderMesh(e);
+
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
 

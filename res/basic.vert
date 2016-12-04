@@ -1,23 +1,21 @@
 #version 150 core
 
-//in vec3 position;
+uniform mat4 projMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
 
-int indices[6] = int[](0, 1, 2, 2, 1, 3);
+in vec3 position;
+in vec2 texCoords;
+in vec3 normal;
 
+out vec3 pass_position;
 out vec2 pass_texCoords;
+out vec3 pass_normal;
 
 void main() {
-    int id = gl_VertexID;
-
-    int vid = indices[id];
-    float x = (vid % 2) > 0 ? 1 : -1;
-    float y = (vid & 2) > 0 ? -1 : 1;
-    vec3 position = vec3(x, y, 0);
-    
-    float tx = (vid % 2) > 0 ? 1 : 0;
-    float ty = (vid & 2) > 0 ? 0 : 1;
-    vec2 texCoords = vec2(tx, ty);
+    pass_position = position;
     pass_texCoords = texCoords;
+    pass_normal = normal;
 
-    gl_Position = vec4(position, 1);
+    gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(position, 1);
 }
