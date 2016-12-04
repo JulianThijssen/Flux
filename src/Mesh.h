@@ -21,6 +21,7 @@ namespace Flux {
 
         unsigned int handle;
         unsigned int numFaces;
+        std::string materialName;
     };
 }
 

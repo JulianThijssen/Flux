@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <cstdio>
+#include <iostream>
 
 namespace Flux {
     Model* ModelLoader::loadModel(const Path& path) {
@@ -34,7 +35,7 @@ namespace Flux {
         for (unsigned int i = 0; i < scene.mNumMeshes; i++) {
             aiMesh* aiMesh = scene.mMeshes[i];
             Mesh mesh;
-
+            
             // Store face indices in an array
             std::vector<unsigned int> faceArray;
 
@@ -128,6 +129,12 @@ namespace Flux {
             // Store relevant data in the new mesh
             mesh.handle = vao;
             mesh.numFaces = aiMesh->mNumFaces;
+
+            aiMaterial* aiMaterial = scene.mMaterials[aiMesh->mMaterialIndex];
+            aiString name;
+            aiMaterial->Get(AI_MATKEY_NAME, name);
+            mesh.materialName = std::string(name.C_Str());
+            std::cout << mesh.materialName << std::endl;
 
             model->addMesh(mesh);
         }

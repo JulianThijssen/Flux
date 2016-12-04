@@ -57,7 +57,13 @@ namespace Flux {
                         AttachedTo* attached = new AttachedTo(e);
                         child->addComponent(attached);
 
-                        child->addComponent(&model->meshes[i]);
+                        Mesh* mesh = &model->meshes[i];
+                        child->addComponent(mesh);
+
+                        MeshRenderer* meshRenderer = new MeshRenderer();
+                        meshRenderer->materialID = mesh->materialName;
+                        child->addComponent(meshRenderer);
+
                         scene.addEntity(child);
                     }
                 }
@@ -82,23 +88,15 @@ namespace Flux {
                     }
                     e->addComponent(transform);
                 }
-                if (it.key() == "material") {
-                    std::string id = it.value()["id"].get<std::string>();
-
-                    MeshRenderer* meshRenderer = new MeshRenderer();
-                    meshRenderer->materialID = id;
-
-                    e->addComponent(meshRenderer);
-                }
             }
             scene.addEntity(e);
         }
 
         Transform* camT = new Transform();
-        camT->position.set(0, 5, 15);
-        camT->rotation.set(-22.5f, 0, 0);
+        camT->position.set(0, 2, 10);
+        camT->rotation.set(0, 0, 0);
         scene.mainCamera.addComponent(camT);
-        scene.mainCamera.addComponent(new Camera(60, 1, 0.1f, 100.f));
+        scene.mainCamera.addComponent(new Camera(60, 1024.f/768, 0.1f, 100.f));
 
         Entity* light = new Entity();
         PointLight* point = new PointLight();
