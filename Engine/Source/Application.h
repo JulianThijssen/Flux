@@ -5,7 +5,7 @@
 namespace Flux {
     class Application {
     public:
-        Application() : currentScene() { }
+        Application() : window("Flux", 1024, 768), currentScene() { }
 
         void startGame();
         void update();
