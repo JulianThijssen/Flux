@@ -4,10 +4,16 @@ struct PointLight {
     vec3 position;
 };
 
-uniform PointLight pointLight;
+struct Material {
+    vec3 diffuseColor;
+    
+    sampler2D diffuseMap;
 
-uniform sampler2D diffuseTex;
-uniform bool hasAlbedo;
+    bool hasDiffuseMap;
+};
+
+uniform PointLight pointLight;
+uniform Material material;
 
 in vec3 pass_position;
 in vec2 pass_texCoords;
@@ -25,8 +31,8 @@ void main() {
     float diffuse = calcDiffuse(pass_normal, normalize(lightDir));
 
     vec3 color = vec3(diffuse);
-    if (hasAlbedo) {
-        color *= texture(diffuseTex, pass_texCoords).rgb;
+    if (material.hasDiffuseMap) {
+        color *= texture(material.diffuseMap, pass_texCoords).rgb;
     }
 
     fragColor = vec4(color, 1.0);

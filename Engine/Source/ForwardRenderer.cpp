@@ -64,11 +64,11 @@ namespace Flux {
                 if (material) {
                     if (material->diffuseTex) {
                         material->diffuseTex->bind();
-                        shader->uniform1i("diffuseTex", 0);
-                        shader->uniform1i("hasAlbedo", 1);
+                        shader->uniform1i("material.diffuseMap", 0);
+                        shader->uniform1i("material.hasDiffuseMap", 1);
                     }
                     else {
-                        shader->uniform1i("hasAlbedo", 0);
+                        shader->uniform1i("material.hasDiffuseMap", 0);
                     }
                 }
             }
