@@ -93,7 +93,7 @@ namespace Flux {
         }
 
         Transform* camT = new Transform();
-        camT->position.set(0, 2, 10);
+        camT->position.set(0, 4, 15);
         camT->rotation.set(0, 0, 0);
         scene.mainCamera.addComponent(camT);
         scene.mainCamera.addComponent(new Camera(60, 1024.f/768, 0.1f, 100.f));

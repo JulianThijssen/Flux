@@ -49,11 +49,11 @@ namespace Flux {
             release();
         }
 
-        void bind() {
+        void bind() const {
             glBindTexture(GL_TEXTURE_CUBE_MAP, handle);
         }
 
-        void release() {
+        void release() const {
             glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         }
 

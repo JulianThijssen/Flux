@@ -8,7 +8,10 @@
 namespace Flux {
     void Application::startGame() {
         SceneLoader::loadScene(currentScene);
-        renderer.create();
+        bool created = renderer.create();
+        if (!created)
+            return;
+
         update();
     }
 

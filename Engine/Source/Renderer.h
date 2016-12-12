@@ -17,7 +17,7 @@ namespace Flux {
             modelMatrix(),
             shader(0) { }
 
-        virtual void create() = 0;
+        virtual bool create() = 0;
         virtual void update(const Scene& scene) = 0;
         virtual void renderScene(const Scene& scene) = 0;
         virtual void renderMesh(Entity* entity) = 0;
