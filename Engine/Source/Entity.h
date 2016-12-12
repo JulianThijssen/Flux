@@ -3,7 +3,7 @@
 #define ENTITY_H
 
 #include "Component.h"
-#include "ComponentNotFoundException.h"
+#include "Exceptions/ComponentNotFoundException.h"
 
 #include <vector>
 
