@@ -1,3 +1,7 @@
+#pragma once
+#ifndef FRAMEBUFFER_H
+#define FRAMEBUFFER_H
+
 #include "Cubemap.h"
 #include "Log.h"
 
@@ -58,3 +62,5 @@ namespace Flux {
         GLuint handle;
     };
 }
+
+#endif /* FRAMEBUFFER_H */
