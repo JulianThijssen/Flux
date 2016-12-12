@@ -12,6 +12,9 @@
 
 #include "ShaderLoader.h"
 
+#include "Exceptions/ShaderCompilationException.h"
+#include "Exceptions/ShaderLinkException.h"
+
 #include "Log.h"
 #include "File.h"
 #include "String.h"
@@ -23,7 +26,8 @@
 namespace Flux {
     const int ShaderLoader::LOG_SIZE = 1024;
 
-    Shader* ShaderLoader::loadShaders(std::string vertPath, std::string fragPath) {
+    Shader* ShaderLoader::loadShaderProgram(std::string vertPath, std::string fragPath) {
+        Log::info("Loading shader program: " + vertPath + " " + fragPath);
         int vertexShader = loadShader(vertPath, GL_VERTEX_SHADER);
         int fragmentShader = loadShader(fragPath, GL_FRAGMENT_SHADER);
 
@@ -33,11 +37,14 @@ namespace Flux {
         glAttachShader(shaderProgram, fragmentShader);
 
         glLinkProgram(shaderProgram);
+
+        checkLinkStatus(vertPath, shaderProgram);
+
         glValidateProgram(shaderProgram);
 
-        int handle = shaderProgram;
+        Log::info("Successfully compiled shader program: " + vertPath + " " + fragPath);
 
-        Shader* shader = new Shader(handle);
+        Shader* shader = new Shader(shaderProgram);
 
         return shader;
     }
@@ -45,7 +52,7 @@ namespace Flux {
     int ShaderLoader::loadShader(std::string path, int type) {
         int handle = 0;
 
-        Log::info("Loading shader file: " + path);
+        
 
         String source = File::loadFile(path.c_str());
 
@@ -56,18 +63,26 @@ namespace Flux {
         glShaderSource(handle, 1, &csource, NULL);
         glCompileShader(handle);
 
-        // Error checking
-        char log[LOG_SIZE];
-        GLint status;
-        glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
-        if (status == GL_FALSE) {
-            glGetShaderInfoLog(handle, LOG_SIZE, nullptr, log);
-            Log::error(log);
-        }
-        else {
-            Log::info("Successfully compiled shader: " + path);
-        }
+        checkCompilationStatus(path, handle);
 
         return handle;
+    }
+
+    void ShaderLoader::checkCompilationStatus(std::string path,  GLuint shader) {
+        char log[LOG_SIZE];
+        GLint status;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+        if (status == GL_FALSE) {
+            glGetShaderInfoLog(shader, LOG_SIZE, nullptr, log);
+            throw ShaderCompilationException(path, log);
+        }
+    }
+
+    void ShaderLoader::checkLinkStatus(std::string path, const GLuint program) {
+        GLint status = 0;
+        glGetProgramiv(program, GL_LINK_STATUS, &status);
+        if (status == GL_FALSE) {
+            throw ShaderLinkException();
+        }
     }
 }

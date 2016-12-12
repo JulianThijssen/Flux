@@ -23,9 +23,11 @@ namespace Flux {
     public:
         static const int LOG_SIZE;
 
-        static Shader* loadShaders(std::string vertPath, std::string fragPath);
+        static Shader* loadShaderProgram(std::string vertPath, std::string fragPath);
     private:
         static int loadShader(std::string path, int type);
+        static void checkCompilationStatus(std::string path, const GLuint shader);
+        static void checkLinkStatus(std::string path, const GLuint program);
     };
 }
 
