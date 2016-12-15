@@ -1,3 +1,7 @@
+#pragma once
+#ifndef POINT_LIGHT_H
+#define POINT_LIGHT_H
+
 #include "Component.h"
 
 namespace Flux {
@@ -9,3 +13,5 @@ namespace Flux {
         float energy;
     };
 }
+
+#endif /* POINT_LIGHT_H */
