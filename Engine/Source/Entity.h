@@ -38,6 +38,10 @@ namespace Flux {
             return false;
         }
 
+        const size_t numComponents() {
+            return components.size();
+        }
+
     private:
         std::vector<Component*> components;
     };
