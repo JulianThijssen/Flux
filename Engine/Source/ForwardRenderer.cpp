@@ -3,9 +3,6 @@
 #include <glad/glad.h>
 
 #include "ShaderLoader.h"
-#include "ModelLoader.h"
-#include "TextureLoader.h"
-#include "Path.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -107,11 +104,9 @@ namespace Flux {
             cubemap.bind();
             shader->uniform1i("cubemap", 1);
 
-            ///////////////
             glActiveTexture(GL_TEXTURE2);
             irradianceMap->bind();
             shader->uniform1i("irradianceMap", 2);
-            ///////////////
 
             renderMesh(e);
 
@@ -140,6 +135,6 @@ namespace Flux {
         modelMatrix.scale(transform->scale);
         shader->uniformMatrix4f("modelMatrix", modelMatrix);
 
-        glDrawArrays(GL_TRIANGLES, 0, mesh->numFaces * 3);
+        glDrawArrays(GL_TRIANGLES, 0, (GLsizei) mesh->indices.size());
     }
 }
