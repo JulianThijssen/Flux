@@ -17,10 +17,9 @@ namespace Flux {
         std::vector<Vector2f> texCoords;
         std::vector<Vector3f> normals;
         std::vector<Vector3f> tangents;
-        std::vector<Face> faces;
+        std::vector<unsigned int> indices;
 
         unsigned int handle;
-        unsigned int numFaces;
         std::string materialName;
     };
 }
