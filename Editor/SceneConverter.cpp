@@ -69,6 +69,20 @@ namespace Flux {
                 outFile.write((char *) &numIndices, sizeof(numIndices));
                 outFile.write((char *) &mesh->indices[0], numIndices * sizeof(unsigned int));
             }
+            if (e->hasComponent<Camera>()) {
+                outFile.write("c", sizeof(char));
+                Camera* camera = e->getComponent<Camera>();
+
+                const float fieldOfView = camera->getFovy();
+                const float aspectRatio = camera->getAspectRatio();
+                const float zNear = camera->getZNear();
+                const float zFar = camera->getZFar();
+
+                outFile.write((char *) &fieldOfView, sizeof(float));
+                outFile.write((char *) &aspectRatio, sizeof(float));
+                outFile.write((char *) &zNear, sizeof(float));
+                outFile.write((char *) &zFar, sizeof(float));
+            }
         }
     }
 }

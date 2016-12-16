@@ -68,6 +68,22 @@ namespace Flux {
         perspective = false;
     }
 
+    float Camera::getFovy() const {
+        return fovy;
+    }
+
+    float Camera::getAspectRatio() const {
+        return aspect;
+    }
+
+    float Camera::getZNear() const {
+        return zNear;
+    }
+
+    float Camera::getZFar() const {
+        return zFar;
+    }
+
     void Camera::setFovy(float fovy) {
         this->fovy = fovy;
     }

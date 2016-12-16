@@ -28,6 +28,11 @@ namespace Flux {
         void setPerspective();
         void setOrthographic();
 
+        float getFovy() const;
+        float getAspectRatio() const;
+        float getZNear() const;
+        float getZFar() const;
+
         void setFovy(float fovy);
         void setAspectRatio(float aspect);
         void setZNear(float zNear);
