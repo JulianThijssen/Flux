@@ -5,8 +5,6 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-#include <glad/glad.h>
-
 #include <Engine/Source/Log.h>
 #include <Engine/Source/Path.h>
 #include <Engine/Source/Mesh.h>
@@ -44,17 +42,6 @@ namespace Flux {
                 mesh.indices.push_back(face.mIndices[2]);
             }
 
-            // Generate vertex array object
-            GLuint vao;
-            glGenVertexArrays(1, &vao);
-            glBindVertexArray(vao);
-
-            // Store faces in a buffer
-            GLuint faceVBO;
-            glGenBuffers(1, &faceVBO);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faceVBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * aiMesh->mNumFaces * 3, &mesh.indices[0], GL_STATIC_DRAW);
-
             // Store vertices in a buffer
             if (aiMesh->HasPositions()) {
                 mesh.vertices.resize(aiMesh->mNumVertices);
@@ -62,13 +49,6 @@ namespace Flux {
                     Vector3f v(aiMesh->mVertices[j].x, aiMesh->mVertices[j].y, aiMesh->mVertices[j].z);
                     mesh.vertices[j] = v;
                 }
-
-                GLuint vertexVBO;
-                glGenBuffers(1, &vertexVBO);
-                glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(float) * aiMesh->mNumVertices * 3, &mesh.vertices[0], GL_STATIC_DRAW);
-                glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-                glEnableVertexAttribArray(0);
             }
 
             // Store texture coordinates in a buffer
@@ -78,13 +58,6 @@ namespace Flux {
                     Vector2f t(aiMesh->mTextureCoords[0][j].x, aiMesh->mTextureCoords[0][j].y);
                     mesh.texCoords[j] = t;
                 }
-
-                GLuint texCoordVBO;
-                glGenBuffers(1, &texCoordVBO);
-                glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(float) * aiMesh->mNumVertices * 2, &mesh.texCoords[0], GL_STATIC_DRAW);
-                glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-                glEnableVertexAttribArray(1);
             }
 
             // Store normals in a buffer
@@ -94,13 +67,6 @@ namespace Flux {
                     Vector3f n(aiMesh->mNormals[j].x, aiMesh->mNormals[j].y, aiMesh->mNormals[j].z);
                     mesh.normals[j] = n;
                 }
-
-                GLuint normalVBO;
-                glGenBuffers(1, &normalVBO);
-                glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(float) * aiMesh->mNumVertices * 3, &mesh.normals[0], GL_STATIC_DRAW);
-                glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
-                glEnableVertexAttribArray(2);
             }
 
             // Store tangents in a buffer
@@ -110,22 +76,7 @@ namespace Flux {
                     Vector3f v(aiMesh->mTangents[j].x, aiMesh->mTangents[j].y, aiMesh->mTangents[j].z);
                     mesh.tangents[j] = v;
                 }
-
-                GLuint tangentVBO;
-                glGenBuffers(1, &tangentVBO);
-                glBindBuffer(GL_ARRAY_BUFFER, tangentVBO);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(float) * aiMesh->mNumVertices * 3, &mesh.tangents[0], GL_STATIC_DRAW);
-                glVertexAttribPointer(3, 3, GL_FLOAT, false, 0, 0);
-                glEnableVertexAttribArray(3);
             }
-
-            // Unbind the buffers
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-
-            // Store relevant data in the new mesh
-            mesh.handle = vao;
 
             aiMaterial* aiMaterial = scene.mMaterials[aiMesh->mMaterialIndex];
             aiString name;
