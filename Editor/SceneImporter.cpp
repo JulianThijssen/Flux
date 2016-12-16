@@ -1,4 +1,5 @@
-#include "SceneLoader.h"
+#include "SceneImporter.h"
+#include "ModelImporter.h"
 
 #include <Engine/Source/Scene.h>
 #include <Engine/Source/Entity.h>
@@ -8,7 +9,6 @@
 #include <Engine/Source/Path.h>
 #include <Engine/Source/File.h>
 
-#include "ModelLoader.h"
 #include <Engine/Source/MaterialLoader.h>
 #include <Engine/Source/TextureLoader.h>
 #include <Engine/Source/AssetManager.h>
@@ -21,7 +21,7 @@
 using json = nlohmann::json;
 
 namespace Flux {
-    void SceneLoader::loadScene(const Path path, Scene& scene) {
+    void SceneImporter::loadScene(const Path path, Scene& scene) {
         String contents = File::loadFile(path.str().c_str());
 
         const char* cont = contents.c_str();
@@ -46,7 +46,7 @@ namespace Flux {
                 if (it.key() == "model") {
                     std::string path = it.value()["path"].get<std::string>();
 
-                    Model* model = ModelLoader::loadModel(Path(path));
+                    Model* model = ModelImporter::loadModel(Path(path));
 
                     for (int i = 0; i < model->meshes.size(); i++) {
                         Entity* child = new Entity();

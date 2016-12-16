@@ -1,4 +1,4 @@
-#include "ModelLoader.h"
+#include "ModelImporter.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -15,7 +15,7 @@
 #include <iostream>
 
 namespace Flux {
-    Model* ModelLoader::loadModel(const Path& path) {
+    Model* ModelImporter::loadModel(const Path& path) {
         Assimp::Importer importer;
 
         unsigned int flags = aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_SortByPType | aiProcess_GenUVCoords;
@@ -29,7 +29,7 @@ namespace Flux {
         return model;
     }
 
-    Model* ModelLoader::uploadModel(const aiScene& scene) {
+    Model* ModelImporter::uploadModel(const aiScene& scene) {
         Model* model = new Model();
 
         for (unsigned int i = 0; i < scene.mNumMeshes; i++) {

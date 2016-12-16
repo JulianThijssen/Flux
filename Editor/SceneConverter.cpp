@@ -1,6 +1,7 @@
 #include "SceneConverter.h"
 
-#include "SceneLoader.h"
+#include "SceneImporter.h"
+
 #include "../Engine/Source/Path.h"
 #include "../Engine/Source/Scene.h"
 
@@ -14,7 +15,7 @@
 namespace Flux {
     void SceneConverter::convert(Path inputPath, Path outputPath) {
         Scene scene;
-        SceneLoader::loadScene(inputPath, scene);
+        SceneImporter::loadScene(inputPath, scene);
 
         ofstream outFile;
         outFile.open(outputPath.str().c_str(), ios::out | ios::binary);

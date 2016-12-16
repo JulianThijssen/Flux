@@ -1,7 +1,6 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "Face.h"
 #include "Component.h"
 #include "Vector3f.h"
 #include "Vector2f.h"

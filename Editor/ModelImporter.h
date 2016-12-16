@@ -1,5 +1,5 @@
-#ifndef MODELLOADER_HPP
-#define MODELLOADER_HPP
+#ifndef MODEL_IMPORTER_H
+#define MODEL_IMPORTER_H
 
 #include <assimp/scene.h>
 
@@ -7,7 +7,7 @@ namespace Flux {
     class Model;
     class Path;
 
-    class ModelLoader {
+    class ModelImporter {
     public:
         static Model* loadModel(const Path& path);
     private:
@@ -15,4 +15,4 @@ namespace Flux {
     };
 }
 
-#endif /* MODELLOADER_HPP */
+#endif /* MODEL_IMPORTER_H */
