@@ -12,8 +12,6 @@ namespace Flux {
 
     class Shader {
     public:
-        GLuint handle;
-
         Shader(GLuint handle);
         ~Shader();
         void bind();
@@ -26,6 +24,7 @@ namespace Flux {
     private:
         int location(const char* uniform);
 
+        GLuint handle;
         std::unordered_map<std::string, int> locationMap;
     };
 }
