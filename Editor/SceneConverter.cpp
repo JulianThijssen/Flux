@@ -83,6 +83,14 @@ namespace Flux {
                 outFile.write((char *) &zNear, sizeof(float));
                 outFile.write((char *) &zFar, sizeof(float));
             }
+            if (e->hasComponent<PointLight>()) {
+                outFile.write("p", sizeof(char));
+                PointLight* pointLight = e->getComponent<PointLight>();
+
+                const float energy = pointLight->energy;
+
+                outFile.write((char *) &energy, sizeof(float));
+            }
         }
     }
 }
