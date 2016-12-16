@@ -18,12 +18,14 @@ namespace Flux {
         ~Shader();
         void bind();
         void release();
-        int location(const char* uniform);
+        
         void uniform1i(const char* name, int value);
         void uniform1f(const char* name, float value);
         void uniform3f(const char* name, float v0, float v1, float v2);
         void uniformMatrix4f(const char* name, Matrix4f& m);
     private:
+        int location(const char* uniform);
+
         std::unordered_map<std::string, int> locationMap;
     };
 }
