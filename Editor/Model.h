@@ -2,8 +2,8 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include "Mesh.h"
-#include "Material.h"
+#include <Engine/Source/Mesh.h>
+#include <Engine/Source/Material.h>
 
 #include <vector>
 
@@ -11,10 +11,10 @@ namespace Flux {
     class Model {
     public:
         std::vector<Mesh> meshes;
-        std::vector<Flux::Material> materials;
+        std::vector<Material> materials;
 
         void addMesh(const Mesh& mesh);
-        void addMaterial(const Flux::Material& material);
+        void addMaterial(const Material& material);
     };
 }
 

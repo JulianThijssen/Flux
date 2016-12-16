@@ -4,10 +4,6 @@
 
 #include "Renderer.h"
 
-#include "Shader.h"
-#include "Model.h"
-#include "Texture.h"
-
 #include "Cubemap.h"
 #include "IrradianceMap.h"
 

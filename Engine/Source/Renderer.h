@@ -3,7 +3,6 @@
 #define RENDERER_H
 
 #include "Shader.h"
-#include "Model.h"
 #include "Matrix4f.h"
 #include "Scene.h"
 

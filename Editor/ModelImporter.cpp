@@ -1,14 +1,15 @@
 #include "ModelImporter.h"
 
+#include "Model.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
 #include <glad/glad.h>
 
-#include "../Engine/Source/Log.h"
-#include "../Engine/Source/Path.h"
-#include "../Engine/Source/Model.h"
-#include "../Engine/Source/Mesh.h"
+#include <Engine/Source/Log.h>
+#include <Engine/Source/Path.h>
+#include <Engine/Source/Mesh.h>
 
 #include <vector>
 #include <cstdio>

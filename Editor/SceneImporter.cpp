@@ -1,9 +1,9 @@
 #include "SceneImporter.h"
 #include "ModelImporter.h"
+#include "Model.h"
 
 #include <Engine/Source/Scene.h>
 #include <Engine/Source/Entity.h>
-#include <Engine/Source/Model.h>
 #include <Engine/Source/AttachedTo.h>
 #include <Engine/Source/MeshRenderer.h>
 #include <Engine/Source/Path.h>
