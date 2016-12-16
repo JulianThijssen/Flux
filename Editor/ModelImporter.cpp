@@ -12,6 +12,7 @@
 #include <vector>
 #include <cstdio>
 #include <iostream>
+#include <algorithm>
 
 namespace Flux {
     Model* ModelImporter::loadModel(const Path& path) {
@@ -45,37 +46,25 @@ namespace Flux {
             // Store vertices in a buffer
             if (aiMesh->HasPositions()) {
                 mesh.vertices.resize(aiMesh->mNumVertices);
-                for (unsigned int j = 0; j < aiMesh->mNumVertices; j++) {
-                    Vector3f v(aiMesh->mVertices[j].x, aiMesh->mVertices[j].y, aiMesh->mVertices[j].z);
-                    mesh.vertices[j] = v;
-                }
+                memcpy(&mesh.vertices[0], aiMesh->mVertices, aiMesh->mNumVertices * sizeof(aiVector3D));
             }
 
             // Store texture coordinates in a buffer
             if (aiMesh->HasTextureCoords(0)) {
                 mesh.texCoords.resize(aiMesh->mNumVertices);
-                for (unsigned int j = 0; j < aiMesh->mNumVertices; j++) {
-                    Vector2f t(aiMesh->mTextureCoords[0][j].x, aiMesh->mTextureCoords[0][j].y);
-                    mesh.texCoords[j] = t;
-                }
+                memcpy(&mesh.texCoords[0], aiMesh->mTextureCoords[0], aiMesh->mNumVertices * sizeof(aiVector2D));
             }
 
             // Store normals in a buffer
             if (aiMesh->HasNormals()) {
                 mesh.normals.resize(aiMesh->mNumVertices);
-                for (unsigned int j = 0; j < aiMesh->mNumVertices; j++) {
-                    Vector3f n(aiMesh->mNormals[j].x, aiMesh->mNormals[j].y, aiMesh->mNormals[j].z);
-                    mesh.normals[j] = n;
-                }
+                memcpy(&mesh.normals[0], aiMesh->mNormals, aiMesh->mNumVertices * sizeof(aiVector3D));
             }
 
             // Store tangents in a buffer
             if (aiMesh->HasTangentsAndBitangents()) {
                 mesh.tangents.resize(aiMesh->mNumVertices);
-                for (unsigned int j = 0; j < aiMesh->mNumVertices; j++) {
-                    Vector3f v(aiMesh->mTangents[j].x, aiMesh->mTangents[j].y, aiMesh->mTangents[j].z);
-                    mesh.tangents[j] = v;
-                }
+                memcpy(&mesh.tangents[0], aiMesh->mTangents, aiMesh->mNumVertices * sizeof(aiVector3D));
             }
 
             aiMaterial* aiMaterial = scene.mMaterials[aiMesh->mMaterialIndex];
