@@ -42,6 +42,7 @@ namespace Flux {
             return components.size();
         }
 
+        std::string name;
     private:
         std::vector<Component*> components;
     };

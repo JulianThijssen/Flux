@@ -43,6 +43,10 @@ namespace Flux {
             for (json::iterator it = element["components"][0].begin(); it != element["components"][0].end(); ++it) {
                 std::cout << it.key() << " : " << it.value() << "\n";
                 
+                if (it.key() == "name") {
+                    std::string name = it.value().get<std::string>();
+                    e->name = name;
+                }
                 if (it.key() == "model") {
                     std::string path = it.value()["path"].get<std::string>();
 
