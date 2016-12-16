@@ -1,13 +1,19 @@
 #include "Application.h"
 
+//#include "../../Editor/SceneConverter.h" // Temp
+//#include "../../Editor/SceneLoader.h" // Temp
 #include "SceneLoader.h"
+#include "Path.h"
 
 #include <ctime>
 #include <iostream>
 
 namespace Flux {
     void Application::startGame() {
-        SceneLoader::loadScene(currentScene);
+        //Scene scene;
+        //SceneLoader::loadScene(Path("res/Indoors.json"), scene);
+        //SceneConverter::convert(Path("res/Indoors.json"), Path("res/Indoors.scene"));
+        SceneLoader::loadScene(Path("res/Indoors.scene"), currentScene);
         bool created = renderer.create();
         if (!created)
             return;

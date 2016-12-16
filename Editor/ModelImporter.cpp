@@ -5,10 +5,10 @@
 
 #include <glad/glad.h>
 
-#include "Log.h"
-#include "Path.h"
-#include "Model.h"
-#include "Mesh.h"
+#include "../Engine/Source/Log.h"
+#include "../Engine/Source/Path.h"
+#include "../Engine/Source/Model.h"
+#include "../Engine/Source/Mesh.h"
 
 #include <vector>
 #include <cstdio>
@@ -36,14 +36,11 @@ namespace Flux {
             aiMesh* aiMesh = scene.mMeshes[i];
             Mesh mesh;
             
-            // Store face indices in an array
-            std::vector<unsigned int> faceArray;
-
             for (unsigned int j = 0; j < aiMesh->mNumFaces; j++) {
                 const aiFace face = aiMesh->mFaces[j];
-                faceArray.push_back(face.mIndices[0]);
-                faceArray.push_back(face.mIndices[1]);
-                faceArray.push_back(face.mIndices[2]);
+                mesh.indices.push_back(face.mIndices[0]);
+                mesh.indices.push_back(face.mIndices[1]);
+                mesh.indices.push_back(face.mIndices[2]);
             }
 
             // Generate vertex array object
@@ -55,7 +52,7 @@ namespace Flux {
             GLuint faceVBO;
             glGenBuffers(1, &faceVBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faceVBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * aiMesh->mNumFaces * 3, &faceArray[0], GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * aiMesh->mNumFaces * 3, &mesh.indices[0], GL_STATIC_DRAW);
 
             // Store vertices in a buffer
             if (aiMesh->HasPositions()) {
@@ -128,13 +125,12 @@ namespace Flux {
 
             // Store relevant data in the new mesh
             mesh.handle = vao;
-            mesh.numFaces = aiMesh->mNumFaces;
 
             aiMaterial* aiMaterial = scene.mMaterials[aiMesh->mMaterialIndex];
             aiString name;
             aiMaterial->Get(AI_MATKEY_NAME, name);
             mesh.materialName = std::string(name.C_Str());
-            std::cout << mesh.materialName << std::endl;
+            std::cout << "Material name: " << mesh.materialName << std::endl;
 
             model->addMesh(mesh);
         }
