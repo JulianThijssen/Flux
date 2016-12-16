@@ -1,7 +1,6 @@
 #include "Application.h"
 
-//#include "../../Editor/SceneConverter.h" // Temp
-//#include "../../Editor/SceneLoader.h" // Temp
+#include "../../Editor/SceneConverter.h"
 #include "SceneLoader.h"
 #include "Path.h"
 
@@ -10,9 +9,7 @@
 
 namespace Flux {
     void Application::startGame() {
-        //Scene scene;
-        //SceneLoader::loadScene(Path("res/Indoors.json"), scene);
-        //SceneConverter::convert(Path("res/Indoors.json"), Path("res/Indoors.scene"));
+        SceneConverter::convert(Path("res/Indoors.json"), Path("res/Indoors.scene"));
         SceneLoader::loadScene(Path("res/Indoors.scene"), currentScene);
         bool created = renderer.create();
         if (!created)
