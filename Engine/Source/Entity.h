@@ -8,8 +8,20 @@
 #include <vector>
 
 namespace Flux {
+    static uint32_t idGenerator = 0;
+
     class Entity {
     public:
+        Entity()
+        :   id(idGenerator++)
+        {
+
+        }
+
+        uint32_t getId() const {
+            return id;
+        }
+
         void addComponent(Component* component) {
             components.push_back(component);
         }
@@ -44,6 +56,7 @@ namespace Flux {
 
         std::string name;
     private:
+        const uint32_t id;
         std::vector<Component*> components;
     };
 }
