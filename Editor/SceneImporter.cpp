@@ -58,26 +58,26 @@ namespace Flux {
                         Transform* childT = new Transform();
                         child->addComponent(childT);
 
-                        AttachedTo* attached = new AttachedTo(e);
+                        AttachedTo* attached = new AttachedTo(e->getId());
                         child->addComponent(attached);
 
                         Mesh* mesh = &model->meshes[i];
                         child->addComponent(mesh);
 
-                        MeshRenderer* meshRenderer = new MeshRenderer();
+                        /*MeshRenderer* meshRenderer = new MeshRenderer();
                         meshRenderer->materialID = mesh->materialName;
-                        child->addComponent(meshRenderer);
+                        child->addComponent(meshRenderer);*/
 
                         scene.addEntity(child);
                     }
                 }
-                if (it.key() == "material") {
-                    std::string id = it.value().get<std::string>();
+                //if (it.key() == "material") {
+                //    std::string id = it.value().get<std::string>();
 
-                    MeshRenderer* meshRenderer = new MeshRenderer();
-                    meshRenderer->materialID = id;
-                    e->addComponent(meshRenderer);
-                }
+                //    MeshRenderer* meshRenderer = new MeshRenderer();
+                //    meshRenderer->materialID = id;
+                //    e->addComponent(meshRenderer);
+                //}
                 if (it.key() == "transform") {
                     Transform* transform = new Transform();
 
@@ -103,11 +103,12 @@ namespace Flux {
             scene.addEntity(e);
         }
 
+        scene.mainCamera = new Entity();
         Transform* camT = new Transform();
         camT->position.set(0, 4, 15);
         camT->rotation.set(0, 0, 0);
-        scene.mainCamera.addComponent(camT);
-        scene.mainCamera.addComponent(new Camera(60, 1024.f/768, 0.1f, 100.f));
+        scene.mainCamera->addComponent(camT);
+        scene.mainCamera->addComponent(new Camera(60, 1024.f/768, 0.1f, 100.f));
 
         Entity* light = new Entity();
         PointLight* point = new PointLight();

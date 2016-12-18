@@ -15,7 +15,7 @@ namespace Flux {
         virtual bool create();
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
-        virtual void renderMesh(Entity* e);
+        virtual void renderMesh(const Scene& scene, Entity* e);
     private:
         Cubemap cubemap;
         IrradianceMap* irradianceMap;

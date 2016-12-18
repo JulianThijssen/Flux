@@ -1,12 +1,10 @@
 #include "Component.h"
 
-#include "Entity.h"
-
 namespace Flux {
     class AttachedTo : public Component {
     public:
-        AttachedTo(Entity* parent) : parent(parent) { }
+        AttachedTo(uint32_t parentId) : parentId(parentId) { }
 
-        Entity* parent;
+        uint32_t parentId;
     };
 }

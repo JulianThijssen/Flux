@@ -19,7 +19,7 @@ namespace Flux {
 
         }
 
-        Entity getMainCamera() const {
+        Entity* getMainCamera() const {
             return mainCamera;
         }
 
@@ -27,10 +27,27 @@ namespace Flux {
             entities.push_back(entity);
         }
 
+        Entity* getEntityById(uint32_t id) const {
+            for (Entity* e : entities) {
+                if (e->getId() == id) {
+                    return e;
+                }
+            }
+            for (Entity* e : entities) {
+                if (e->getId() == id) {
+                    return e;
+                }
+            }
+            if (mainCamera->getId() == id) {
+                return mainCamera;
+            }
+            return nullptr;
+        }
+
         std::vector<Entity*> entities;
         std::vector<Entity*> lights;
 
-        Entity mainCamera;
+        Entity* mainCamera;
     };
 }
 

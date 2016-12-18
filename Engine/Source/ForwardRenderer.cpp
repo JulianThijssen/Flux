@@ -53,12 +53,15 @@ namespace Flux {
     void ForwardRenderer::update(const Scene& scene) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        if (scene.getMainCamera() == nullptr)
+            return;
+
         glViewport(0, 0, 1024, 768);
         shader->bind();
 
-        Transform* ct = scene.getMainCamera().getComponent<Transform>();
+        Transform* ct = scene.getMainCamera()->getComponent<Transform>();
         shader->uniform3f("camPos", ct->position.x, ct->position.y, ct->position.z);
-        scene.getMainCamera().getComponent<Camera>()->loadProjectionMatrix(projMatrix);
+        scene.getMainCamera()->getComponent<Camera>()->loadProjectionMatrix(projMatrix);
         viewMatrix.setIdentity();
         viewMatrix.translate(-ct->position);
         viewMatrix.rotate(-ct->rotation);
@@ -108,13 +111,13 @@ namespace Flux {
             irradianceMap->bind();
             shader->uniform1i("irradianceMap", 2);
 
-            renderMesh(e);
+            renderMesh(scene, e);
 
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
 
-    void ForwardRenderer::renderMesh(Entity* e) {
+    void ForwardRenderer::renderMesh(const Scene& scene, Entity* e) {
         Transform* transform = e->getComponent<Transform>();
         Mesh* mesh = e->getComponent<Mesh>();
         glBindVertexArray(mesh->handle);
@@ -122,11 +125,14 @@ namespace Flux {
         modelMatrix.setIdentity();
 
         if (e->hasComponent<AttachedTo>()) {
-            Entity* parent = e->getComponent<AttachedTo>()->parent;
-            Transform* parentT = parent->getComponent<Transform>();
-            modelMatrix.translate(parentT->position);
-            modelMatrix.rotate(parentT->rotation);
-            modelMatrix.scale(parentT->scale);
+            Entity* parent = scene.getEntityById(e->getComponent<AttachedTo>()->parentId);
+
+            if (parent != nullptr) {
+                Transform* parentT = parent->getComponent<Transform>();
+                modelMatrix.translate(parentT->position);
+                modelMatrix.rotate(parentT->rotation);
+                modelMatrix.scale(parentT->scale);
+            }
         }
 
         modelMatrix.translate(transform->position);

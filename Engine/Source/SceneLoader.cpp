@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "PointLight.h"
+#include "AttachedTo.h"
 
 #include <fstream>
 #include <iostream> // Temp
@@ -80,6 +81,8 @@ namespace Flux {
         for (unsigned int i = 0; i < numEntities; i++) {
             Entity* e = new Entity();
 
+            uint32_t id;
+            inFile.read((char *) &id, sizeof(id));
             unsigned int numComponents;
             inFile.read((char *) &numComponents, sizeof(numComponents));
             
@@ -121,23 +124,64 @@ namespace Flux {
 
                     e->addComponent(mesh);
                 }
+                if (component == 'c') {
+                    // TODO Orthographic camera
+                    float fovy, aspect, zNear, zFar;
+
+                    inFile.read((char *) &fovy, sizeof(fovy));
+                    inFile.read((char *) &aspect, sizeof(aspect));
+                    inFile.read((char *) &zNear, sizeof(zNear));
+                    inFile.read((char *) &zFar, sizeof(zFar));
+
+                    Camera* camera = new Camera(fovy, aspect, zNear, zFar);
+
+                    e->addComponent(camera);
+                }
+                if (component == 'p') {
+                    PointLight* pointLight = new PointLight();
+
+                    float energy;
+                    inFile.read((char *) &energy, sizeof(energy));
+
+                    pointLight->energy = energy;
+
+                    e->addComponent(pointLight);
+                }
+                if (component == 'a') {
+                    uint32_t pid;
+                    inFile.read((char *) &pid, sizeof(pid));
+                    
+                    AttachedTo* attachedTo = new AttachedTo(pid);
+
+                    e->addComponent(attachedTo);
+                }
             }
 
-            scene.addEntity(e);
+            // TODO add main camera id to the scene description
+            if (e->hasComponent<Camera>()) {
+                std::cout << "SETTING MAIN CAMERA" << std::endl;
+                scene.mainCamera = e;
+            }
+            else if (e->hasComponent<PointLight>()) {
+                scene.lights.push_back(e);
+            }
+            else {
+                scene.addEntity(e);
+            }
         }
 
-        Transform* camT = new Transform();
-        camT->position.set(0, 4, 15);
-        camT->rotation.set(0, 0, 0);
-        scene.mainCamera.addComponent(camT);
-        scene.mainCamera.addComponent(new Camera(60, 1024.f / 768, 0.1f, 100.f));
+        //Transform* camT = new Transform();
+        //camT->position.set(0, 4, 15);
+        //camT->rotation.set(0, 0, 0);
+        //scene.mainCamera.addComponent(camT);
+        //scene.mainCamera.addComponent(new Camera(60, 1024.f / 768, 0.1f, 100.f));
 
-        Entity* light = new Entity();
-        PointLight* point = new PointLight();
-        light->addComponent(point);
-        Transform* transform = new Transform();
-        transform->position.set(5, 2, 5);
-        light->addComponent(transform);
-        scene.lights.push_back(light);
+        //Entity* light = new Entity();
+        //PointLight* point = new PointLight();
+        //light->addComponent(point);
+        //Transform* transform = new Transform();
+        //transform->position.set(5, 2, 5);
+        //light->addComponent(transform);
+        //scene.lights.push_back(light);
     }
 }
