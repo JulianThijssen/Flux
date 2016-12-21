@@ -86,19 +86,17 @@ namespace Flux {
             if (!e->hasComponent<Mesh>())
                 continue;
 
-            glActiveTexture(GL_TEXTURE0);
+            shader->uniform1i("material.hasDiffuseMap", 0);
             if (e->hasComponent<MeshRenderer>()) {
                 MeshRenderer* mr = e->getComponent<MeshRenderer>();
-                Material* material = AssetManager::getMaterial(mr->materialID);
+                Material* material = scene.materials[mr->materialID];
 
                 if (material) {
                     if (material->diffuseTex) {
+                        glActiveTexture(GL_TEXTURE0);
                         material->diffuseTex->bind();
                         shader->uniform1i("material.diffuseMap", 0);
                         shader->uniform1i("material.hasDiffuseMap", 1);
-                    }
-                    else {
-                        shader->uniform1i("material.hasDiffuseMap", 0);
                     }
                 }
             }
@@ -136,7 +134,6 @@ namespace Flux {
         }
 
         modelMatrix.translate(transform->position);
-        transform->rotation.y += 0.01f;
         modelMatrix.rotate(transform->rotation);
         modelMatrix.scale(transform->scale);
         shader->uniformMatrix4f("modelMatrix", modelMatrix);

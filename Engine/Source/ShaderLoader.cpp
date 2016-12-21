@@ -36,6 +36,10 @@ namespace Flux {
         glAttachShader(shaderProgram, vertexShader);
         glAttachShader(shaderProgram, fragmentShader);
 
+        glBindAttribLocation(shaderProgram, 0, "position");
+        glBindAttribLocation(shaderProgram, 1, "texCoords");
+        glBindAttribLocation(shaderProgram, 2, "normal");
+
         glLinkProgram(shaderProgram);
 
         checkLinkStatus(vertPath, shaderProgram);
