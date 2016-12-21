@@ -52,7 +52,14 @@ namespace Flux {
             // Store texture coordinates in a buffer
             if (aiMesh->HasTextureCoords(0)) {
                 mesh.texCoords.resize(aiMesh->mNumVertices);
-                memcpy(&mesh.texCoords[0], aiMesh->mTextureCoords[0], aiMesh->mNumVertices * sizeof(aiVector2D));
+                // We want to copy the 0th element from every vertex, since this is strided memory we can't use memcpy
+                for (unsigned int j = 0; j < aiMesh->mNumVertices; j++) {
+                    Vector2f t(aiMesh->mTextureCoords[0][j].x, 1-aiMesh->mTextureCoords[0][j].y);
+                    mesh.texCoords[j] = t;
+                }
+            }
+            else {
+                mesh.texCoords.resize(aiMesh->mNumVertices, Vector2f(0, 0));
             }
 
             // Store normals in a buffer
