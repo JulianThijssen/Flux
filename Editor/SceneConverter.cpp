@@ -1,41 +1,48 @@
 #include "SceneConverter.h"
 
-#include "SceneImporter.h"
+#include "SceneDesc.h"
 
 #include "../Engine/Source/Path.h"
-#include "../Engine/Source/Scene.h"
 
-#include "../Engine/Source/Transform.h"
-#include "../Engine/Source/Mesh.h"
-#include "../Engine/Source/AttachedTo.h"
+#include <Engine/Source/AssetManager.h>
+#include <Engine/Source/Transform.h>
+#include <Engine/Source/Mesh.h>
+#include <Engine/Source/MeshRenderer.h>
+#include <Engine/Source/AttachedTo.h>
 
 #include <fstream>
 #include <iostream> // Temp
 
 namespace Flux {
-    void SceneConverter::convert(Path inputPath, Path outputPath) {
-        Scene scene;
-        SceneImporter::loadScene(inputPath, scene);
-
+    void SceneConverter::convert(const SceneDesc& scene, Path outputPath) {
         std::ofstream outFile;
         outFile.open(outputPath.str().c_str(), ios::out | ios::binary);
 
-        const uint32_t numEntities = (uint32_t)(scene.entities.size() + scene.lights.size() + (scene.mainCamera ? 1 : 0));
+        const uint32_t numMaterials = (uint32_t) scene.materials.size();
+        outFile.write((char *)&numMaterials, sizeof(numMaterials));
+        for (uint32_t i = 0; i < numMaterials; ++i) {
+            writeMaterial(i, scene.materials[i], outFile);
+        }
 
+        const uint32_t numEntities = (uint32_t) scene.entities.size();
         outFile.write((char *) &numEntities, sizeof(numEntities));
-
         for (Entity* e : scene.entities) {
             writeEntity(scene, e, outFile);
         }
-        for (Entity* light : scene.lights) {
-            writeEntity(scene, light, outFile);
-        }
-        writeEntity(scene, scene.mainCamera, outFile);
 
         outFile.close();
     }
 
-    void SceneConverter::writeEntity(const Scene& scene, Entity* e, std::ofstream& out) {
+    void SceneConverter::writeMaterial(const uint32_t id, MaterialDesc* material, std::ofstream& out) {
+        out.write((char *)&id, sizeof(id));
+
+        const uint32_t pathLen = (uint32_t) material->path.length();
+        out.write((char *)&pathLen, sizeof(pathLen));
+
+        out.write(material->path.c_str(), sizeof(char) * pathLen);
+    }
+
+    void SceneConverter::writeEntity(const SceneDesc& scene, Entity* e, std::ofstream& out) {
         const uint32_t id = (uint32_t)e->getId();
         out.write((char *)&id, sizeof(id));
         const uint32_t numComponents = (uint32_t)e->numComponents();
@@ -82,6 +89,12 @@ namespace Flux {
 
             out.write((char *)&numIndices, sizeof(numIndices));
             out.write((char *)&mesh->indices[0], numIndices * sizeof(unsigned int));
+        }
+        if (e->hasComponent<MeshRenderer>()) {
+            out.write("r", sizeof(char));
+            MeshRenderer* mr = e->getComponent<MeshRenderer>();
+
+            out.write((char *)&mr->materialID, sizeof(uint32_t));
         }
         if (e->hasComponent<Camera>()) {
             out.write("c", sizeof(char));

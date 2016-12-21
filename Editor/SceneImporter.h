@@ -4,11 +4,11 @@
 
 namespace Flux {
     class Path;
-    class Scene;
+    class SceneDesc;
 
     class SceneImporter {
     public:
-        static void loadScene(const Path path, Scene& scene);
+        static void loadScene(const Path path, SceneDesc& scene);
     };
 }
 

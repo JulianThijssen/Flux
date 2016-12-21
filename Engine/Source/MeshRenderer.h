@@ -5,12 +5,10 @@
 #include "Component.h"
 #include "Material.h"
 
-#include <string>
-
 namespace Flux {
     class MeshRenderer : public Component {
     public:
-        std::string materialID;
+        uint32_t materialID;
     };
 }
 

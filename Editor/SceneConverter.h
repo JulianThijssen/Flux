@@ -1,14 +1,17 @@
+#include "MaterialDesc.h"
+
 #include <Engine/Source/Entity.h>
 #include <fstream>
 
 namespace Flux {
     class Path;
-    class Scene;
+    class SceneDesc;
 
     class SceneConverter {
     public:
-        static void convert(Path inputPath, Path outputPath);
+        static void convert(const SceneDesc& scene, Path outputPath);
     private:
-        static void writeEntity(const Scene& scene, Entity* e, std::ofstream& out);
+        static void writeMaterial(const uint32_t id, MaterialDesc* material, std::ofstream& out);
+        static void writeEntity(const SceneDesc& scene, Entity* e, std::ofstream& out);
     };
 }

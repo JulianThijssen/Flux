@@ -1,17 +1,16 @@
 #include "SceneImporter.h"
 #include "ModelImporter.h"
 #include "Model.h"
+#include "SceneDesc.h"
+#include "MaterialDesc.h"
 
-#include <Engine/Source/Scene.h>
 #include <Engine/Source/Entity.h>
 #include <Engine/Source/AttachedTo.h>
 #include <Engine/Source/MeshRenderer.h>
 #include <Engine/Source/Path.h>
 #include <Engine/Source/File.h>
 
-#include <Engine/Source/MaterialLoader.h>
 #include <Engine/Source/TextureLoader.h>
-#include <Engine/Source/AssetManager.h>
 
 #include "json.hpp"
 #include <fstream>
@@ -21,32 +20,34 @@
 using json = nlohmann::json;
 
 namespace Flux {
-    void SceneImporter::loadScene(const Path path, Scene& scene) {
+    void SceneImporter::loadScene(const Path path, SceneDesc& scene) {
         String contents = File::loadFile(path.str().c_str());
 
         const char* cont = contents.c_str();
 
         json j3 = json::parse(cont);
 
+        uint32_t matID = 0;
         for (json& element : j3["materials"]) {
             std::string id = element["id"].get<std::string>();
             std::string path = element["path"].get<std::string>();
 
-            Material* material = MaterialLoader::loadMaterial(Path(path));
-            AssetManager::addMaterial(id, material);
+            MaterialDesc* material = new MaterialDesc(path);
+            scene.addMaterial(material);
+
+            matID++;
         }
         for (json& element : j3["entities"]) {
-            std::cout << element.dump() << std::endl;
+            //std::cout << element.dump() << std::endl;
 
             Entity* e = new Entity();
 
+            std::string name = element["name"].get<std::string>();
+            e->name = name;
+
             for (json::iterator it = element["components"][0].begin(); it != element["components"][0].end(); ++it) {
                 std::cout << it.key() << " : " << it.value() << "\n";
-                
-                if (it.key() == "name") {
-                    std::string name = it.value().get<std::string>();
-                    e->name = name;
-                }
+
                 if (it.key() == "model") {
                     std::string path = it.value()["path"].get<std::string>();
 
@@ -103,19 +104,20 @@ namespace Flux {
             scene.addEntity(e);
         }
 
-        scene.mainCamera = new Entity();
+        Entity* mainCamera = new Entity();
         Transform* camT = new Transform();
-        camT->position.set(0, 4, 15);
+        camT->position.set(4, 4, 15);
         camT->rotation.set(0, 0, 0);
-        scene.mainCamera->addComponent(camT);
-        scene.mainCamera->addComponent(new Camera(60, 1024.f/768, 0.1f, 100.f));
+        mainCamera->addComponent(camT);
+        mainCamera->addComponent(new Camera(60, 1024.f/768, 0.1f, 100.f));
+        scene.entities.push_back(mainCamera);
 
         Entity* light = new Entity();
         PointLight* point = new PointLight();
         light->addComponent(point);
         Transform* transform = new Transform();
-        transform->position.set(5, 2, 5);
+        transform->position.set(5, 4, 10);
         light->addComponent(transform);
-        scene.lights.push_back(light);
+        scene.entities.push_back(light);
     }
 }

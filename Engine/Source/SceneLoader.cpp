@@ -1,10 +1,12 @@
 #include "SceneLoader.h"
+#include "MaterialLoader.h"
 
 #include "Path.h"
 #include "Scene.h"
 
 #include "Transform.h"
 #include "Mesh.h"
+#include "MeshRenderer.h"
 #include "Camera.h"
 #include "PointLight.h"
 #include "AttachedTo.h"
@@ -74,11 +76,31 @@ namespace Flux {
 
         inFile.open(path.str().c_str(), ios::in | ios::binary);
 
+        unsigned int numMaterials;
+        inFile.read((char *) &numMaterials, sizeof(numMaterials));
+        std::cout << "NUM MATERIALS: " << numMaterials << std::endl;
+
+        for (unsigned int i = 0; i < numMaterials; ++i) {
+            uint32_t id;
+            inFile.read((char *)&id, sizeof(id));
+
+            uint32_t numChars;
+            inFile.read((char *)&numChars, sizeof(numChars));
+
+            char* path = new char[numChars+1];
+            path[numChars] = 0;
+            inFile.read(path, numChars * sizeof(char));
+
+            Material* mat = MaterialLoader::loadMaterial(Path(path));
+            scene.addMaterial(mat);
+            delete path;
+        }
+
         unsigned int numEntities;
         inFile.read((char *) &numEntities, sizeof(numEntities));
         std::cout << "NUM ENTITIES: " << numEntities << std::endl;
 
-        for (unsigned int i = 0; i < numEntities; i++) {
+        for (unsigned int i = 0; i < numEntities; ++i) {
             Entity* e = new Entity();
 
             uint32_t id;
@@ -123,6 +145,15 @@ namespace Flux {
                     uploadMesh(mesh);
 
                     e->addComponent(mesh);
+                }
+                if (component == 'r') {
+                    uint32_t id;
+                    inFile.read((char *)&id, sizeof(id));
+
+                    MeshRenderer* mr = new MeshRenderer();
+                    mr->materialID = id;
+
+                    e->addComponent(mr);
                 }
                 if (component == 'c') {
                     // TODO Orthographic camera
