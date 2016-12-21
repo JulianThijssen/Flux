@@ -5,8 +5,9 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "Camera.h"
-
 #include "PointLight.h"
+
+#include "Material.h"
 
 #include <vector>
 
@@ -21,6 +22,10 @@ namespace Flux {
 
         Entity* getMainCamera() const {
             return mainCamera;
+        }
+
+        void addMaterial(Material* material) {
+            materials.push_back(material);
         }
 
         void addEntity(Entity* entity) {
@@ -44,6 +49,7 @@ namespace Flux {
             return nullptr;
         }
 
+        std::vector<Material*> materials;
         std::vector<Entity*> entities;
         std::vector<Entity*> lights;
 
