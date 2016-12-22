@@ -27,6 +27,11 @@ namespace Flux {
                 String path = tokens[1];
                 material->diffuseTex = TextureLoader::loadTexture(Path(path));
             }
+            if (key == "NormalTex") {
+                std::cout << tokens[1].c_str() << std::endl;
+                String path = tokens[1];
+                material->normalTex = TextureLoader::loadTexture(Path(path));
+            }
         }
         return material;
     }

@@ -39,6 +39,7 @@ namespace Flux {
         glBindAttribLocation(shaderProgram, 0, "position");
         glBindAttribLocation(shaderProgram, 1, "texCoords");
         glBindAttribLocation(shaderProgram, 2, "normal");
+        glBindAttribLocation(shaderProgram, 3, "tangent");
 
         glLinkProgram(shaderProgram);
 

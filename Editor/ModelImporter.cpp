@@ -4,6 +4,7 @@
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <assimp/cimport.h>
 
 #include <Engine/Source/Log.h>
 #include <Engine/Source/Path.h>
@@ -18,7 +19,7 @@ namespace Flux {
     Model* ModelImporter::loadModel(const Path& path) {
         Assimp::Importer importer;
 
-        unsigned int flags = aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_SortByPType | aiProcess_GenUVCoords;
+        unsigned int flags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_SortByPType | aiProcess_GenUVCoords | aiProcess_CalcTangentSpace;
         const aiScene* scene = importer.ReadFile(path.str(), flags);
 
         if (!scene) {
@@ -34,6 +35,7 @@ namespace Flux {
 
         for (unsigned int i = 0; i < scene.mNumMeshes; i++) {
             aiMesh* aiMesh = scene.mMeshes[i];
+            // TODO make this heap-allocated
             Mesh mesh;
             
             for (unsigned int j = 0; j < aiMesh->mNumFaces; j++) {
@@ -67,11 +69,14 @@ namespace Flux {
                 mesh.normals.resize(aiMesh->mNumVertices);
                 memcpy(&mesh.normals[0], aiMesh->mNormals, aiMesh->mNumVertices * sizeof(aiVector3D));
             }
-
+            
             // Store tangents in a buffer
             if (aiMesh->HasTangentsAndBitangents()) {
                 mesh.tangents.resize(aiMesh->mNumVertices);
                 memcpy(&mesh.tangents[0], aiMesh->mTangents, aiMesh->mNumVertices * sizeof(aiVector3D));
+            }
+            else {
+                mesh.tangents.resize(aiMesh->mNumVertices, Vector3f(0, 0, 0));
             }
 
             aiMaterial* aiMaterial = scene.mMaterials[aiMesh->mMaterialIndex];

@@ -76,6 +76,7 @@ namespace Flux {
             const uint32_t numVertices = (uint32_t)mesh->vertices.size();
             const uint32_t numTexCoords = (uint32_t)mesh->texCoords.size();
             const uint32_t numNormals = (uint32_t)mesh->normals.size();
+            const uint32_t numTangents = (uint32_t)mesh->tangents.size();
             const uint32_t numIndices = (uint32_t)mesh->indices.size();
 
             out.write((char *)&numVertices, sizeof(numVertices));
@@ -86,6 +87,9 @@ namespace Flux {
 
             out.write((char *)&numNormals, sizeof(numNormals));
             out.write((char *)&mesh->normals[0], numNormals * sizeof(Vector3f));
+
+            out.write((char *)&numTangents, sizeof(numTangents));
+            out.write((char *)&mesh->tangents[0], numTangents * sizeof(Vector3f));
 
             out.write((char *)&numIndices, sizeof(numIndices));
             out.write((char *)&mesh->indices[0], numIndices * sizeof(unsigned int));

@@ -28,13 +28,13 @@ namespace Flux {
         GLuint faceVBO;
         glGenBuffers(1, &faceVBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faceVBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh->indices.size(), &mesh->indices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indices.size() * sizeof(unsigned int), &mesh->indices[0], GL_STATIC_DRAW);
 
         // Store vertices in a buffer
         GLuint vertexVBO;
         glGenBuffers(1, &vertexVBO);
         glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->vertices.size() * 3, &mesh->vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh->vertices.size() * sizeof(Vector3f), &mesh->vertices[0], GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(0);
 
@@ -42,7 +42,7 @@ namespace Flux {
         GLuint texCoordVBO;
         glGenBuffers(1, &texCoordVBO);
         glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->texCoords.size() * 2, &mesh->texCoords[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh->texCoords.size() * sizeof(Vector2f), &mesh->texCoords[0], GL_STATIC_DRAW);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(1);
 
@@ -50,17 +50,17 @@ namespace Flux {
         GLuint normalVBO;
         glGenBuffers(1, &normalVBO);
         glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->normals.size() * 3, &mesh->normals[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh->normals.size() * sizeof(Vector3f), &mesh->normals[0], GL_STATIC_DRAW);
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(2);
 
         // Store tangents in a buffer
-        //GLuint tangentVBO;
-        //glGenBuffers(1, &tangentVBO);
-        //glBindBuffer(GL_ARRAY_BUFFER, tangentVBO);
-        //glBufferData(GL_ARRAY_BUFFER, sizeof(float) * aiMesh->mNumVertices * 3, &mesh.tangents[0], GL_STATIC_DRAW);
-        //glVertexAttribPointer(3, 3, GL_FLOAT, false, 0, 0);
-        //glEnableVertexAttribArray(3);
+        GLuint tangentVBO;
+        glGenBuffers(1, &tangentVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, tangentVBO);
+        glBufferData(GL_ARRAY_BUFFER, mesh->tangents.size() * sizeof(Vector3f), &mesh->tangents[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(3);
 
         // Unbind the buffers
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -136,6 +136,11 @@ namespace Flux {
                     inFile.read((char *) &numNormals, sizeof(numNormals));
                     mesh->normals.resize(numNormals);
                     inFile.read((char *) &mesh->normals[0], numNormals * sizeof(Vector3f));
+
+                    unsigned int numTangents;
+                    inFile.read((char *)&numTangents, sizeof(numTangents));
+                    mesh->tangents.resize(numTangents);
+                    inFile.read((char *)&mesh->tangents[0], numTangents * sizeof(Vector3f));
 
                     unsigned int numIndices;
                     inFile.read((char *) &numIndices, sizeof(numIndices));

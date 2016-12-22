@@ -8,6 +8,7 @@ namespace Flux {
     class Material {
     public:
         Texture* diffuseTex;
+        Texture* normalTex;
     };
 }
 

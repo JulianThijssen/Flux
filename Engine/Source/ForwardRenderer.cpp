@@ -87,6 +87,7 @@ namespace Flux {
                 continue;
 
             shader->uniform1i("material.hasDiffuseMap", 0);
+            shader->uniform1i("material.hasNormalMap", 0);
             if (e->hasComponent<MeshRenderer>()) {
                 MeshRenderer* mr = e->getComponent<MeshRenderer>();
                 Material* material = scene.materials[mr->materialID];
@@ -97,6 +98,12 @@ namespace Flux {
                         material->diffuseTex->bind();
                         shader->uniform1i("material.diffuseMap", 0);
                         shader->uniform1i("material.hasDiffuseMap", 1);
+                    }
+                    if (material->normalTex) {
+                        glActiveTexture(GL_TEXTURE3);
+                        material->normalTex->bind();
+                        shader->uniform1i("material.normalMap", 3);
+                        shader->uniform1i("material.hasNormalMap", 1);
                     }
                 }
             }
