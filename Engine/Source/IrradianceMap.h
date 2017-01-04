@@ -13,7 +13,7 @@ namespace Flux {
         IrradianceMap(const Cubemap& environmentMap) : envMap(environmentMap) {}
 
         void generate(const unsigned int width, const unsigned int height) {
-            Shader* shader = ShaderLoader::loadShaderProgram("res/envmap.vert", "res/envmap.frag");
+            Shader* shader = ShaderLoader::loadShaderProgram("res/diffuseIBL.vert", "res/diffuseIBL.frag");
 
             Framebuffer framebuffer;
             framebuffer.bind();
@@ -23,7 +23,7 @@ namespace Flux {
 
             shader->bind();
 
-            createEmpty(width, height);
+            createEmpty(width, height, false);
 
             glActiveTexture(GL_TEXTURE0);
             envMap.bind();
