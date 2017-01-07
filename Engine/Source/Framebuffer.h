@@ -26,8 +26,8 @@ namespace Flux {
             glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture, 0);
         }
 
-        void setCubemap(Cubemap cubemap, GLuint face) {
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, face, cubemap.getHandle(), 0);
+        void setCubemap(Cubemap cubemap, GLuint face, int mipmapLevel) {
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, face, cubemap.getHandle(), mipmapLevel);
         }
 
         void setDrawBuffer(GLuint target) {
