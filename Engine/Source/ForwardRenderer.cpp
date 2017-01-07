@@ -18,7 +18,7 @@
 namespace Flux {
     bool ForwardRenderer::create() {
         try {
-            shader = ShaderLoader::loadShaderProgram("res/basic.vert", "res/basic.frag");
+            shader = ShaderLoader::loadShaderProgram("res/IBL.vert", "res/IBL.frag");
         }
         catch (const ShaderCompilationException& e) {
             Log::error(e.what());
@@ -37,10 +37,16 @@ namespace Flux {
             "res/Materials/Grace_FRONT.png",
             "res/Materials/Grace_BACK.png",
         };
-        cubemap.create(paths);
+        cubemap.create(paths, false);
 
         irradianceMap = new IrradianceMap(cubemap);
-        irradianceMap->generate(32, 32);
+        irradianceMap->generate(32);
+
+        prefilterEnvmap = new PrefilterEnvmap(cubemap);
+        prefilterEnvmap->generate();
+
+        scaleBiasTexture = new ScaleBiasTexture();
+        scaleBiasTexture->generate();
 
         setClearColor(1.0, 0.0, 1.0, 1.0);
         glEnable(GL_DEPTH_TEST);
@@ -88,6 +94,8 @@ namespace Flux {
 
             shader->uniform1i("material.hasDiffuseMap", 0);
             shader->uniform1i("material.hasNormalMap", 0);
+            shader->uniform1i("material.hasMetalMap", 0);
+            shader->uniform1i("material.hasRoughnessMap", 0);
             if (e->hasComponent<MeshRenderer>()) {
                 MeshRenderer* mr = e->getComponent<MeshRenderer>();
                 Material* material = scene.materials[mr->materialID];
@@ -105,6 +113,18 @@ namespace Flux {
                         shader->uniform1i("material.normalMap", 3);
                         shader->uniform1i("material.hasNormalMap", 1);
                     }
+                    if (material->metalTex) {
+                        glActiveTexture(GL_TEXTURE4);
+                        material->metalTex->bind();
+                        shader->uniform1i("material.metalMap", 4);
+                        shader->uniform1i("material.hasMetalMap", 1);
+                    }
+                    if (material->roughnessTex) {
+                        glActiveTexture(GL_TEXTURE5);
+                        material->roughnessTex->bind();
+                        shader->uniform1i("material.roughnessMap", 5);
+                        shader->uniform1i("material.hasRoughnessMap", 1);
+                    }
                 }
             }
 
@@ -115,6 +135,14 @@ namespace Flux {
             glActiveTexture(GL_TEXTURE2);
             irradianceMap->bind();
             shader->uniform1i("irradianceMap", 2);
+
+            glActiveTexture(GL_TEXTURE6);
+            prefilterEnvmap->bind();
+            shader->uniform1i("prefilterEnvmap", 6);
+
+            glActiveTexture(GL_TEXTURE7);
+            scaleBiasTexture->bind();
+            shader->uniform1i("scaleBiasMap", 7);
 
             renderMesh(scene, e);
 
@@ -142,6 +170,7 @@ namespace Flux {
 
         modelMatrix.translate(transform->position);
         modelMatrix.rotate(transform->rotation);
+        transform->rotation.x += 0.01f;
         modelMatrix.scale(transform->scale);
         shader->uniformMatrix4f("modelMatrix", modelMatrix);
 

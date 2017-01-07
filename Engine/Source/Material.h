@@ -9,6 +9,8 @@ namespace Flux {
     public:
         Texture* diffuseTex;
         Texture* normalTex;
+        Texture* metalTex;
+        Texture* roughnessTex;
     };
 }
 

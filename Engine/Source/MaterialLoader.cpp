@@ -32,6 +32,16 @@ namespace Flux {
                 String path = tokens[1];
                 material->normalTex = TextureLoader::loadTexture(Path(path));
             }
+            if (key == "MetalTex") {
+                std::cout << tokens[1].c_str() << std::endl;
+                String path = tokens[1];
+                material->metalTex = TextureLoader::loadTexture(Path(path));
+            }
+            if (key == "RoughnessTex") {
+                std::cout << tokens[1].c_str() << std::endl;
+                String path = tokens[1];
+                material->roughnessTex = TextureLoader::loadTexture(Path(path));
+            }
         }
         return material;
     }

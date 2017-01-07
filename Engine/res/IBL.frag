@@ -1,0 +1,89 @@
+#version 150 core
+
+struct Material {
+    vec3 diffuseColor;
+    
+    sampler2D diffuseMap;
+    sampler2D normalMap;
+    sampler2D metalMap;
+    sampler2D roughnessMap;
+
+    bool hasDiffuseMap;
+    bool hasNormalMap;
+    bool hasMetalMap;
+    bool hasRoughnessMap;
+};
+
+uniform mat4 modelMatrix;
+
+uniform Material material;
+
+uniform samplerCube cubemap;
+uniform samplerCube irradianceMap;
+uniform samplerCube prefilterEnvmap;
+uniform sampler2D scaleBiasMap;
+
+uniform vec3 camPos;
+
+in vec3 pass_position;
+in vec2 pass_texCoords;
+in vec3 pass_normal;
+in vec3 pass_tangent;
+
+out vec4 fragColor;
+
+#define PI 3.14159265
+
+/* Calculates the normal of the fragment using a normal map */
+vec3 calcNormal(vec3 normal, vec3 tangent, vec2 texCoord) {
+    vec3 bitangent = cross(tangent, normal);
+    vec3 mapNormal = texture(material.normalMap, texCoord).rgb * 2 - 1;
+    
+    mat3 TBN = mat3(tangent, bitangent, normal);
+    return normalize(TBN * mapNormal);
+}
+
+vec3 ApproximateSpecularIBL(vec3 SpecularColor, float Roughness, vec3 N, vec3 V)
+{
+    float NdotV = clamp(dot(N, V), 0, 1);
+    vec3 R = reflect(-V, N);
+    
+    vec3 PrefilteredColor = textureLod(prefilterEnvmap, R, Roughness).rgb;
+    vec2 EnvBRDF = texture(scaleBiasMap, vec2(Roughness, NdotV)).rg;
+    
+    return PrefilteredColor * (SpecularColor * EnvBRDF.x + EnvBRDF.y);
+}
+
+void main() {
+    vec3 position = (modelMatrix * (vec4(pass_position, 1))).xyz;
+    vec3 N = pass_normal;
+    vec3 V = normalize(camPos - position);
+
+    if (material.hasNormalMap) {
+        N = calcNormal(N, pass_tangent, pass_texCoords);
+    }
+    N = normalize((modelMatrix * vec4(N, 0))).xyz;
+    
+    vec3 R = normalize(reflect(-V, N));
+
+    float Metalness = 0;
+    if (material.hasMetalMap) {
+        Metalness = texture(material.metalMap, pass_texCoords).r;
+    }
+    
+    float Roughness = 0;
+    if (material.hasRoughnessMap) {
+        Roughness = texture(material.roughnessMap, pass_texCoords).r;
+    }
+    
+    // Base Color
+    vec3 BaseColor = vec3(1, 1, 1);
+    if (material.hasDiffuseMap) {
+        BaseColor = texture(material.diffuseMap, pass_texCoords).rgb;//* (1 - Metalness);
+    }
+    
+    vec3 indirectDiffuse = BaseColor * texture(irradianceMap, R).rgb;
+    vec3 indirectSpecular = ApproximateSpecularIBL(BaseColor, Roughness, N, V);
+
+    fragColor = vec4(indirectDiffuse + indirectSpecular, 1);
+}

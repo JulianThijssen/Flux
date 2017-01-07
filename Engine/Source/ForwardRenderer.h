@@ -6,6 +6,8 @@
 
 #include "Cubemap.h"
 #include "IrradianceMap.h"
+#include "PrefilterEnvmap.h"
+#include "ScaleBiasTexture.h"
 
 namespace Flux {
     class ForwardRenderer : public Renderer {
@@ -19,6 +21,8 @@ namespace Flux {
     private:
         Cubemap cubemap;
         IrradianceMap* irradianceMap;
+        PrefilterEnvmap* prefilterEnvmap;
+        ScaleBiasTexture* scaleBiasTexture;
     };
 }
 

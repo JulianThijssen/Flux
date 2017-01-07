@@ -7,13 +7,15 @@
 #include "Shader.h"
 #include "ShaderLoader.h"
 
+#include <glad/glad.h>
+
 namespace Flux {
     class IrradianceMap : public Cubemap {
     public:
         IrradianceMap(const Cubemap& environmentMap) : envMap(environmentMap) {}
 
-        void generate(const unsigned int width, const unsigned int height) {
-            Shader* shader = ShaderLoader::loadShaderProgram("res/diffuseIBL.vert", "res/diffuseIBL.frag");
+        void generate(const unsigned int textureSize) {
+            Shader* shader = ShaderLoader::loadShaderProgram("res/Quad.vert", "res/diffuseIBL.frag");
 
             Framebuffer framebuffer;
             framebuffer.bind();
@@ -23,17 +25,18 @@ namespace Flux {
 
             shader->bind();
 
-            createEmpty(width, height, false);
+            createEmpty(textureSize, false);
 
             glActiveTexture(GL_TEXTURE0);
             envMap.bind();
-            shader->uniform1i("envmap", 0);
+            shader->uniform1i("EnvMap", 0);
 
-            glViewport(0, 0, width, height);
+            shader->uniform1i("textureSize", envMap.getResolution());
+            glViewport(0, 0, textureSize, textureSize);
 
             for (int i = 0; i < 6; i++) {
-                shader->uniform1i("face", i);
-                framebuffer.setCubemap(*this, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i);
+                shader->uniform1i("Face", i);
+                framebuffer.setCubemap(*this, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0);
                 framebuffer.validate();
 
                 glClear(GL_COLOR_BUFFER_BIT);

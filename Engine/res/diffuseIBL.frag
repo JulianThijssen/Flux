@@ -1,7 +1,9 @@
 #version 150 core
 
-uniform samplerCube envmap;
-uniform int face;
+uniform samplerCube EnvMap;
+uniform int Face;
+
+uniform int textureSize;
 
 in vec3 pass_position;
 in vec2 pass_texCoords;
@@ -18,28 +20,27 @@ void main() {
         mat3(vec3(-1, 0, 0), vec3(0, 1, 0), vec3(0, 0, -1)) // Y 180
     );
 
-    int width = 256;
-    int height = 256;
+    float halfRes = textureSize / 2.0;
     
-    vec3 normal = normalize(vec3(pass_texCoords * 2 - 1, 1));
-    normal = rots[face] * normal;
-    vec3 color = vec3(0, 0, 0);
-    float div = 0;
+    vec3 N = normalize(vec3(pass_texCoords * 2 - 1, 1));
+    N = rots[Face] * N;
+    vec3 Color = vec3(0, 0, 0);
+    float TotalWeight = 0;
     
     for (int i = 0; i < 6; i++) {
         mat3 rot = rots[i];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                vec3 envCoords = vec3((x-128)/256.0, (y-128)/256.0, 1);
+        for (int x = 0; x < textureSize; x++) {
+            for (int y = 0; y < textureSize; y++) {
+                vec3 envCoords = vec3((x-halfRes)/textureSize, (y-halfRes)/textureSize, 1);
                 vec3 dir = normalize(envCoords);
                 dir = rot * dir;
-                color += texture(envmap, dir).rgb * max(dot(normal, dir), 0);
-                div += max(dot(normal, dir), 0);
+                Color += texture(EnvMap, dir).rgb * max(dot(N, dir), 0);
+                TotalWeight += max(dot(N, dir), 0);
             }
         }
     }
     
-    color /= div;
+    Color /= TotalWeight;
     
-    fragColor = vec4(color, 1);
+    fragColor = vec4(Color, 1);
 }

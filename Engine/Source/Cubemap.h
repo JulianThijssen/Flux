@@ -7,6 +7,7 @@
 #include "stb_image.h"
 
 #include <glad/glad.h>
+#include <cassert>
 
 namespace Flux {
     class Cubemap {
@@ -20,7 +21,9 @@ namespace Flux {
             for (int i = 0; i < 6; i++) {
                 int width, height, bpp;
                 unsigned char* data = stbi_load(paths[i], &width, &height, &bpp, STBI_rgb_alpha);
+                assert(width == height);
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                resolution = width;
             }
 
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -40,12 +43,14 @@ namespace Flux {
             release();
         }
 
-        void createEmpty(const unsigned int width, const unsigned int height, bool mipmaps) {
+        void createEmpty(const unsigned int resolution, bool mipmaps) {
+            this->resolution = resolution;
+
             glGenTextures(1, &handle);
             bind();
 
             for (int i = 0; i < 6; i++) {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, resolution, resolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
             }
 
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -53,6 +58,8 @@ namespace Flux {
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
             if (mipmaps) {
+                glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BASE_LEVEL, 0);
+                glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, 5);
                 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
                 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
                 glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
@@ -71,6 +78,10 @@ namespace Flux {
 
         void release() const {
             glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        }
+
+        unsigned int getResolution() const {
+            return resolution;
         }
 
         GLuint getHandle() {

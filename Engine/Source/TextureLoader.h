@@ -6,7 +6,6 @@ namespace Flux {
     class TextureLoader {
     public:
         static Texture* loadTexture(Path path);
-    private:
         static Texture* create(const int width, const int height, const int bpp, const unsigned char* data);
     };
 }
