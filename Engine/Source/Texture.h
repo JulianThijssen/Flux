@@ -16,7 +16,7 @@ namespace Flux {
         void release() {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-    private:
+    protected:
         GLuint handle;
     };
 }
