@@ -4,6 +4,26 @@ Welcome to the Flux Rendering Engine repository. This application is meant to be
 
 ![alt text](http://i.imgur.com/j8QfOAH.jpg "Latest screenshot")
 
+## Technology
+### Implemented
+ - Cook-Torrance BRDF
+ - Irradiance mapping
+ - Prefiltered environment maps + BRDFintegration map
+ - Normal mapping
+ - Skybox
+### Planned
+ - Tone mapping
+ - Gamma Correction
+ - Fog
+ - Spherical Harmonics
+ - Crepuscular rays
+ - HDR
+ - SSAO
+ - Shadow mapping
+ - Omni-directional shadow mapping
+ - Deferred Rendering
+ - Light probes
+
 ## Building
 ### Compilation
 
@@ -16,4 +36,4 @@ Engine
  - GLFW 3.2.1
 
 ## License
-The source code and auxilliary files fall under a GPL License, which you can read about in LICENSE.md.
+The source code and auxiliary files fall under a GPL License, which you can read about in LICENSE.md.
