@@ -5,9 +5,7 @@
 #include "Renderer.h"
 
 #include "Cubemap.h"
-#include "IrradianceMap.h"
-#include "PrefilterEnvmap.h"
-#include "ScaleBiasTexture.h"
+#include "Renderer/ImageBasedRendering.h"
 
 namespace Flux {
     class ForwardRenderer : public Renderer {

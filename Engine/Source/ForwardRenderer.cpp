@@ -12,6 +12,7 @@
 
 #include "Exceptions/ShaderCompilationException.h"
 #include "Exceptions/ShaderLinkException.h"
+#include "Log.h"
 
 #include <iostream>
 
