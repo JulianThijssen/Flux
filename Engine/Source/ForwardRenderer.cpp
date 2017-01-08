@@ -19,7 +19,8 @@
 namespace Flux {
     bool ForwardRenderer::create() {
         try {
-            shader = ShaderLoader::loadShaderProgram("res/IBL.vert", "res/IBL.frag");
+            lightShader = ShaderLoader::loadShaderProgram("res/IBL.vert", "res/IBL.frag");
+            skyboxShader = ShaderLoader::loadShaderProgram("res/skybox.vert", "res/skybox.frag");
         }
         catch (const ShaderCompilationException& e) {
             Log::error(e.what());
@@ -38,12 +39,12 @@ namespace Flux {
             "res/Materials/Grace_FRONT.png",
             "res/Materials/Grace_BACK.png",
         };
-        cubemap.create(paths, false);
+        skybox = new Skybox(paths);
 
-        irradianceMap = new IrradianceMap(cubemap);
+        irradianceMap = new IrradianceMap(*skybox);
         irradianceMap->generate(32);
 
-        prefilterEnvmap = new PrefilterEnvmap(cubemap);
+        prefilterEnvmap = new PrefilterEnvmap(*skybox);
         prefilterEnvmap->generate();
 
         scaleBiasTexture = new ScaleBiasTexture();
@@ -64,6 +65,7 @@ namespace Flux {
             return;
 
         glViewport(0, 0, 1024, 768);
+        shader = lightShader;
         shader->bind();
 
         Transform* ct = scene.getMainCamera()->getComponent<Transform>();
@@ -85,7 +87,7 @@ namespace Flux {
             renderScene(scene);
         }
 
-        //shader->release();
+        renderSkybox(scene);
     }
 
     void ForwardRenderer::renderScene(const Scene& scene) {
@@ -129,9 +131,9 @@ namespace Flux {
                 }
             }
 
-            glActiveTexture(GL_TEXTURE1);
-            cubemap.bind();
-            shader->uniform1i("cubemap", 1);
+            //glActiveTexture(GL_TEXTURE1);
+            //cubemap.bind();
+            //shader->uniform1i("cubemap", 1);
 
             glActiveTexture(GL_TEXTURE2);
             irradianceMap->bind();
@@ -154,7 +156,6 @@ namespace Flux {
     void ForwardRenderer::renderMesh(const Scene& scene, Entity* e) {
         Transform* transform = e->getComponent<Transform>();
         Mesh* mesh = e->getComponent<Mesh>();
-        glBindVertexArray(mesh->handle);
 
         modelMatrix.setIdentity();
 
@@ -175,6 +176,20 @@ namespace Flux {
         modelMatrix.scale(transform->scale);
         shader->uniformMatrix4f("modelMatrix", modelMatrix);
 
+        glBindVertexArray(mesh->handle);
         glDrawArrays(GL_TRIANGLES, 0, (GLsizei) mesh->indices.size());
+    }
+
+    void ForwardRenderer::renderSkybox(const Scene& scene) {
+        shader = skyboxShader;
+        shader->bind();
+
+        shader->uniformMatrix4f("projMatrix", projMatrix);
+
+        glActiveTexture(GL_TEXTURE0);
+        skybox->bind();
+        shader->uniform1i("skybox", 0);
+
+        skybox->render();
     }
 }

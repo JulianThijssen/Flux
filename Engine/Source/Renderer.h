@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Matrix4f.h"
 #include "Scene.h"
+#include "Skybox.h"
 
 namespace Flux {
     class Renderer {
@@ -30,6 +31,8 @@ namespace Flux {
         Matrix4f modelMatrix;
 
         Shader* shader;
+
+        Skybox* skybox;
     };
 }
 

@@ -2,6 +2,7 @@
 #ifndef IMAGE_BASED_RENDERING_H
 #define IMAGE_BASED_RENDERING_H
 
+#include <Engine/Source/Skybox.h>
 #include <Engine/Source/Cubemap.h>
 #include <Engine/Source/Texture.h>
 
@@ -10,7 +11,7 @@ namespace Flux
     class IrradianceMap : public Cubemap
     {
     public:
-        IrradianceMap(const Cubemap& environmentMap) : envMap(environmentMap) {}
+        IrradianceMap(const Skybox& environmentMap) : envMap(environmentMap) {}
 
         void generate(const unsigned int textureSize);
     private:
@@ -20,7 +21,7 @@ namespace Flux
     class PrefilterEnvmap : public Cubemap
     {
     public:
-        PrefilterEnvmap(const Cubemap& environmentMap) : envMap(environmentMap) {}
+        PrefilterEnvmap(const Skybox& environmentMap) : envMap(environmentMap) {}
 
         void generate();
     private:

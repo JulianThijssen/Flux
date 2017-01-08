@@ -16,8 +16,11 @@ namespace Flux {
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
         virtual void renderMesh(const Scene& scene, Entity* e);
+        void renderSkybox(const Scene& scene);
     private:
-        Cubemap cubemap;
+        Shader* lightShader;
+        Shader* skyboxShader;
+
         IrradianceMap* irradianceMap;
         PrefilterEnvmap* prefilterEnvmap;
         ScaleBiasTexture* scaleBiasTexture;
