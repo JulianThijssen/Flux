@@ -11,6 +11,7 @@ Welcome to the Flux Rendering Engine repository. This application is meant to be
  - Prefiltered environment maps + BRDFintegration map
  - Normal mapping
  - Skybox
+
 ### Planned
  - Tone mapping
  - Gamma Correction
