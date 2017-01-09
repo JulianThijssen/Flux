@@ -18,7 +18,6 @@ uniform mat4 modelMatrix;
 
 uniform Material material;
 
-uniform samplerCube cubemap;
 uniform samplerCube irradianceMap;
 uniform samplerCube prefilterEnvmap;
 uniform sampler2D scaleBiasMap;
@@ -48,7 +47,7 @@ vec3 ApproximateSpecularIBL(vec3 SpecularColor, float Roughness, vec3 N, vec3 V)
     float NdotV = clamp(dot(N, V), 0, 1);
     vec3 R = reflect(-V, N);
     
-    vec3 PrefilteredColor = textureLod(prefilterEnvmap, R, Roughness).rgb;
+    vec3 PrefilteredColor = textureLod(prefilterEnvmap, R, Roughness * 5).rgb;
     vec2 EnvBRDF = texture(scaleBiasMap, vec2(Roughness, NdotV)).rg;
     
     return PrefilteredColor * (SpecularColor * EnvBRDF.x + EnvBRDF.y);
@@ -79,11 +78,14 @@ void main() {
     // Base Color
     vec3 BaseColor = vec3(1, 1, 1);
     if (material.hasDiffuseMap) {
-        BaseColor = texture(material.diffuseMap, pass_texCoords).rgb;//* (1 - Metalness);
+        BaseColor = texture(material.diffuseMap, pass_texCoords).rgb;
     }
     
-    vec3 indirectDiffuse = BaseColor * texture(irradianceMap, R).rgb;
-    vec3 indirectSpecular = ApproximateSpecularIBL(BaseColor, Roughness, N, V);
+    vec3 DiffuseColor = BaseColor * (1 - Metalness);
+    vec3 SpecularColor = mix(vec3(0.04), BaseColor, Metalness);
+    
+    vec3 indirectDiffuse = DiffuseColor * texture(irradianceMap, R).rgb;
+    vec3 indirectSpecular = ApproximateSpecularIBL(SpecularColor, Roughness, N, V);
 
-    fragColor = vec4(indirectDiffuse + indirectSpecular, 1);
+    fragColor = vec4((indirectDiffuse + indirectSpecular)*2, 1);
 }
