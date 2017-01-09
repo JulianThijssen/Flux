@@ -27,15 +27,12 @@ namespace Flux {
 
         json j3 = json::parse(cont);
 
-        uint32_t matID = 0;
         for (json& element : j3["materials"]) {
-            std::string id = element["id"].get<std::string>();
+            std::string name = element["id"].get<std::string>();
             std::string path = element["path"].get<std::string>();
 
-            MaterialDesc* material = new MaterialDesc(path);
+            MaterialDesc* material = new MaterialDesc(name, path);
             scene.addMaterial(material);
-
-            matID++;
         }
         for (json& element : j3["entities"]) {
             //std::cout << element.dump() << std::endl;
@@ -45,9 +42,26 @@ namespace Flux {
             std::string name = element["name"].get<std::string>();
             e->name = name;
 
+            MeshRenderer* meshRenderer = nullptr;
             for (json::iterator it = element["components"][0].begin(); it != element["components"][0].end(); ++it) {
                 std::cout << it.key() << " : " << it.value() << "\n";
 
+                if (it.key() == "material") {
+                    std::string name = it.value().get<std::string>();
+
+                    int id = 0;
+                    for (int i = 0; i < scene.materials.size(); i++) {
+                        MaterialDesc* desc = scene.materials[i];
+
+                        if (name == desc->name) {
+                            id = i;
+                            break;
+                        }
+                    }
+
+                    meshRenderer = new MeshRenderer();
+                    meshRenderer->materialID = id;
+                }
                 if (it.key() == "model") {
                     std::string path = it.value()["path"].get<std::string>();
 
@@ -65,20 +79,13 @@ namespace Flux {
                         Mesh* mesh = &model->meshes[i];
                         child->addComponent(mesh);
 
-                        /*MeshRenderer* meshRenderer = new MeshRenderer();
-                        meshRenderer->materialID = mesh->materialName;
-                        child->addComponent(meshRenderer);*/
+                        if (meshRenderer != nullptr) {
+                            child->addComponent(meshRenderer);
+                        }
 
                         scene.addEntity(child);
                     }
                 }
-                //if (it.key() == "material") {
-                //    std::string id = it.value().get<std::string>();
-
-                //    MeshRenderer* meshRenderer = new MeshRenderer();
-                //    meshRenderer->materialID = id;
-                //    e->addComponent(meshRenderer);
-                //}
                 if (it.key() == "transform") {
                     Transform* transform = new Transform();
 
@@ -106,7 +113,7 @@ namespace Flux {
 
         Entity* mainCamera = new Entity();
         Transform* camT = new Transform();
-        camT->position.set(4, 4, 15);
+        camT->position.set(4, 4, 12);
         camT->rotation.set(0, 0, 0);
         mainCamera->addComponent(camT);
         mainCamera->addComponent(new Camera(60, 1024.f/768, 0.1f, 100.f));

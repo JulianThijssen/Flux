@@ -4,8 +4,6 @@
 #include <Editor/SceneImporter.h>
 #include <Editor/SceneDesc.h>
 
-#include <Engine/Source/MeshRenderer.h> // Temp
-
 #include "SceneLoader.h"
 #include "Path.h"
 
@@ -17,10 +15,6 @@ namespace Flux {
         SceneDesc scene;
         SceneImporter::loadScene(Path("res/Indoors.json"), scene);
 
-        MeshRenderer* mr = new MeshRenderer();
-        mr->materialID = 12;
-        scene.entities[4]->addComponent(mr);
-        
         SceneConverter::convert(scene, Path("res/Indoors.scene"));
         SceneLoader::loadScene(Path("res/Indoors.scene"), currentScene);
         bool created = renderer.create();

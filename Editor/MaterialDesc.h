@@ -7,12 +7,14 @@
 namespace Flux {
     class MaterialDesc {
     public:
-        MaterialDesc(std::string path)
-        : path(path)
+        MaterialDesc(std::string name, std::string path)
+        :   name(name)
+        ,   path(path)
         {
 
         }
 
+        std::string name;
         std::string path;
     };
 }
