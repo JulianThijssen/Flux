@@ -8,6 +8,14 @@
 #include "Skybox.h"
 
 namespace Flux {
+    const int DIFFUSE_UNIT = 0;
+    const int NORMAL_UNIT = 1;
+    const int ROUGHNESS_UNIT = 2;
+    const int METALNESS_UNIT = 3;
+    const int IRRADIANCE_UNIT = 4;
+    const int PREFILTER_UNIT = 5;
+    const int SCALEBIAS_UNIT = 6;
+
     class Renderer {
     public:
         Renderer() : 

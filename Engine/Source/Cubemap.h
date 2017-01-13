@@ -72,6 +72,10 @@ namespace Flux {
             release();
         }
 
+        void bind() const {
+            glBindTexture(GL_TEXTURE_CUBE_MAP, handle);
+        }
+
         void bind(const unsigned int textureUnit) const {
             glActiveTexture(GL_TEXTURE0 + textureUnit);
             glBindTexture(GL_TEXTURE_CUBE_MAP, handle);

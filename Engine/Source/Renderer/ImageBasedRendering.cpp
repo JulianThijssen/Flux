@@ -4,7 +4,6 @@
 #include <Engine/Source/Shader.h>
 #include <Engine/Source/ShaderLoader.h>
 
-
 #include <Engine/Source/Exceptions/ShaderCompilationException.h>
 #include <Engine/Source/Exceptions/ShaderLinkException.h>
 
@@ -151,5 +150,16 @@ namespace Flux
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         framebuffer.release();
+    }
+
+    void IblSceneInfo::PrecomputeEnvironmentData(const Skybox& skybox) {
+        irradianceMap = new IrradianceMap(skybox);
+        irradianceMap->generate(32);
+
+        prefilterEnvmap = new PrefilterEnvmap(skybox);
+        prefilterEnvmap->generate();
+
+        scaleBiasTexture = new ScaleBiasTexture();
+        scaleBiasTexture->generate();
     }
 }

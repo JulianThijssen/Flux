@@ -35,6 +35,16 @@ namespace Flux
 
         void generate();
     };
+
+    class IblSceneInfo
+    {
+    public:
+        void PrecomputeEnvironmentData(const Skybox& skybox);
+
+        IrradianceMap* irradianceMap;
+        PrefilterEnvmap* prefilterEnvmap;
+        ScaleBiasTexture* scaleBiasTexture;
+    };
 }
 
 #endif /* IMAGE_BASED_RENDERING_H */

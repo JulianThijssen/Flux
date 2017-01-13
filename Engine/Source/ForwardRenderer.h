@@ -21,9 +21,7 @@ namespace Flux {
         Shader* lightShader;
         Shader* skyboxShader;
 
-        IrradianceMap* irradianceMap;
-        PrefilterEnvmap* prefilterEnvmap;
-        ScaleBiasTexture* scaleBiasTexture;
+        IblSceneInfo iblSceneInfo;
     };
 }
 

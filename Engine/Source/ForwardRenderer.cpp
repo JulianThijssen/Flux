@@ -28,14 +28,7 @@ namespace Flux {
         };
         skybox = new Skybox(paths);
 
-        irradianceMap = new IrradianceMap(*skybox);
-        irradianceMap->generate(32);
-
-        prefilterEnvmap = new PrefilterEnvmap(*skybox);
-        prefilterEnvmap->generate();
-
-        scaleBiasTexture = new ScaleBiasTexture();
-        scaleBiasTexture->generate();
+        iblSceneInfo.PrecomputeEnvironmentData(*skybox);
 
         setClearColor(1.0, 0.0, 1.0, 1.0);
         glEnable(GL_DEPTH_TEST);
@@ -92,47 +85,36 @@ namespace Flux {
 
                 if (material) {
                     if (material->diffuseTex) {
-                        glActiveTexture(GL_TEXTURE0);
-                        material->diffuseTex->bind();
-                        shader->uniform1i("material.diffuseMap", 0);
+                        material->diffuseTex->bind(DIFFUSE_UNIT);
+                        shader->uniform1i("material.diffuseMap", DIFFUSE_UNIT);
                         shader->uniform1i("material.hasDiffuseMap", 1);
                     }
                     if (material->normalTex) {
-                        glActiveTexture(GL_TEXTURE3);
-                        material->normalTex->bind();
-                        shader->uniform1i("material.normalMap", 3);
+                        material->normalTex->bind(NORMAL_UNIT);
+                        shader->uniform1i("material.normalMap", NORMAL_UNIT);
                         shader->uniform1i("material.hasNormalMap", 1);
                     }
                     if (material->metalTex) {
-                        glActiveTexture(GL_TEXTURE4);
-                        material->metalTex->bind();
-                        shader->uniform1i("material.metalMap", 4);
+                        material->metalTex->bind(METALNESS_UNIT);
+                        shader->uniform1i("material.metalMap", METALNESS_UNIT);
                         shader->uniform1i("material.hasMetalMap", 1);
                     }
                     if (material->roughnessTex) {
-                        glActiveTexture(GL_TEXTURE5);
-                        material->roughnessTex->bind();
-                        shader->uniform1i("material.roughnessMap", 5);
+                        material->roughnessTex->bind(ROUGHNESS_UNIT);
+                        shader->uniform1i("material.roughnessMap", ROUGHNESS_UNIT);
                         shader->uniform1i("material.hasRoughnessMap", 1);
                     }
                 }
             }
+            
+            iblSceneInfo.irradianceMap->bind(IRRADIANCE_UNIT);
+            shader->uniform1i("irradianceMap", IRRADIANCE_UNIT);
 
-            //glActiveTexture(GL_TEXTURE1);
-            //cubemap.bind();
-            //shader->uniform1i("cubemap", 1);
+            iblSceneInfo.prefilterEnvmap->bind(PREFILTER_UNIT);
+            shader->uniform1i("prefilterEnvmap", PREFILTER_UNIT);
 
-            glActiveTexture(GL_TEXTURE2);
-            irradianceMap->bind();
-            shader->uniform1i("irradianceMap", 2);
-
-            glActiveTexture(GL_TEXTURE6);
-            prefilterEnvmap->bind();
-            shader->uniform1i("prefilterEnvmap", 6);
-
-            glActiveTexture(GL_TEXTURE7);
-            scaleBiasTexture->bind();
-            shader->uniform1i("scaleBiasMap", 7);
+            iblSceneInfo.scaleBiasTexture->bind(SCALEBIAS_UNIT);
+            shader->uniform1i("scaleBiasMap", SCALEBIAS_UNIT);
 
             renderMesh(scene, e);
 
@@ -173,8 +155,7 @@ namespace Flux {
 
         shader->uniformMatrix4f("projMatrix", projMatrix);
 
-        glActiveTexture(GL_TEXTURE0);
-        skybox->bind();
+        skybox->bind(DIFFUSE_UNIT);
         shader->uniform1i("skybox", 0);
 
         skybox->render();
