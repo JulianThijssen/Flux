@@ -8,6 +8,7 @@
 #include <string>
 
 namespace Flux {
+    class Vector3f;
     class Matrix4f;
 
     class Shader {
@@ -22,6 +23,7 @@ namespace Flux {
         void uniform1f(const char* name, float value);
         void uniform2f(const char* name, float v0, float v1);
         void uniform3f(const char* name, float v0, float v1, float v2);
+        void uniform3f(const char* name, Vector3f v);
         void uniformMatrix4f(const char* name, Matrix4f& m);
 
         static Shader* fromFile(std::string vertPath, std::string fragPath);

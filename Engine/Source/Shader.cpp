@@ -1,5 +1,6 @@
 #include "Shader.h"
 
+#include "Vector3f.h"
 #include "Matrix4f.h"
 
 #include "ShaderLoader.h"
@@ -42,6 +43,10 @@ namespace Flux {
 
     void Shader::uniform3f(const char* name, float v0, float v1, float v2) {
         glUniform3f(location(name), v0, v1, v2);
+    }
+
+    void Shader::uniform3f(const char* name, Vector3f v) {
+        glUniform3f(location(name), v.x, v.y, v.z);
     }
 
     void Shader::uniformMatrix4f(const char* name, Matrix4f& m) {
