@@ -23,6 +23,8 @@ namespace Flux {
         void uniform2f(const char* name, float v0, float v1);
         void uniform3f(const char* name, float v0, float v1, float v2);
         void uniformMatrix4f(const char* name, Matrix4f& m);
+
+        static Shader* fromFile(std::string vertPath, std::string fragPath);
     private:
         int location(const char* uniform);
 

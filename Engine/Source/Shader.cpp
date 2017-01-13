@@ -2,6 +2,11 @@
 
 #include "Matrix4f.h"
 
+#include "ShaderLoader.h"
+#include "Exceptions/ShaderCompilationException.h"
+#include "Exceptions/ShaderLinkException.h"
+#include "Log.h"
+
 namespace Flux {
     Shader::Shader(GLuint handle) {
         this->handle = handle;
@@ -41,6 +46,21 @@ namespace Flux {
 
     void Shader::uniformMatrix4f(const char* name, Matrix4f& m) {
         glUniformMatrix4fv(location(name), 1, false, m.toArray());
+    }
+
+    Shader* Shader::fromFile(std::string vertPath, std::string fragPath) {
+        Shader* shader;
+        try {
+            shader = ShaderLoader::loadShaderProgram(vertPath, fragPath);
+        }
+        catch (const ShaderCompilationException& e) {
+            Log::error(e.what());
+        }
+        catch (const ShaderLinkException& e) {
+            Log::error(e.what());
+        }
+
+        return shader;
     }
 
     int Shader::location(const char* name) {

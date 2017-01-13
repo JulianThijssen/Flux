@@ -2,35 +2,22 @@
 
 #include <glad/glad.h>
 
-#include "ShaderLoader.h"
-
 #include "Transform.h"
 #include "Camera.h"
 #include "AttachedTo.h"
 #include "MeshRenderer.h"
 #include "AssetManager.h"
 
-#include "Exceptions/ShaderCompilationException.h"
-#include "Exceptions/ShaderLinkException.h"
-#include "Log.h"
-
 #include <iostream>
 
 namespace Flux {
     bool ForwardRenderer::create() {
-        try {
-            lightShader = ShaderLoader::loadShaderProgram("res/IBL.vert", "res/IBL.frag");
-            skyboxShader = ShaderLoader::loadShaderProgram("res/skybox.vert", "res/skybox.frag");
-        }
-        catch (const ShaderCompilationException& e) {
-            Log::error(e.what());
+        lightShader = Shader::fromFile("res/IBL.vert", "res/IBL.frag");
+        skyboxShader = Shader::fromFile("res/skybox.vert", "res/skybox.frag");
+        if (lightShader == nullptr || skyboxShader == nullptr) {
             return false;
         }
-        catch (const ShaderLinkException& e) {
-            Log::error(e.what());
-            return false;
-        }
-        
+
         const char* paths[] = {
             "res/Materials/Grace_RIGHT.png",
             "res/Materials/Grace_LEFT.png",

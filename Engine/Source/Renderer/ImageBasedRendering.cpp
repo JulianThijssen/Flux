@@ -14,7 +14,7 @@ namespace Flux
 {
     void IrradianceMap::generate(const unsigned int textureSize)
     {
-        Shader* shader = ShaderLoader::loadShaderProgram("res/Quad.vert", "res/diffuseIBL.frag");
+        Shader* shader = Shader::fromFile("res/Quad.vert", "res/diffuseIBL.frag");
 
         Framebuffer framebuffer;
         framebuffer.bind();
@@ -51,7 +51,7 @@ namespace Flux
         Shader* shader;
         try
         {
-            shader = ShaderLoader::loadShaderProgram("res/Quad.vert", "res/PrefilterEnvmap.frag");
+            shader = Shader::fromFile("res/Quad.vert", "res/PrefilterEnvmap.frag");
         }
         catch (const ShaderCompilationException& e)
         {
@@ -122,7 +122,7 @@ namespace Flux
         Shader* shader;
         try
         {
-            shader = ShaderLoader::loadShaderProgram("res/Quad.vert", "res/BRDFintegration.frag");
+            shader = Shader::fromFile("res/Quad.vert", "res/BRDFintegration.frag");
         }
         catch (const ShaderCompilationException& e)
         {
