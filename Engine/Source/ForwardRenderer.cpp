@@ -48,15 +48,7 @@ namespace Flux {
         shader = lightShader;
         shader->bind();
 
-        Transform* ct = scene.getMainCamera()->getComponent<Transform>();
-        shader->uniform3f("camPos", ct->position);
-        scene.getMainCamera()->getComponent<Camera>()->loadProjectionMatrix(projMatrix);
-        viewMatrix.setIdentity();
-        viewMatrix.translate(-ct->position);
-        viewMatrix.rotate(-ct->rotation);
-
-        shader->uniformMatrix4f("projMatrix", projMatrix);
-        shader->uniformMatrix4f("viewMatrix", viewMatrix);
+        setCamera(*scene.getMainCamera());
 
         for (Entity* light : scene.lights) {
             PointLight* point = light->getComponent<PointLight>();

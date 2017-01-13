@@ -32,6 +32,7 @@ namespace Flux {
         virtual void renderMesh(const Scene& scene, Entity* entity) = 0;
 
         void setClearColor(float r, float g, float b, float a);
+        void setCamera(Entity& camera);
     protected:
         Vector3f clearColor;
 
