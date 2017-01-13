@@ -9,11 +9,12 @@ namespace Flux {
     public:
         Texture(GLuint handle) : handle(handle) { }
 
-        void bind() {
+        void bind(const unsigned int textureUnit) const {
+            glActiveTexture(GL_TEXTURE0 + textureUnit);
             glBindTexture(GL_TEXTURE_2D, handle);
         }
 
-        void release() {
+        void release() const {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     protected:
