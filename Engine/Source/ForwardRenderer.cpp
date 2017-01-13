@@ -88,14 +88,14 @@ namespace Flux {
                 }
             }
             
-            iblSceneInfo.irradianceMap->bind(IRRADIANCE_UNIT);
-            shader->uniform1i("irradianceMap", IRRADIANCE_UNIT);
+            iblSceneInfo.irradianceMap->bind(TEX_UNIT_IRRADIANCE);
+            shader->uniform1i("irradianceMap", TEX_UNIT_IRRADIANCE);
 
-            iblSceneInfo.prefilterEnvmap->bind(PREFILTER_UNIT);
-            shader->uniform1i("prefilterEnvmap", PREFILTER_UNIT);
+            iblSceneInfo.prefilterEnvmap->bind(TEX_UNIT_PREFILTER);
+            shader->uniform1i("prefilterEnvmap", TEX_UNIT_PREFILTER);
 
-            iblSceneInfo.scaleBiasTexture->bind(SCALEBIAS_UNIT);
-            shader->uniform1i("scaleBiasMap", SCALEBIAS_UNIT);
+            iblSceneInfo.scaleBiasTexture->bind(TEX_UNIT_SCALEBIAS);
+            shader->uniform1i("scaleBiasMap", TEX_UNIT_SCALEBIAS);
 
             renderMesh(scene, e);
 
@@ -105,23 +105,23 @@ namespace Flux {
 
     void ForwardRenderer::uploadMaterial(const Material& material) {
         if (material.diffuseTex) {
-            material.diffuseTex->bind(DIFFUSE_UNIT);
-            shader->uniform1i("material.diffuseMap", DIFFUSE_UNIT);
+            material.diffuseTex->bind(TEX_UNIT_DIFFUSE);
+            shader->uniform1i("material.diffuseMap", TEX_UNIT_DIFFUSE);
             shader->uniform1i("material.hasDiffuseMap", 1);
         }
         if (material.normalTex) {
-            material.normalTex->bind(NORMAL_UNIT);
-            shader->uniform1i("material.normalMap", NORMAL_UNIT);
+            material.normalTex->bind(TEX_UNIT_NORMAL);
+            shader->uniform1i("material.normalMap", TEX_UNIT_NORMAL);
             shader->uniform1i("material.hasNormalMap", 1);
         }
         if (material.metalTex) {
-            material.metalTex->bind(METALNESS_UNIT);
-            shader->uniform1i("material.metalMap", METALNESS_UNIT);
+            material.metalTex->bind(TEX_UNIT_METALNESS);
+            shader->uniform1i("material.metalMap", TEX_UNIT_METALNESS);
             shader->uniform1i("material.hasMetalMap", 1);
         }
         if (material.roughnessTex) {
-            material.roughnessTex->bind(ROUGHNESS_UNIT);
-            shader->uniform1i("material.roughnessMap", ROUGHNESS_UNIT);
+            material.roughnessTex->bind(TEX_UNIT_ROUGHNESS);
+            shader->uniform1i("material.roughnessMap", TEX_UNIT_ROUGHNESS);
             shader->uniform1i("material.hasRoughnessMap", 1);
         }
     }
@@ -160,7 +160,7 @@ namespace Flux {
 
         shader->uniformMatrix4f("projMatrix", projMatrix);
 
-        skybox->bind(DIFFUSE_UNIT);
+        skybox->bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("skybox", 0);
 
         skybox->render();
