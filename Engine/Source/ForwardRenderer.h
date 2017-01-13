@@ -15,6 +15,7 @@ namespace Flux {
         virtual bool create();
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
+        virtual void uploadMaterial(const Material& material);
         virtual void renderMesh(const Scene& scene, Entity* e);
         void renderSkybox(const Scene& scene);
     private:

@@ -84,26 +84,7 @@ namespace Flux {
                 Material* material = scene.materials[mr->materialID];
 
                 if (material) {
-                    if (material->diffuseTex) {
-                        material->diffuseTex->bind(DIFFUSE_UNIT);
-                        shader->uniform1i("material.diffuseMap", DIFFUSE_UNIT);
-                        shader->uniform1i("material.hasDiffuseMap", 1);
-                    }
-                    if (material->normalTex) {
-                        material->normalTex->bind(NORMAL_UNIT);
-                        shader->uniform1i("material.normalMap", NORMAL_UNIT);
-                        shader->uniform1i("material.hasNormalMap", 1);
-                    }
-                    if (material->metalTex) {
-                        material->metalTex->bind(METALNESS_UNIT);
-                        shader->uniform1i("material.metalMap", METALNESS_UNIT);
-                        shader->uniform1i("material.hasMetalMap", 1);
-                    }
-                    if (material->roughnessTex) {
-                        material->roughnessTex->bind(ROUGHNESS_UNIT);
-                        shader->uniform1i("material.roughnessMap", ROUGHNESS_UNIT);
-                        shader->uniform1i("material.hasRoughnessMap", 1);
-                    }
+                    uploadMaterial(*material);
                 }
             }
             
@@ -119,6 +100,29 @@ namespace Flux {
             renderMesh(scene, e);
 
             glBindTexture(GL_TEXTURE_2D, 0);
+        }
+    }
+
+    void ForwardRenderer::uploadMaterial(const Material& material) {
+        if (material.diffuseTex) {
+            material.diffuseTex->bind(DIFFUSE_UNIT);
+            shader->uniform1i("material.diffuseMap", DIFFUSE_UNIT);
+            shader->uniform1i("material.hasDiffuseMap", 1);
+        }
+        if (material.normalTex) {
+            material.normalTex->bind(NORMAL_UNIT);
+            shader->uniform1i("material.normalMap", NORMAL_UNIT);
+            shader->uniform1i("material.hasNormalMap", 1);
+        }
+        if (material.metalTex) {
+            material.metalTex->bind(METALNESS_UNIT);
+            shader->uniform1i("material.metalMap", METALNESS_UNIT);
+            shader->uniform1i("material.hasMetalMap", 1);
+        }
+        if (material.roughnessTex) {
+            material.roughnessTex->bind(ROUGHNESS_UNIT);
+            shader->uniform1i("material.roughnessMap", ROUGHNESS_UNIT);
+            shader->uniform1i("material.hasRoughnessMap", 1);
         }
     }
 
