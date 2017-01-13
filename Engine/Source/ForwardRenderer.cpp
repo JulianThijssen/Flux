@@ -49,7 +49,7 @@ namespace Flux {
         shader->bind();
 
         Transform* ct = scene.getMainCamera()->getComponent<Transform>();
-        shader->uniform3f("camPos", ct->position.x, ct->position.y, ct->position.z);
+        shader->uniform3f("camPos", ct->position);
         scene.getMainCamera()->getComponent<Camera>()->loadProjectionMatrix(projMatrix);
         viewMatrix.setIdentity();
         viewMatrix.translate(-ct->position);
