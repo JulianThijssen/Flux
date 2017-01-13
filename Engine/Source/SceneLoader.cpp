@@ -20,14 +20,12 @@ namespace Flux {
     // TODO Move mesh loading and uploading to a separate class
     void uploadMesh(Mesh* mesh) {
         // Generate vertex array object
-        GLuint vao;
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
+        glGenVertexArrays(1, &mesh->handle);
+        glBindVertexArray(mesh->handle);
 
         // Store faces in a buffer
-        GLuint faceVBO;
-        glGenBuffers(1, &faceVBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faceVBO);
+        glGenBuffers(1, &mesh->indexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indices.size() * sizeof(unsigned int), &mesh->indices[0], GL_STATIC_DRAW);
 
         // Store vertices in a buffer
@@ -66,9 +64,6 @@ namespace Flux {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-
-        // Store relevant data in the new mesh
-        mesh->handle = vao;
     }
 
     void SceneLoader::loadScene(const Path path, Scene& scene) {

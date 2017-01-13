@@ -19,6 +19,7 @@ namespace Flux {
         std::vector<unsigned int> indices;
 
         unsigned int handle;
+        unsigned int indexBuffer;
         std::string materialName;
     };
 }

@@ -150,7 +150,8 @@ namespace Flux {
         shader->uniformMatrix4f("modelMatrix", modelMatrix);
 
         glBindVertexArray(mesh->handle);
-        glDrawArrays(GL_TRIANGLES, 0, (GLsizei) mesh->indices.size());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
     }
 
     void ForwardRenderer::renderSkybox(const Scene& scene) {
