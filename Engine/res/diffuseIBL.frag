@@ -12,17 +12,17 @@ out vec4 fragColor;
 
 void main() {
     mat3 rots[6] = mat3[](
-        mat3(vec3(0, 0, -1), vec3(0, 1, 0), vec3(1, 0, 0)), // Y 90
-        mat3(vec3(0, 0, 1), vec3(0, 1, 0), vec3(-1, 0, 0)), // Y 270
-        mat3(vec3(1, 0, 0), vec3(0, 0, 1), vec3(0, -1, 0)), // X 90
-        mat3(vec3(1, 0, 0), vec3(0, 0, -1), vec3(0, 1, 0)), // X -90
-        mat3(vec3(1, 0, 0), vec3(0, 1, 0), vec3(0, 0, 1)),  // Y 0
-        mat3(vec3(-1, 0, 0), vec3(0, 1, 0), vec3(0, 0, -1)) // Y 180
+        mat3(vec3(0, 0, -1), vec3(0, -1, 0), vec3(-1, 0, 0)), // Right
+        mat3(vec3(0, 0, 1), vec3(0, -1, 0), vec3(1, 0, 0)), // Left
+        mat3(vec3(1, 0, 0), vec3(0, 0, 1), vec3(0, -1, 0)), // Top
+        mat3(vec3(1, 0, 0), vec3(0, 0, -1), vec3(0, 1, 0)), // Bottom
+        mat3(vec3(1, 0, 0), vec3(0, -1, 0), vec3(0, 0, -1)), // Front
+        mat3(vec3(-1, 0, 0), vec3(0, -1, 0), vec3(0, 0, 1))  // Back
     );
 
     float halfRes = textureSize / 2.0;
     
-    vec3 N = normalize(vec3(pass_texCoords * 2 - 1, 1));
+    vec3 N = normalize(vec3(pass_texCoords * 2 - 1, -1));
     N = rots[Face] * N;
     vec3 Color = vec3(0, 0, 0);
     float TotalWeight = 0;
@@ -31,8 +31,8 @@ void main() {
         mat3 rot = rots[i];
         for (int x = 0; x < textureSize; x++) {
             for (int y = 0; y < textureSize; y++) {
-                vec3 envCoords = vec3((x-halfRes)/textureSize, (y-halfRes)/textureSize, 1);
-                vec3 dir = normalize(envCoords);
+                vec2 envCoords = vec2(float(x) / textureSize, float(y) / textureSize);
+                vec3 dir = normalize(vec3(envCoords * 2 - 1, -1));
                 dir = rot * dir;
                 Color += texture(EnvMap, dir).rgb * max(dot(N, dir), 0);
                 TotalWeight += max(dot(N, dir), 0);

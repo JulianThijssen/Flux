@@ -72,12 +72,12 @@ void main()
 {
     mat3 rots[6] = mat3[]
     (
-        mat3(vec3(0, 0, 1), vec3(0, 1, 0), vec3(-1, 0, 0)), // Y 270
-        mat3(vec3(0, 0, -1), vec3(0, 1, 0), vec3(1, 0, 0)), // Y 90
-        mat3(vec3(1, 0, 0), vec3(0, 0, 1), vec3(0, -1, 0)), // X 90
-        mat3(vec3(1, 0, 0), vec3(0, 0, -1), vec3(0, 1, 0)), // X -90
-        mat3(vec3(-1, 0, 0), vec3(0, 1, 0), vec3(0, 0, -1)), // Y 180
-        mat3(vec3(1, 0, 0), vec3(0, 1, 0), vec3(0, 0, 1))  // Y 0
+        mat3(vec3(0, 0, -1), vec3(0, -1, 0), vec3(-1, 0, 0)), // Right
+        mat3(vec3(0, 0, 1), vec3(0, -1, 0), vec3(1, 0, 0)), // Left
+        mat3(vec3(1, 0, 0), vec3(0, 0, 1), vec3(0, -1, 0)), // Top
+        mat3(vec3(1, 0, 0), vec3(0, 0, -1), vec3(0, 1, 0)), // Bottom
+        mat3(vec3(1, 0, 0), vec3(0, -1, 0), vec3(0, 0, -1)), // Front
+        mat3(vec3(-1, 0, 0), vec3(0, -1, 0), vec3(0, 0, 1))  // Back
     );
 
     vec3 dir = normalize(vec3(pass_texCoords * 2 - 1, -1));
