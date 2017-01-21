@@ -54,7 +54,7 @@ namespace Flux {
             PointLight* point = light->getComponent<PointLight>();
             Transform* transform = light->getComponent<Transform>();
 
-            shader->uniform3f("pointLight.position", transform->position.x, transform->position.y, transform->position.z);
+            shader->uniform3f("pointLight.position", transform->position);
 
             renderScene(scene);
         }
@@ -137,7 +137,6 @@ namespace Flux {
 
         modelMatrix.translate(transform->position);
         modelMatrix.rotate(transform->rotation);
-        transform->rotation.x += 0.01f;
         modelMatrix.scale(transform->scale);
         shader->uniformMatrix4f("modelMatrix", modelMatrix);
 
@@ -151,6 +150,10 @@ namespace Flux {
         shader->bind();
 
         shader->uniformMatrix4f("projMatrix", projMatrix);
+        shader->uniformMatrix4f("viewMatrix", viewMatrix);
+        modelMatrix.setIdentity();
+        modelMatrix.scale(Vector3f(20000, 20000, 20000));
+        shader->uniformMatrix4f("modelMatrix", modelMatrix);
 
         skybox->bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("skybox", 0);
