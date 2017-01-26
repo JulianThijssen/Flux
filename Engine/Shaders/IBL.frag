@@ -87,5 +87,5 @@ void main() {
     vec3 indirectDiffuse = DiffuseColor * texture(irradianceMap, R).rgb;
     vec3 indirectSpecular = ApproximateSpecularIBL(SpecularColor, Roughness, N, V);
 
-    fragColor = vec4((indirectDiffuse + indirectSpecular)*2, 1);
+    fragColor = vec4((indirectDiffuse + indirectSpecular)*1, 1);
 }
