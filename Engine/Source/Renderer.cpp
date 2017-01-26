@@ -16,8 +16,8 @@ namespace Flux {
 
         // Set the view matrix to the camera view
         viewMatrix.setIdentity();
-        viewMatrix.translate(-ct->position);
         viewMatrix.rotate(-ct->rotation);
+        viewMatrix.translate(-ct->position);
 
         shader->uniform3f("camPos", ct->position);
         shader->uniformMatrix4f("projMatrix", projMatrix);
