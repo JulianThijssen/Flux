@@ -124,9 +124,17 @@ namespace Flux {
         Entity* light = new Entity();
         DirectionalLight* dirLight = new DirectionalLight();
         light->addComponent(dirLight);
-        Transform* transform = new Transform();
-        transform->position.set(5, 4, 10);
-        light->addComponent(transform);
+        Transform* t1 = new Transform();
+        t1->position.set(0, 0, 0);
+        light->addComponent(t1);
         scene.entities.push_back(light);
+
+        Entity* light2 = new Entity();
+        PointLight* pointLight = new PointLight();
+        light2->addComponent(pointLight);
+        Transform* t2 = new Transform();
+        t2->position.set(5, 4, 10);
+        light2->addComponent(t2);
+        scene.entities.push_back(light2);
     }
 }

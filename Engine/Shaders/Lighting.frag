@@ -45,7 +45,7 @@ out vec4 fragColor;
 
 /* Calculates the diffuse contribution of the light */
 float CosTheta(vec3 N, vec3 L) {
-	return clamp(dot(N, normalize(L)), 0, 1);
+	return clamp(dot(N, L), 0, 1);
 }
 
 /* Calculates the normal of the fragment using a normal map */
@@ -93,15 +93,6 @@ void main() {
     vec3 position = (modelMatrix * (vec4(pass_position, 1))).xyz;
     vec3 N = pass_normal;
     vec3 V = normalize(camPos - position);
-    
-    vec3 L;
-    if (isPointLight) {
-        L = normalize(pointLight.position - position);
-    }
-    if (isDirLight) {
-        L = -dirLight.direction;
-    }
-    vec3 H = normalize(L + V);
 
     if (material.hasNormalMap) {
         N = calcNormal(N, pass_tangent, pass_texCoords);
@@ -110,7 +101,18 @@ void main() {
     
     vec3 R = normalize(reflect(-V, N));
     
-    float CosTheta = CosTheta(N, normalize(L));
+    vec3 L;
+    float Attenuation = 1;
+    if (isPointLight) {
+        vec3 dir = pointLight.position - position;
+        float distance = dot(dir, dir);
+        Attenuation = CosTheta(N, normalize(L)) * 1 / distance;
+    }
+    if (isDirLight) {
+        L = -dirLight.direction;
+        Attenuation = CosTheta(N, L);
+    }
+    vec3 H = normalize(L + V);
     
     float Metalness = 0;
     if (material.hasMetalMap) {
@@ -137,7 +139,7 @@ void main() {
     vec3 CookBRDF = CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness);
 
     vec3 Li = vec3(1, 1, 1);
-    vec3 Radiance = (DiffuseColor + CookBRDF) * Li * CosTheta;
+    vec3 Radiance = (DiffuseColor + CookBRDF) * Li * Attenuation;
 
     fragColor = vec4(Radiance, 1.0);
 }
