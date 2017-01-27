@@ -6,6 +6,8 @@
 
 #include <Engine/Source/Entity.h>
 #include <Engine/Source/AttachedTo.h>
+#include <Engine/Source/DirectionalLight.h>
+#include <Engine/Source/PointLight.h>
 #include <Engine/Source/MeshRenderer.h>
 #include <Engine/Source/Path.h>
 #include <Engine/Source/File.h>
@@ -120,8 +122,8 @@ namespace Flux {
         scene.entities.push_back(mainCamera);
 
         Entity* light = new Entity();
-        PointLight* point = new PointLight();
-        light->addComponent(point);
+        DirectionalLight* dirLight = new DirectionalLight();
+        light->addComponent(dirLight);
         Transform* transform = new Transform();
         transform->position.set(5, 4, 10);
         light->addComponent(transform);

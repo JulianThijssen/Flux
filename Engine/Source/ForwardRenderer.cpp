@@ -8,13 +8,17 @@
 #include "MeshRenderer.h"
 #include "AssetManager.h"
 
+#include "DirectionalLight.h"
+#include "PointLight.h"
+
 #include <iostream>
 
 namespace Flux {
     bool ForwardRenderer::create() {
-        lightShader = Shader::fromFile("res/IBL.vert", "res/IBL.frag");
-        skyboxShader = Shader::fromFile("res/skybox.vert", "res/skybox.frag");
-        if (lightShader == nullptr || skyboxShader == nullptr) {
+        IBLShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
+        lightShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
+        skyboxShader = Shader::fromFile("res/Shaders/Skybox.vert", "res/Shaders/Skybox.frag");
+        if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr) {
             return false;
         }
 
@@ -24,8 +28,9 @@ namespace Flux {
             "res/Materials/Grace_TOP.png",
             "res/Materials/Grace_BOTTOM.png",
             "res/Materials/Grace_FRONT.png",
-            "res/Materials/Grace_BACK.png",
+            "res/Materials/Grace_BACK.png"
         };
+
         skybox = new Skybox(paths);
 
         iblSceneInfo.PrecomputeEnvironmentData(*skybox);
@@ -45,19 +50,46 @@ namespace Flux {
             return;
 
         glViewport(0, 0, 1024, 768);
+
+        shader = IBLShader;
+        shader->bind();
+
+        setCamera(*scene.getMainCamera());
+
+        renderScene(scene);
+
+        glEnable(GL_BLEND);
+        glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
+        glDepthFunc(GL_LEQUAL);
+
         shader = lightShader;
         shader->bind();
 
         setCamera(*scene.getMainCamera());
 
         for (Entity* light : scene.lights) {
-            PointLight* point = light->getComponent<PointLight>();
+            DirectionalLight* directionalLight = light->getComponent<DirectionalLight>();
+            PointLight* pointLight = light->getComponent<PointLight>();
             Transform* transform = light->getComponent<Transform>();
 
-            shader->uniform3f("pointLight.position", transform->position);
+            if (directionalLight) {
+                shader->uniform3f("dirLight.direction", directionalLight->direction);
+                shader->uniform1i("isDirLight", true);
+                shader->uniform1i("isPointLight", false);
+            }
+            else if (pointLight) {
+                shader->uniform3f("pointLight.position", transform->position);
+                shader->uniform1i("isPointLight", true);
+                shader->uniform1i("isDirLight", false);
+            }
+            else {
+                continue;
+            }
 
             renderScene(scene);
         }
+
+        glDisable(GL_BLEND);
 
         renderSkybox(scene);
     }

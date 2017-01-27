@@ -10,6 +10,9 @@
 #include <Engine/Source/MeshRenderer.h>
 #include <Engine/Source/AttachedTo.h>
 
+#include <Engine/Source/PointLight.h>
+#include <Engine/Source/DirectionalLight.h>
+
 #include <fstream>
 #include <iostream> // Temp
 
@@ -119,7 +122,15 @@ namespace Flux {
             PointLight* pointLight = e->getComponent<PointLight>();
 
             const float energy = pointLight->energy;
+            out.write((char *)&energy, sizeof(float));
+        }
+        if (e->hasComponent<DirectionalLight>()) {
+            out.write("d", sizeof(char));
+            DirectionalLight* dirLight = e->getComponent<DirectionalLight>();
 
+            out.write((char *)&dirLight->direction, sizeof(Vector3f));
+
+            const float energy = dirLight->energy;
             out.write((char *)&energy, sizeof(float));
         }
         if (e->hasComponent<AttachedTo>()) {

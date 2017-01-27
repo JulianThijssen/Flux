@@ -35,7 +35,8 @@ namespace Flux {
                     return dynamic_cast<T*>(c);
                 }
             }
-            throw ComponentNotFoundException();
+            return nullptr;
+            //throw ComponentNotFoundException();
         }
 
         template <class T>

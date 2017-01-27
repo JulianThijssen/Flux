@@ -19,6 +19,7 @@ namespace Flux {
         virtual void renderMesh(const Scene& scene, Entity* e);
         void renderSkybox(const Scene& scene);
     private:
+        Shader* IBLShader;
         Shader* lightShader;
         Shader* skyboxShader;
 

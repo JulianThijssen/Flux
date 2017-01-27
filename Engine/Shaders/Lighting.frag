@@ -1,5 +1,9 @@
 #version 150 core
 
+struct DirectionalLight {
+    vec3 direction;
+};
+
 struct PointLight {
     vec3 position;
 };
@@ -20,10 +24,13 @@ struct Material {
 
 uniform mat4 modelMatrix;
 
+uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
-uniform Material material;
 
-uniform samplerCube cubemap;
+uniform bool isPointLight;
+uniform bool isDirLight;
+
+uniform Material material;
 
 uniform vec3 camPos;
 
@@ -86,7 +93,14 @@ void main() {
     vec3 position = (modelMatrix * (vec4(pass_position, 1))).xyz;
     vec3 N = pass_normal;
     vec3 V = normalize(camPos - position);
-    vec3 L = normalize(pointLight.position - position);
+    
+    vec3 L;
+    if (isPointLight) {
+        L = normalize(pointLight.position - position);
+    }
+    if (isDirLight) {
+        L = -dirLight.direction;
+    }
     vec3 H = normalize(L + V);
 
     if (material.hasNormalMap) {

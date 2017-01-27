@@ -9,6 +9,7 @@
 #include "MeshRenderer.h"
 #include "Camera.h"
 #include "PointLight.h"
+#include "DirectionalLight.h"
 #include "AttachedTo.h"
 
 #include <fstream>
@@ -178,6 +179,14 @@ namespace Flux {
 
                     e->addComponent(pointLight);
                 }
+                if (component == 'd') {
+                    DirectionalLight* dirLight = new DirectionalLight();
+
+                    inFile.read((char *)&dirLight->direction, sizeof(Vector3f));
+                    inFile.read((char *)&dirLight->energy, sizeof(float));
+                    
+                    e->addComponent(dirLight);
+                }
                 if (component == 'a') {
                     uint32_t pid;
                     inFile.read((char *) &pid, sizeof(pid));
@@ -193,7 +202,7 @@ namespace Flux {
                 std::cout << "SETTING MAIN CAMERA" << std::endl;
                 scene.mainCamera = e;
             }
-            else if (e->hasComponent<PointLight>()) {
+            else if (e->hasComponent<PointLight>() || e->hasComponent<DirectionalLight>()) {
                 scene.lights.push_back(e);
             }
             else {
