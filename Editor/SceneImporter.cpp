@@ -123,6 +123,7 @@ namespace Flux {
 
         Entity* light = new Entity();
         DirectionalLight* dirLight = new DirectionalLight();
+        dirLight->color.set(0.8, 0.6, 0.2);
         light->addComponent(dirLight);
         Transform* t1 = new Transform();
         t1->position.set(0, 0, 0);
@@ -131,6 +132,7 @@ namespace Flux {
 
         Entity* light2 = new Entity();
         PointLight* pointLight = new PointLight();
+        pointLight->color.set(0.4, 0.4, 0.6);
         light2->addComponent(pointLight);
         Transform* t2 = new Transform();
         t2->position.set(5, 4, 10);

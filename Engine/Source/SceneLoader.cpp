@@ -172,6 +172,7 @@ namespace Flux {
                 if (component == 'p') {
                     PointLight* pointLight = new PointLight();
 
+                    inFile.read((char *)&pointLight->color, sizeof(Vector3f));
                     float energy;
                     inFile.read((char *) &energy, sizeof(energy));
 
@@ -183,6 +184,7 @@ namespace Flux {
                     DirectionalLight* dirLight = new DirectionalLight();
 
                     inFile.read((char *)&dirLight->direction, sizeof(Vector3f));
+                    inFile.read((char *)&dirLight->color, sizeof(Vector3f));
                     inFile.read((char *)&dirLight->energy, sizeof(float));
                     
                     e->addComponent(dirLight);

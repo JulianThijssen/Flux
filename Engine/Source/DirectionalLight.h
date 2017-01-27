@@ -11,12 +11,14 @@ namespace Flux {
         DirectionalLight()
         :   energy(DEFAULT_ENERGY)
         ,   direction(0, -1, 0)
+        ,   color(1, 1, 1)
         { }
 
         const float DEFAULT_ENERGY = 1.0f;
 
         float energy;
         Vector3f direction;
+        Vector3f color;
     };
 }
 

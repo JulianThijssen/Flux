@@ -2,10 +2,12 @@
 
 struct DirectionalLight {
     vec3 direction;
+    vec3 color;
 };
 
 struct PointLight {
     vec3 position;
+    vec3 color;
 };
 
 struct Material {
@@ -102,15 +104,18 @@ void main() {
     vec3 R = normalize(reflect(-V, N));
     
     vec3 L;
+    vec3 Li = vec3(1, 1, 1);
     float Attenuation = 1;
     if (isPointLight) {
         vec3 dir = pointLight.position - position;
         float distance = dot(dir, dir);
         Attenuation = CosTheta(N, normalize(L)) * 1 / distance;
+        Li *= pointLight.color;
     }
     if (isDirLight) {
         L = -dirLight.direction;
         Attenuation = CosTheta(N, L);
+        Li *= dirLight.color;
     }
     vec3 H = normalize(L + V);
     
@@ -138,7 +143,6 @@ void main() {
     // Cook Torrance Specular BRDF
     vec3 CookBRDF = CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness);
 
-    vec3 Li = vec3(1, 1, 1);
     vec3 Radiance = (DiffuseColor + CookBRDF) * Li * Attenuation;
 
     fragColor = vec4(Radiance, 1.0);

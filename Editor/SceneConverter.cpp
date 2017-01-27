@@ -121,6 +121,7 @@ namespace Flux {
             out.write("p", sizeof(char));
             PointLight* pointLight = e->getComponent<PointLight>();
 
+            out.write((char *)&pointLight->color, sizeof(Vector3f));
             const float energy = pointLight->energy;
             out.write((char *)&energy, sizeof(float));
         }
@@ -129,6 +130,7 @@ namespace Flux {
             DirectionalLight* dirLight = e->getComponent<DirectionalLight>();
 
             out.write((char *)&dirLight->direction, sizeof(Vector3f));
+            out.write((char *)&dirLight->color, sizeof(Vector3f));
 
             const float energy = dirLight->energy;
             out.write((char *)&energy, sizeof(float));

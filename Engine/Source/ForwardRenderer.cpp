@@ -74,11 +74,13 @@ namespace Flux {
 
             if (directionalLight) {
                 shader->uniform3f("dirLight.direction", directionalLight->direction);
+                shader->uniform3f("dirLight.color", directionalLight->color);
                 shader->uniform1i("isDirLight", true);
                 shader->uniform1i("isPointLight", false);
             }
             else if (pointLight) {
                 shader->uniform3f("pointLight.position", transform->position);
+                shader->uniform3f("pointLight.color", pointLight->color);
                 shader->uniform1i("isPointLight", true);
                 shader->uniform1i("isDirLight", false);
             }
