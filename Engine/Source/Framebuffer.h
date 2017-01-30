@@ -6,7 +6,7 @@
 #include "Log.h"
 
 #include <glad/glad.h>
-
+#include <iostream>
 namespace Flux {
     class Framebuffer {
     public:
@@ -26,8 +26,8 @@ namespace Flux {
             glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture, 0);
         }
 
-        void setCubemap(Cubemap cubemap, GLuint face, int mipmapLevel) {
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, face, cubemap.getHandle(), mipmapLevel);
+        void setCubemap(GLuint texture, unsigned int face, int mipmapLevel) {
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, texture, mipmapLevel);
         }
 
         void setDrawBuffer(GLuint target) {
@@ -35,9 +35,9 @@ namespace Flux {
         }
 
         void validate() {
-            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-                GLuint error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            GLuint error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
+            if (error != GL_FRAMEBUFFER_COMPLETE) {
                 switch (error) {
                 case GL_FRAMEBUFFER_UNDEFINED:
                     Log::error("Target is the default framebuffer, but the default framebuffer does not exist"); break;
