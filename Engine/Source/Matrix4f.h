@@ -29,7 +29,7 @@ namespace Flux {
         void scale(float scale);
         void scale(const Vector3f& scale);
         Vector3f transform(const Vector3f& v) const;
-
+        
         float* toArray();
         std::string str() const;
 
@@ -39,6 +39,7 @@ namespace Flux {
         bool operator==(const Matrix4f& m) const;
         bool operator!=(const Matrix4f& m) const;
         Matrix4f operator*(const Matrix4f& m) const;
+        Vector3f operator*(const Vector3f& m) const;
     private:
         float a[16];
     };
