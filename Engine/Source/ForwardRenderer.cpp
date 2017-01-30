@@ -13,11 +13,13 @@
 
 #include <iostream>
 
+#include "Matrix4f.h"
+
 namespace Flux {
     bool ForwardRenderer::create() {
         IBLShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
         lightShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
-        skyboxShader = Shader::fromFile("res/Shaders/Skybox.vert", "res/Shaders/Skybox.frag");
+        skyboxShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
         if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr) {
             return false;
         }
@@ -183,15 +185,26 @@ namespace Flux {
         shader = skyboxShader;
         shader->bind();
 
-        shader->uniformMatrix4f("projMatrix", projMatrix);
-        shader->uniformMatrix4f("viewMatrix", viewMatrix);
-        modelMatrix.setIdentity();
-        modelMatrix.scale(Vector3f(20000, 20000, 20000));
-        shader->uniformMatrix4f("modelMatrix", modelMatrix);
+        Transform* transform = scene.getMainCamera()->getComponent<Transform>();
+
+        Matrix4f yawMatrix;
+        yawMatrix.rotate(transform->rotation.y, 0, 1, 0);
+
+        Matrix4f pitchMatrix;
+        pitchMatrix.rotate(transform->rotation.x, 1, 0, 0);
+
+        Matrix4f cameraBasis;
+        cameraBasis[10] = -1;
+        cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
+
+        shader->uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
+        shader->uniformMatrix4f("cameraBasis", cameraBasis);
 
         skybox->bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("skybox", 0);
 
-        skybox->render();
+        glDepthFunc(GL_LEQUAL);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDepthFunc(GL_LESS);
     }
 }
