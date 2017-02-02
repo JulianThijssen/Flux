@@ -5,6 +5,8 @@
 #include <glad/glad.h>
 
 namespace Flux {
+    enum Sampling { NEAREST, LINEAR };
+
     class Texture {
     public:
         Texture(GLuint handle) : handle(handle) { }
@@ -17,7 +19,7 @@ namespace Flux {
         void release() const {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-    protected:
+
         GLuint handle;
     };
 }
