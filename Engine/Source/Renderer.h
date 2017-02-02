@@ -7,6 +7,9 @@
 #include "Scene.h"
 #include "Skybox.h"
 
+#include "RenderBuffer.h"
+#include "Texture.h"
+
 namespace Flux {
     const int TEX_UNIT_DIFFUSE = 0;
     const int TEX_UNIT_NORMAL = 1;
@@ -43,6 +46,8 @@ namespace Flux {
         Shader* shader;
 
         Skybox* skybox;
+
+        RenderBuffer* backBuffer;
     };
 }
 

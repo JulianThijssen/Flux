@@ -141,7 +141,7 @@ namespace Flux
 
         glViewport(0, 0, 256, 256);
 
-        framebuffer.setTexture(GL_COLOR_ATTACHMENT0, handle);
+        framebuffer.setTexture(GL_COLOR_ATTACHMENT0, *this);
         framebuffer.validate();
 
         glClear(GL_COLOR_BUFFER_BIT);
