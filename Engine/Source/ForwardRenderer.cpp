@@ -7,6 +7,7 @@
 #include "AttachedTo.h"
 #include "MeshRenderer.h"
 #include "AssetManager.h"
+#include "TextureLoader.h"
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -20,7 +21,8 @@ namespace Flux {
         IBLShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
         lightShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
         skyboxShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
-        if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr) {
+        textureShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
+        if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr || textureShader == nullptr) {
             return false;
         }
 
@@ -37,29 +39,62 @@ namespace Flux {
 
         iblSceneInfo.PrecomputeEnvironmentData(*skybox);
 
-        setClearColor(1.0, 0.0, 1.0, 1.0);
+        backBuffer = new RenderBuffer(1024, 768);
+        backBuffer->bind();
+        backBuffer->addColorTexture(0, TextureLoader::createEmpty(1024, 768, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST));
+        backBuffer->addDepthTexture();
+        backBuffer->validate();
+
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
+
+        setClearColor(1.0, 0.0, 1.0, 1.0);
+        backBuffer->release();
 
         return true;
     }
 
     void ForwardRenderer::update(const Scene& scene) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         if (scene.getMainCamera() == nullptr)
             return;
 
         glViewport(0, 0, 1024, 768);
 
+        backBuffer->bind();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        globalIllumination(scene);
+        directLighting(scene);
+        renderSkybox(scene);
+        backBuffer->release();
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        shader = textureShader;
+        shader->bind();
+        backBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
+        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+
+    void ForwardRenderer::globalIllumination(const Scene& scene) {
         shader = IBLShader;
         shader->bind();
 
         setCamera(*scene.getMainCamera());
 
-        renderScene(scene);
+        iblSceneInfo.irradianceMap->bind(TEX_UNIT_IRRADIANCE);
+        shader->uniform1i("irradianceMap", TEX_UNIT_IRRADIANCE);
 
+        iblSceneInfo.prefilterEnvmap->bind(TEX_UNIT_PREFILTER);
+        shader->uniform1i("prefilterEnvmap", TEX_UNIT_PREFILTER);
+
+        iblSceneInfo.scaleBiasTexture->bind(TEX_UNIT_SCALEBIAS);
+        shader->uniform1i("scaleBiasMap", TEX_UNIT_SCALEBIAS);
+
+        renderScene(scene);
+    }
+
+    void ForwardRenderer::directLighting(const Scene& scene) {
         glEnable(GL_BLEND);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
@@ -94,8 +129,6 @@ namespace Flux {
         }
 
         glDisable(GL_BLEND);
-
-        renderSkybox(scene);
     }
 
     void ForwardRenderer::renderScene(const Scene& scene) {
@@ -115,19 +148,8 @@ namespace Flux {
                     uploadMaterial(*material);
                 }
             }
-            
-            iblSceneInfo.irradianceMap->bind(TEX_UNIT_IRRADIANCE);
-            shader->uniform1i("irradianceMap", TEX_UNIT_IRRADIANCE);
-
-            iblSceneInfo.prefilterEnvmap->bind(TEX_UNIT_PREFILTER);
-            shader->uniform1i("prefilterEnvmap", TEX_UNIT_PREFILTER);
-
-            iblSceneInfo.scaleBiasTexture->bind(TEX_UNIT_SCALEBIAS);
-            shader->uniform1i("scaleBiasMap", TEX_UNIT_SCALEBIAS);
 
             renderMesh(scene, e);
-
-            glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
 
@@ -201,7 +223,7 @@ namespace Flux {
         shader->uniformMatrix4f("cameraBasis", cameraBasis);
 
         skybox->bind(TEX_UNIT_DIFFUSE);
-        shader->uniform1i("skybox", 0);
+        shader->uniform1i("skybox", TEX_UNIT_DIFFUSE);
 
         glDepthFunc(GL_LEQUAL);
         glDrawArrays(GL_TRIANGLES, 0, 6);

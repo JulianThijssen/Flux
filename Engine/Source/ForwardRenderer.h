@@ -17,11 +17,15 @@ namespace Flux {
         virtual void renderScene(const Scene& scene);
         virtual void uploadMaterial(const Material& material);
         virtual void renderMesh(const Scene& scene, Entity* e);
+
+        void globalIllumination(const Scene& scene);
+        void directLighting(const Scene& scene);
         void renderSkybox(const Scene& scene);
     private:
         Shader* IBLShader;
         Shader* lightShader;
         Shader* skyboxShader;
+        Shader* textureShader;
 
         IblSceneInfo iblSceneInfo;
     };

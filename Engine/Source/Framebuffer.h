@@ -22,8 +22,8 @@ namespace Flux {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
-        void setTexture(GLuint attachment, GLuint texture) {
-            glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture, 0);
+        void setTexture(GLuint attachment, Texture& texture) {
+            glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture.handle, 0);
         }
 
         void setCubemap(GLuint texture, unsigned int face, int mipmapLevel) {
