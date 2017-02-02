@@ -45,6 +45,13 @@ namespace Flux
         PrefilterEnvmap* prefilterEnvmap;
         ScaleBiasTexture* scaleBiasTexture;
     };
+
+    class ImageBasedRendering
+    {
+    public:
+        void create();
+        void render();
+    };
 }
 
 #endif /* IMAGE_BASED_RENDERING_H */

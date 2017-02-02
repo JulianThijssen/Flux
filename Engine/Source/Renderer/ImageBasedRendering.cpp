@@ -8,12 +8,13 @@
 #include <Engine/Source/Exceptions/ShaderLinkException.h>
 
 #include <glad/glad.h>
+#include <iostream>
 
 namespace Flux
 {
     void IrradianceMap::generate(const unsigned int textureSize)
     {
-        Shader* shader = Shader::fromFile("res/Quad.vert", "res/diffuseIBL.frag");
+        Shader* shader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Irradiance.frag");
 
         Framebuffer framebuffer;
         framebuffer.bind();
@@ -25,8 +26,7 @@ namespace Flux
 
         createEmpty(textureSize, false);
 
-        glActiveTexture(GL_TEXTURE0);
-        envMap.bind();
+        envMap.bind(0);
         shader->uniform1i("EnvMap", 0);
 
         shader->uniform1i("textureSize", envMap.getResolution());
@@ -35,7 +35,7 @@ namespace Flux
         for (int i = 0; i < 6; i++)
         {
             shader->uniform1i("Face", i);
-            framebuffer.setCubemap(*this, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0);
+            framebuffer.setCubemap(getHandle(), i, 0);
             framebuffer.validate();
 
             glClear(GL_COLOR_BUFFER_BIT);
@@ -50,7 +50,7 @@ namespace Flux
         Shader* shader;
         try
         {
-            shader = Shader::fromFile("res/Quad.vert", "res/PrefilterEnvmap.frag");
+            shader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/PrefilterEnvmap.frag");
         }
         catch (const ShaderCompilationException& e)
         {
@@ -71,8 +71,7 @@ namespace Flux
 
         createEmpty(envMap.getResolution(), true);
 
-        glActiveTexture(GL_TEXTURE0);
-        envMap.bind();
+        envMap.bind(0);
         shader->uniform1i("EnvMap", 0);
 
         const unsigned int MIP_MAP_LEVELS = 6;
@@ -86,9 +85,9 @@ namespace Flux
             for (int i = 0; i < 6; i++)
             {
                 shader->uniform1i("Face", i);
-                framebuffer.setCubemap(*this, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, level);
+                framebuffer.setCubemap(getHandle(), i, level);
                 framebuffer.validate();
-
+                
                 glClear(GL_COLOR_BUFFER_BIT);
 
                 glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -121,7 +120,7 @@ namespace Flux
         Shader* shader;
         try
         {
-            shader = Shader::fromFile("res/Quad.vert", "res/BRDFintegration.frag");
+            shader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/BRDFintegration.frag");
         }
         catch (const ShaderCompilationException& e)
         {
