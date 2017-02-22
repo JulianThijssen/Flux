@@ -26,6 +26,7 @@ namespace Flux {
         Shader* lightShader;
         Shader* skyboxShader;
         Shader* textureShader;
+        Shader* fxaaShader;
 
         IblSceneInfo iblSceneInfo;
     };

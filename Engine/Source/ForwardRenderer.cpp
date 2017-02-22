@@ -22,7 +22,9 @@ namespace Flux {
         lightShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
         skyboxShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
         textureShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
-        if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr || textureShader == nullptr) {
+        fxaaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
+
+        if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr || textureShader == nullptr || fxaaShader == nullptr) {
             return false;
         }
 
@@ -54,7 +56,7 @@ namespace Flux {
 
         return true;
     }
-
+    float time = 0;
     void ForwardRenderer::update(const Scene& scene) {
         if (scene.getMainCamera() == nullptr)
             return;
@@ -69,10 +71,19 @@ namespace Flux {
         backBuffer->release();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shader = textureShader;
+        //shader = textureShader;
+        //shader->bind();
+        //backBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
+        //shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        shader = fxaaShader;
         shader->bind();
         backBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        time += 0.0005f;
+        shader->uniform1f("time", time);
+        shader->uniform2f("rcpScreenSize", 1.0f / 1024, 1.0f / 768);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
