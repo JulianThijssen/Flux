@@ -21,6 +21,8 @@ namespace Flux {
         void globalIllumination(const Scene& scene);
         void directLighting(const Scene& scene);
         void renderSkybox(const Scene& scene);
+        void applyPostprocess();
+        void renderFramebuffer(const Framebuffer& framebuffer);
     private:
         Shader* IBLShader;
         Shader* lightShader;
