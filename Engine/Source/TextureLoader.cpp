@@ -18,24 +18,29 @@ namespace Flux {
             Log::error("Failed to load image at: " + path.str());
         }
 
-        Texture* texture = create(width, height, bpp, image);
+        Texture* texture = create(width, height, image, Sampling::LINEAR);
 
         return texture;
     }
 
-    Texture* TextureLoader::create(const int width, const int height, const int bpp, const unsigned char* data) {
+    Texture* TextureLoader::create(const int width, const int height, const unsigned char* data, Sampling sampling) {
         GLuint handle;
         glGenTextures(1, &handle);
 
         glBindTexture(GL_TEXTURE_2D, handle);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+        if (sampling == Sampling::NEAREST) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        }
+        else {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        }
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
