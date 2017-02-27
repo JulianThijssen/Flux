@@ -36,6 +36,7 @@ namespace Flux {
 
         void setClearColor(float r, float g, float b, float a);
         void setCamera(Entity& camera);
+        void drawQuad();
     protected:
         Vector3f clearColor;
 

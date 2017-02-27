@@ -225,7 +225,7 @@ namespace Flux {
         shader->uniform1i("skybox", TEX_UNIT_DIFFUSE);
 
         glDepthFunc(GL_LEQUAL);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        drawQuad();
         glDepthFunc(GL_LESS);
     }
 
@@ -235,7 +235,7 @@ namespace Flux {
         backBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
         shader->uniform2f("rcpScreenSize", 1.0f / 1024, 1.0f / 768);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        drawQuad();
     }
 
     void ForwardRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
@@ -243,6 +243,6 @@ namespace Flux {
         shader->bind();
         backBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        drawQuad();
     }
 }

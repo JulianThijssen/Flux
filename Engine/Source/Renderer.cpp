@@ -23,4 +23,8 @@ namespace Flux {
         shader->uniformMatrix4f("projMatrix", projMatrix);
         shader->uniformMatrix4f("viewMatrix", viewMatrix);
     }
+
+    void Renderer::drawQuad() {
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
 }
