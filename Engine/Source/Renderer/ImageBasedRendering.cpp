@@ -16,7 +16,7 @@ namespace Flux
     {
         Shader* shader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Irradiance.frag");
 
-        Framebuffer framebuffer;
+        Framebuffer framebuffer(textureSize, textureSize);
         framebuffer.bind();
         framebuffer.setDrawBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -61,7 +61,9 @@ namespace Flux
             Log::error(e.what());
         }
 
-        Framebuffer framebuffer;
+        const unsigned int resolution = envMap.getResolution();
+
+        Framebuffer framebuffer(resolution, resolution);
         framebuffer.bind();
         framebuffer.setDrawBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -131,7 +133,7 @@ namespace Flux
             Log::error(e.what());
         }
 
-        Framebuffer framebuffer;
+        Framebuffer framebuffer(256, 256);
         framebuffer.bind();
         framebuffer.setDrawBuffer(GL_COLOR_ATTACHMENT0);
 

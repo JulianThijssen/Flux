@@ -2,15 +2,20 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
+#include "Texture.h"
+#include "TextureLoader.h"
 #include "Cubemap.h"
 #include "Log.h"
 
 #include <glad/glad.h>
-#include <iostream>
+
 namespace Flux {
     class Framebuffer {
     public:
-        Framebuffer() {
+        Framebuffer(const unsigned int width, const unsigned int height)
+            : width(width)
+            , height(height) 
+        {
             glGenFramebuffers(1, &handle);
         }
 
@@ -20,6 +25,22 @@ namespace Flux {
 
         void release() {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
+        const Texture& getColorTexture() {
+            return *colorTexture;
+        }
+
+        void addColorTexture(int colorAttachment, Texture* texture) {
+            colorTexture = texture;
+            GLint attachment = GL_COLOR_ATTACHMENT0 + colorAttachment;
+            setTexture(attachment, *colorTexture);
+            setDrawBuffer(attachment);
+        }
+
+        void addDepthTexture() {
+            depthTexture = TextureLoader::createEmpty(width, height, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST);
+            setTexture(GL_DEPTH_ATTACHMENT, *depthTexture);
         }
 
         void setTexture(GLuint attachment, Texture& texture) {
@@ -59,7 +80,12 @@ namespace Flux {
             }
         }
     private:
+        unsigned int width;
+        unsigned int height;
         GLuint handle;
+
+        Texture* colorTexture;
+        Texture* depthTexture;
     };
 }
 
