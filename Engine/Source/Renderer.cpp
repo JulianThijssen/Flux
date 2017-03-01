@@ -27,4 +27,18 @@ namespace Flux {
     void Renderer::drawQuad() {
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
+
+    const Framebuffer& Renderer::getCurrentFramebuffer() {
+        return backBuffers[currentFramebuffer];
+    }
+
+    const Framebuffer& Renderer::getOtherFramebuffer() {
+        unsigned int otherFramebuffer = currentFramebuffer ? 0 : 1;
+        return backBuffers[otherFramebuffer];
+    }
+
+    void Renderer::switchBuffers() {
+        currentFramebuffer = currentFramebuffer ? 0 : 1;
+        backBuffers[currentFramebuffer].bind();
+    }
 }

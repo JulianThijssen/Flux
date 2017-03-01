@@ -23,8 +23,10 @@ namespace Flux {
         skyboxShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
         textureShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
         fxaaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
+        gammaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
 
-        if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr || textureShader == nullptr || fxaaShader == nullptr) {
+        if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr 
+            || textureShader == nullptr || fxaaShader == nullptr || gammaShader == nullptr) {
             return false;
         }
 
@@ -41,38 +43,45 @@ namespace Flux {
 
         iblSceneInfo.PrecomputeEnvironmentData(*skybox);
 
-        backBuffer = new RenderBuffer(1024, 768);
-        backBuffer->bind();
-        backBuffer->addColorTexture(0, TextureLoader::createEmpty(1024, 768, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST));
-        backBuffer->addDepthTexture();
-        backBuffer->validate();
-
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        setClearColor(1.0, 0.0, 1.0, 1.0);
-        backBuffer->release();
-
         return true;
+    }
+
+    void ForwardRenderer::onResize(unsigned int width, unsigned int height) {
+        for (int i = 0; i < 2; i++) {
+            Framebuffer framebuffer(width, height);
+            framebuffer.bind();
+            framebuffer.addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST));
+            framebuffer.addDepthTexture();
+            framebuffer.validate();
+            setClearColor(1.0, 0.0, 1.0, 1.0);
+            framebuffer.release();
+            backBuffers.push_back(framebuffer);
+        }
+
+        glViewport(0, 0, width, height);
     }
 
     void ForwardRenderer::update(const Scene& scene) {
         if (scene.getMainCamera() == nullptr)
             return;
 
-        glViewport(0, 0, 1024, 768);
-
-        backBuffer->bind();
+        glEnable(GL_DEPTH_TEST);
+        getCurrentFramebuffer().bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         globalIllumination(scene);
         directLighting(scene);
         renderSkybox(scene);
+
+        glDisable(GL_DEPTH_TEST);
         applyPostprocess();
-        backBuffer->release();
+        getCurrentFramebuffer().release();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        renderFramebuffer(*backBuffer);
+        renderFramebuffer(getCurrentFramebuffer());
     }
 
     void ForwardRenderer::globalIllumination(const Scene& scene) {
@@ -232,16 +241,24 @@ namespace Flux {
     void ForwardRenderer::applyPostprocess() {
         shader = fxaaShader;
         shader->bind();
-        backBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
+        getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
         shader->uniform2f("rcpScreenSize", 1.0f / 1024, 1.0f / 768);
+        switchBuffers();
+        drawQuad();
+
+        shader = gammaShader;
+        shader->bind();
+        getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
+        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        switchBuffers();
         drawQuad();
     }
 
     void ForwardRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
         shader = textureShader;
         shader->bind();
-        backBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
+        getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
         drawQuad();
     }

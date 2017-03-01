@@ -7,8 +7,10 @@
 #include "Scene.h"
 #include "Skybox.h"
 
-#include "RenderBuffer.h"
+#include "Framebuffer.h"
 #include "Texture.h"
+
+#include <vector>
 
 namespace Flux {
     const int TEX_UNIT_DIFFUSE = 0;
@@ -26,9 +28,12 @@ namespace Flux {
             projMatrix(),
             viewMatrix(),
             modelMatrix(),
-            shader(0) { }
+            shader(0),
+            currentFramebuffer(0)
+        { }
 
         virtual bool create() = 0;
+        virtual void onResize(unsigned int width, unsigned int height) = 0;
         virtual void update(const Scene& scene) = 0;
         virtual void renderScene(const Scene& scene) = 0;
         virtual void uploadMaterial(const Material& material) = 0;
@@ -37,6 +42,10 @@ namespace Flux {
         void setClearColor(float r, float g, float b, float a);
         void setCamera(Entity& camera);
         void drawQuad();
+
+        const Framebuffer& getCurrentFramebuffer();
+        const Framebuffer& getOtherFramebuffer();
+        void switchBuffers();
     protected:
         Vector3f clearColor;
 
@@ -48,7 +57,8 @@ namespace Flux {
 
         Skybox* skybox;
 
-        RenderBuffer* backBuffer;
+        std::vector<Framebuffer> backBuffers;
+        unsigned int currentFramebuffer;
     };
 }
 

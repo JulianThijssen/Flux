@@ -13,6 +13,7 @@ namespace Flux {
         ForwardRenderer() { }
 
         virtual bool create();
+        virtual void onResize(unsigned int width, unsigned int height);
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
         virtual void uploadMaterial(const Material& material);
@@ -29,6 +30,7 @@ namespace Flux {
         Shader* skyboxShader;
         Shader* textureShader;
         Shader* fxaaShader;
+        Shader* gammaShader;
 
         IblSceneInfo iblSceneInfo;
     };

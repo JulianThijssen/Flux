@@ -19,15 +19,15 @@ namespace Flux {
             glGenFramebuffers(1, &handle);
         }
 
-        void bind() {
+        void bind() const {
             glBindFramebuffer(GL_FRAMEBUFFER, handle);
         }
 
-        void release() {
+        void release() const {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
-        const Texture& getColorTexture() {
+        const Texture& getColorTexture() const {
             return *colorTexture;
         }
 
@@ -55,7 +55,7 @@ namespace Flux {
             glDrawBuffer(target);
         }
 
-        void validate() {
+        void validate() const {
             GLuint error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
             if (error != GL_FRAMEBUFFER_COMPLETE) {
