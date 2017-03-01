@@ -239,18 +239,18 @@ namespace Flux {
     }
 
     void ForwardRenderer::applyPostprocess() {
+        shader = gammaShader;
+        shader->bind();
+        getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
+        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        switchBuffers();
+        drawQuad();
+
         shader = fxaaShader;
         shader->bind();
         getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
         shader->uniform2f("rcpScreenSize", 1.0f / 1024, 1.0f / 768);
-        switchBuffers();
-        drawQuad();
-
-        shader = gammaShader;
-        shader->bind();
-        getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
-        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
         switchBuffers();
         drawQuad();
     }

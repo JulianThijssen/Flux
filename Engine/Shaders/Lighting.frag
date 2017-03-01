@@ -91,6 +91,10 @@ vec3 CookTorrance(vec3 N, vec3 V, vec3 H, vec3 L, vec3 BaseColor, float Metalnes
     return (D * F * G) / (4 * NdotL * NdotV);
 }
 
+vec3 toLinear(vec3 gammaColor) {
+    return pow(gammaColor, vec3(2.2));
+}
+
 void main() {
     vec3 position = (modelMatrix * (vec4(pass_position, 1))).xyz;
     vec3 N = pass_normal;
@@ -132,7 +136,7 @@ void main() {
     // Base Color
     vec3 BaseColor = vec3(1, 1, 1);
     if (material.hasDiffuseMap) {
-        BaseColor = texture(material.diffuseMap, pass_texCoords).rgb;
+        BaseColor = toLinear(texture(material.diffuseMap, pass_texCoords).rgb);
     }
 
     vec3 DiffuseColor = BaseColor * (1 - Metalness);

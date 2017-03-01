@@ -10,6 +10,10 @@ in vec2 pass_texCoords;
 
 out vec4 fragColor;
 
+vec3 toLinear(vec3 gammaColor) {
+    return pow(gammaColor, vec3(2.2));
+}
+
 void main() {
     mat3 rots[6] = mat3[](
         mat3(vec3(0, 0, -1), vec3(0, -1, 0), vec3(-1, 0, 0)), // Right
@@ -42,5 +46,5 @@ void main() {
     
     Color /= TotalWeight;
     
-    fragColor = vec4(Color, 1);
+    fragColor = vec4(toLinear(Color), 1);
 }
