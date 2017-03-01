@@ -11,14 +11,16 @@ Welcome to the Flux Rendering Engine repository. This application is meant to be
  - Prefiltered environment maps + BRDFintegration map
  - Normal mapping
  - Skybox
+ - FXAA
+ - Gamma Correction
 
 ### Planned
+ - HDR
  - Tone mapping
- - Gamma Correction
+ - Automatic exposure adjustment
  - Fog
  - Spherical Harmonics
  - Crepuscular rays
- - HDR
  - SSAO
  - Shadow mapping
  - Omni-directional shadow mapping
