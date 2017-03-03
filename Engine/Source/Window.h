@@ -40,6 +40,8 @@ namespace Flux {
 
         void destroy();
         static void onError(int error, const char* description);
+        static void onKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void onMouseMove(GLFWwindow* window, double x, double y);
     };
 }
 

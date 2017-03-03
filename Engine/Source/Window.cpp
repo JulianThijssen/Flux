@@ -13,6 +13,7 @@
 #include "Window.h"
 
 #include "Log.h"
+#include "Input/Input.h"
 #include <iostream>
 
 namespace {
@@ -37,6 +38,10 @@ namespace Flux {
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         glfwMakeContextCurrent(window);
         glfwSwapInterval(0);
+
+        glfwSetKeyCallback(window, onKeyAction);
+        glfwSetCursorPosCallback(window, onMouseMove);
+
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
             Log::error("Failed to initialize OpenGL context");
@@ -74,6 +79,14 @@ namespace Flux {
             return false;
         }
         return true;
+    }
+
+    void Window::onKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        Input::addKeyEvent(key, action == GLFW_PRESS);
+    }
+
+    void Window::onMouseMove(GLFWwindow* window, double x, double y) {
+        Input::addMouseMoveEvent((float) x, (float) y);
     }
 
     void Window::onError(int error, const char* description) {
