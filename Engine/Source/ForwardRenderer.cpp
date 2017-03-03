@@ -24,9 +24,11 @@ namespace Flux {
         textureShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
         fxaaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
         gammaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
+        tonemapShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
 
         if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr 
-            || textureShader == nullptr || fxaaShader == nullptr || gammaShader == nullptr) {
+            || textureShader == nullptr || fxaaShader == nullptr || gammaShader == nullptr
+            || tonemapShader == nullptr) {
             return false;
         }
 
@@ -51,17 +53,23 @@ namespace Flux {
     }
 
     void ForwardRenderer::onResize(unsigned int width, unsigned int height) {
+        hdrBuffer = new Framebuffer(width, height);
+        hdrBuffer->bind();
+        hdrBuffer->addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST));
+        hdrBuffer->addDepthTexture();
+        hdrBuffer->validate();
+        hdrBuffer->release();
+
         for (int i = 0; i < 2; i++) {
             Framebuffer framebuffer(width, height);
             framebuffer.bind();
             framebuffer.addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST));
-            framebuffer.addDepthTexture();
             framebuffer.validate();
-            setClearColor(1.0, 0.0, 1.0, 1.0);
             framebuffer.release();
             backBuffers.push_back(framebuffer);
         }
 
+        setClearColor(1.0, 0.0, 1.0, 1.0);
         glViewport(0, 0, width, height);
     }
 
@@ -69,17 +77,14 @@ namespace Flux {
         if (scene.getMainCamera() == nullptr)
             return;
 
-        glEnable(GL_DEPTH_TEST);
-        getCurrentFramebuffer().bind();
+        hdrBuffer->bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         globalIllumination(scene);
         directLighting(scene);
         renderSkybox(scene);
-
-        glDisable(GL_DEPTH_TEST);
         applyPostprocess();
-        getCurrentFramebuffer().release();
 
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         renderFramebuffer(getCurrentFramebuffer());
     }
@@ -239,6 +244,13 @@ namespace Flux {
     }
 
     void ForwardRenderer::applyPostprocess() {
+        shader = tonemapShader;
+        shader->bind();
+        hdrBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
+        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        switchBuffers();
+        drawQuad();
+
         shader = gammaShader;
         shader->bind();
         getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
@@ -258,7 +270,7 @@ namespace Flux {
     void ForwardRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
         shader = textureShader;
         shader->bind();
-        getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
+        framebuffer.getColorTexture().bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
         drawQuad();
     }

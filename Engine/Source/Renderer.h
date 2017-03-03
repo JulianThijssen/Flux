@@ -57,6 +57,7 @@ namespace Flux {
 
         Skybox* skybox;
 
+        Framebuffer* hdrBuffer;
         std::vector<Framebuffer> backBuffers;
         unsigned int currentFramebuffer;
     };

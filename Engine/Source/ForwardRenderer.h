@@ -31,6 +31,7 @@ namespace Flux {
         Shader* textureShader;
         Shader* fxaaShader;
         Shader* gammaShader;
+        Shader* tonemapShader;
 
         IblSceneInfo iblSceneInfo;
     };
