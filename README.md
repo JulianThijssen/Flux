@@ -13,10 +13,10 @@ Welcome to the Flux Rendering Engine repository. This application is meant to be
  - Skybox
  - FXAA
  - Gamma Correction
-
-### Planned
  - HDR
  - Tone mapping
+
+### Planned
  - Automatic exposure adjustment
  - Fog
  - Spherical Harmonics
