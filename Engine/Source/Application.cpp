@@ -4,6 +4,7 @@
 #include <Editor/SceneImporter.h>
 #include <Editor/SceneDesc.h>
 
+#include "FirstPersonView.h"
 #include "SceneLoader.h"
 #include "Path.h"
 
@@ -18,6 +19,10 @@ namespace Flux {
         SceneConverter::convert(scene, Path("res/Indoors.scene"));
         SceneLoader::loadScene(Path("res/Indoors.scene"), currentScene);
         bool created = renderer.create();
+        renderer.onResize(1024, 768);
+
+        currentScene.addScript(new FirstPersonView());
+
         if (!created)
             return;
 
