@@ -41,6 +41,7 @@ namespace Flux {
 
         glfwSetKeyCallback(window, onKeyAction);
         glfwSetCursorPosCallback(window, onMouseMove);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
@@ -82,7 +83,7 @@ namespace Flux {
     }
 
     void Window::onKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        Input::addKeyEvent(key, action == GLFW_PRESS);
+        Input::addKeyEvent(key, action == GLFW_PRESS || action == GLFW_REPEAT);
     }
 
     void Window::onMouseMove(GLFWwindow* window, double x, double y) {
