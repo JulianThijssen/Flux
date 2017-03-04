@@ -6,8 +6,8 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "PointLight.h"
-
 #include "Material.h"
+#include "Script.h"
 
 #include <vector>
 
@@ -17,7 +17,9 @@ namespace Flux {
         Scene() : mainCamera() { }
 
         void update() {
-
+            for (Script* script : scripts) {
+                script->update(*this);
+            }
         }
 
         Entity* getMainCamera() const {
@@ -49,9 +51,14 @@ namespace Flux {
             return nullptr;
         }
 
+        void addScript(Script* script) {
+            scripts.push_back(script);
+        }
+
         std::vector<Material*> materials;
         std::vector<Entity*> entities;
         std::vector<Entity*> lights;
+        std::vector<Script*> scripts;
 
         Entity* mainCamera;
     };
