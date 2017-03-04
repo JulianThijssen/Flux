@@ -2,9 +2,9 @@
 #ifndef SCRIPT_H
 #define SCRIPT_H
 
-#include "Scene.h"
-
 namespace Flux {
+    class Scene;
+
     class Script {
     public:
         virtual void start(Scene& scene) = 0;
