@@ -43,14 +43,14 @@ namespace Flux {
             release();
         }
 
-        void createEmpty(const unsigned int resolution, bool mipmaps) {
+        void createEmpty(const unsigned int resolution, GLint internalFormat, GLenum format, GLenum type, bool mipmaps) {
             this->resolution = resolution;
 
             glGenTextures(1, &handle);
             bind();
 
             for (int i = 0; i < 6; i++) {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, resolution, resolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, resolution, resolution, 0, format, type, 0);
             }
 
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
