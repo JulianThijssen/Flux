@@ -53,6 +53,14 @@ namespace Flux {
         return title;
     }
 
+    const unsigned int Window::getWidth() {
+        return width;
+    }
+
+    const unsigned int Window::getHeight() {
+        return height;
+    }
+
     void Window::setTitle(std::string title) {
         this->title = title;
     }

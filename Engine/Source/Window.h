@@ -27,6 +27,8 @@ namespace Flux {
         Window(const char* title, int width, int height);
 
         std::string getTitle();
+        const unsigned int getWidth();
+        const unsigned int getHeight();
         void setTitle(std::string title);
         void setSize(int width, int height);
         void update();
@@ -35,8 +37,8 @@ namespace Flux {
     private:
         GLFWwindow* window;
         std::string title;
-        int width;
-        int height;
+        unsigned int width;
+        unsigned int height;
 
         void destroy();
         static void onError(int error, const char* description);
