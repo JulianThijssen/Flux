@@ -10,7 +10,9 @@ namespace Flux {
     class TextureLoader {
     public:
         static Texture* loadTexture(Path path);
+        static Texture* loadTextureHDR(Path path);
         static Texture* create(const int width, const int height, const unsigned char* data, Sampling sampling);
+        static Texture* createHDR(const int width, const int height, const float* data, Sampling sampling);
         static Texture* createEmpty(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Sampling sampling);
     };
 }
