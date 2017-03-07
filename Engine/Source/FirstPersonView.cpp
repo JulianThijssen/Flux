@@ -20,11 +20,16 @@ namespace Flux {
         }
 
         // Mouselook
-        Vector2f deltaMouse = (Input::getMousePos() - mousePos) * 0.5;
+        Vector2f deltaMouse = (Input::getMousePos() - mousePos) * 0.03;
+        storedDX += deltaMouse.x;
+        storedDY += deltaMouse.y;
+        storedDX *= 0.8f;
+        storedDY *= 0.8f;
+
         mousePos = Input::getMousePos();
 
-        transform->rotation.y -= deltaMouse.x;
-        transform->rotation.x -= deltaMouse.y;
+        transform->rotation.y -= storedDX;
+        transform->rotation.x -= storedDY;
 
         if (transform->rotation.x < -90) {
             transform->rotation.x = -90;
@@ -60,6 +65,6 @@ namespace Flux {
         direction = pitchMatrix.transform(direction);
         direction = yawMatrix.transform(direction);
 
-        transform->position += direction * 0.1f;
+        transform->position += direction * 0.05f;
     }
 }

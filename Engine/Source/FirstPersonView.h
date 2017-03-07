@@ -14,6 +14,8 @@ namespace Flux {
         virtual void update(Scene& scene);
     private:
         Vector2f mousePos;
+
+        float storedDX, storedDY;
     };
 }
 
