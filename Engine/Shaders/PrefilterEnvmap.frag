@@ -2,6 +2,8 @@
 
 uniform samplerCube EnvMap;
 uniform int Face;
+uniform sampler2D EnvTex;
+uniform bool Skybox;
 uniform float Roughness;
 
 in vec3 pass_position;
@@ -9,7 +11,11 @@ in vec2 pass_texCoords;
 
 out vec4 fragColor;
 
-#define PI 3.14159265
+#define PI 3.1415926535897932384626433832795
+#define TWO_PI 6.283185307179586476925286766559
+
+const float ONE_OVER_PI = 1.0 / PI;
+const float ONE_OVER_TWO_PI = 1.0 / TWO_PI;
 
 float RadicalInverse(uint bits) {
      bits = (bits << 16u) | (bits >> 16u);
@@ -41,6 +47,16 @@ vec3 ImportanceSampleGGX(vec2 Xi, float Roughness, vec3 N) {
     return TangentX * H.x + TangentY * H.y + N * H.z;
 }
 
+vec3 toLinear(vec3 gammaColor) {
+    return pow(gammaColor, vec3(2.2));
+}
+
+vec2 toUV(vec3 dir) {
+    float phi = atan(dir.z, dir.x) + PI;
+    float theta = acos(dir.y);
+    return vec2(phi * ONE_OVER_TWO_PI, theta * ONE_OVER_PI);
+}
+
 vec3 PrefilterEnvMap(float Roughness, vec3 R)
 {
     vec3 N = R;
@@ -60,7 +76,13 @@ vec3 PrefilterEnvMap(float Roughness, vec3 R)
         
         if (NdotL > 0)
         {
-            Color += texture(EnvMap, L).rgb * NdotL;
+            if (Skybox) {
+                Color += texture(EnvMap, L).rgb * NdotL;
+            }
+            else {
+                vec2 uv = toUV(L);
+                Color += textureLod(EnvTex, uv, 0).rgb * NdotL;
+            }
             TotalWeight += NdotL;
         }
     }
@@ -83,7 +105,13 @@ void main()
     vec3 dir = normalize(vec3(pass_texCoords * 2 - 1, -1));
     dir = rots[Face] * dir;
 
-    vec3 color = PrefilterEnvMap(Roughness, dir);
+    vec3 color;
+    if (Skybox) {
+        color = toLinear(PrefilterEnvMap(Roughness, dir));
+    }
+    else {
+        color = PrefilterEnvMap(Roughness, dir);
+    }
     
     fragColor = vec4(color, 1);
 }

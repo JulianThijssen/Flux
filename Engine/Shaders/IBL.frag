@@ -42,6 +42,10 @@ vec3 calcNormal(vec3 normal, vec3 tangent, vec2 texCoord) {
     return normalize(TBN * mapNormal);
 }
 
+vec3 toLinear(vec3 gammaColor) {
+    return pow(gammaColor, vec3(2.2));
+}
+
 vec3 ApproximateSpecularIBL(vec3 SpecularColor, float Roughness, vec3 N, vec3 V)
 {
     float NdotV = clamp(dot(N, V), 0, 1);
@@ -51,10 +55,6 @@ vec3 ApproximateSpecularIBL(vec3 SpecularColor, float Roughness, vec3 N, vec3 V)
     vec2 EnvBRDF = texture(scaleBiasMap, vec2(Roughness, NdotV)).rg;
     
     return PrefilteredColor * (SpecularColor * EnvBRDF.x + EnvBRDF.y);
-}
-
-vec3 toLinear(vec3 gammaColor) {
-    return pow(gammaColor, vec3(2.2));
 }
 
 void main() {
