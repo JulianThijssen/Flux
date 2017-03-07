@@ -7,6 +7,8 @@
 #include "Cubemap.h"
 #include "Renderer/ImageBasedRendering.h"
 
+#include "Texture.h"
+
 namespace Flux {
     class ForwardRenderer : public Renderer {
     public:
@@ -21,7 +23,7 @@ namespace Flux {
 
         void globalIllumination(const Scene& scene);
         void directLighting(const Scene& scene);
-        void renderSkybox(const Scene& scene);
+        void renderSky(const Scene& scene, bool useSkybox);
         void applyPostprocess();
         void renderFramebuffer(const Framebuffer& framebuffer);
     private:
@@ -32,8 +34,11 @@ namespace Flux {
         Shader* fxaaShader;
         Shader* gammaShader;
         Shader* tonemapShader;
+        Shader* skysphereShader;
 
         IblSceneInfo iblSceneInfo;
+
+        Texture* hdrMap;
     };
 }
 

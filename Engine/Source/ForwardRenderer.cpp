@@ -11,6 +11,7 @@
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "Path.h"
 
 #include <iostream>
 
@@ -25,10 +26,11 @@ namespace Flux {
         fxaaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
         gammaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
         tonemapShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
+        skysphereShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
 
         if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr 
             || textureShader == nullptr || fxaaShader == nullptr || gammaShader == nullptr
-            || tonemapShader == nullptr) {
+            || tonemapShader == nullptr || skysphereShader == nullptr) {
             return false;
         }
 
@@ -42,8 +44,9 @@ namespace Flux {
         };
 
         skybox = new Skybox(paths);
+        hdrMap = TextureLoader::loadTextureHDR(Path("res/Materials/PaperMill_E_3k.hdr"));
 
-        iblSceneInfo.PrecomputeEnvironmentData(*skybox);
+        iblSceneInfo.PrecomputeEnvironmentData(*hdrMap);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -81,7 +84,7 @@ namespace Flux {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         globalIllumination(scene);
         directLighting(scene);
-        renderSkybox(scene);
+        renderSky(scene, false);
         applyPostprocess();
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -216,10 +219,7 @@ namespace Flux {
         glDrawElements(GL_TRIANGLES, (GLsizei) mesh->indices.size(), GL_UNSIGNED_INT, 0);
     }
 
-    void ForwardRenderer::renderSkybox(const Scene& scene) {
-        shader = skyboxShader;
-        shader->bind();
-
+    void ForwardRenderer::renderSky(const Scene& scene, bool useSkybox) {
         Transform* transform = scene.getMainCamera()->getComponent<Transform>();
 
         Matrix4f yawMatrix;
@@ -232,11 +232,21 @@ namespace Flux {
         cameraBasis[10] = -1;
         cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
+        if (useSkybox) {
+            shader = skyboxShader;
+            shader->bind();
+            skybox->bind(TEX_UNIT_DIFFUSE);
+            shader->uniform1i("skybox", TEX_UNIT_DIFFUSE);
+        }
+        else {
+            shader = skysphereShader;
+            shader->bind();
+            hdrMap->bind(TEX_UNIT_DIFFUSE);
+            shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        }
+
         shader->uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
         shader->uniformMatrix4f("cameraBasis", cameraBasis);
-
-        skybox->bind(TEX_UNIT_DIFFUSE);
-        shader->uniform1i("skybox", TEX_UNIT_DIFFUSE);
 
         glDepthFunc(GL_LEQUAL);
         drawQuad();
@@ -262,7 +272,7 @@ namespace Flux {
         shader->bind();
         getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
         shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
-        shader->uniform2f("rcpScreenSize", 1.0f / 1024, 1.0f / 768);
+        shader->uniform2f("rcpScreenSize", 1.0f / 1920, 1.0f / 1080);
         switchBuffers();
         drawQuad();
     }
