@@ -2,7 +2,7 @@
 
 Welcome to the Flux Rendering Engine repository. This application is meant to be an exploration into modern rendering techniques used in the game industry. One of the major improvements over its progenitor [Radiant](https://github.com/JulianThijssen/Radiant) are its Physically Based Rendering capabilities.
 
-![alt text](http://i.imgur.com/2TnpXjT.jpg "Latest screenshot")
+![alt text](http://i.imgur.com/2NwJmNk.jpg "Latest screenshot")
 
 ## Technology
 ### Implemented
@@ -10,11 +10,10 @@ Welcome to the Flux Rendering Engine repository. This application is meant to be
  - Irradiance mapping
  - Prefiltered environment maps + BRDFintegration map
  - Normal mapping
- - Skybox
+ - HDR Skybox
  - FXAA
  - Gamma Correction
- - HDR
- - Tone mapping
+ - HDR + Tone mapping
 
 ### Planned
  - Automatic exposure adjustment
