@@ -13,14 +13,6 @@
 #include <vector>
 
 namespace Flux {
-    const int TEX_UNIT_DIFFUSE = 0;
-    const int TEX_UNIT_NORMAL = 1;
-    const int TEX_UNIT_ROUGHNESS = 2;
-    const int TEX_UNIT_METALNESS = 3;
-    const int TEX_UNIT_IRRADIANCE = 4;
-    const int TEX_UNIT_PREFILTER = 5;
-    const int TEX_UNIT_SCALEBIAS = 6;
-
     class Renderer {
     public:
         Renderer() : 
@@ -36,7 +28,6 @@ namespace Flux {
         virtual void onResize(unsigned int width, unsigned int height) = 0;
         virtual void update(const Scene& scene) = 0;
         virtual void renderScene(const Scene& scene) = 0;
-        virtual void uploadMaterial(const Material& material) = 0;
         virtual void renderMesh(const Scene& scene, Entity* entity) = 0;
 
         void setClearColor(float r, float g, float b, float a);
