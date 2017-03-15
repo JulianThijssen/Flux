@@ -128,7 +128,7 @@ void main() {
         Metalness = texture(material.metalMap, pass_texCoords).r;
     }
     
-    float Roughness = 0;
+    float Roughness = 1;
     if (material.hasRoughnessMap) {
         Roughness = texture(material.roughnessMap, pass_texCoords).r;
     }
