@@ -8,6 +8,7 @@
 #include "MeshRenderer.h"
 #include "AssetManager.h"
 #include "TextureLoader.h"
+#include "TextureUnit.h"
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -98,14 +99,14 @@ namespace Flux {
 
         setCamera(*scene.getMainCamera());
 
-        iblSceneInfo.irradianceMap->bind(TEX_UNIT_IRRADIANCE);
-        shader->uniform1i("irradianceMap", TEX_UNIT_IRRADIANCE);
+        iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);
+        shader->uniform1i("irradianceMap", TextureUnit::IRRADIANCE);
 
-        iblSceneInfo.prefilterEnvmap->bind(TEX_UNIT_PREFILTER);
-        shader->uniform1i("prefilterEnvmap", TEX_UNIT_PREFILTER);
+        iblSceneInfo.prefilterEnvmap->bind(TextureUnit::PREFILTER);
+        shader->uniform1i("prefilterEnvmap", TextureUnit::PREFILTER);
 
-        iblSceneInfo.scaleBiasTexture->bind(TEX_UNIT_SCALEBIAS);
-        shader->uniform1i("scaleBiasMap", TEX_UNIT_SCALEBIAS);
+        iblSceneInfo.scaleBiasTexture->bind(TextureUnit::SCALEBIAS);
+        shader->uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
 
         renderScene(scene);
     }
@@ -152,43 +153,20 @@ namespace Flux {
             if (!e->hasComponent<Mesh>())
                 continue;
 
-            shader->uniform1i("material.hasDiffuseMap", 0);
-            shader->uniform1i("material.hasNormalMap", 0);
-            shader->uniform1i("material.hasMetalMap", 0);
-            shader->uniform1i("material.hasRoughnessMap", 0);
             if (e->hasComponent<MeshRenderer>()) {
                 MeshRenderer* mr = e->getComponent<MeshRenderer>();
                 Material* material = scene.materials[mr->materialID];
 
                 if (material) {
-                    uploadMaterial(*material);
+                    material->bind(*shader);
+
+                    renderMesh(scene, e);
+
+                    material->release(*shader);
                 }
             }
 
-            renderMesh(scene, e);
-        }
-    }
-
-    void ForwardRenderer::uploadMaterial(const Material& material) {
-        if (material.diffuseTex) {
-            material.diffuseTex->bind(TEX_UNIT_DIFFUSE);
-            shader->uniform1i("material.diffuseMap", TEX_UNIT_DIFFUSE);
-            shader->uniform1i("material.hasDiffuseMap", 1);
-        }
-        if (material.normalTex) {
-            material.normalTex->bind(TEX_UNIT_NORMAL);
-            shader->uniform1i("material.normalMap", TEX_UNIT_NORMAL);
-            shader->uniform1i("material.hasNormalMap", 1);
-        }
-        if (material.metalTex) {
-            material.metalTex->bind(TEX_UNIT_METALNESS);
-            shader->uniform1i("material.metalMap", TEX_UNIT_METALNESS);
-            shader->uniform1i("material.hasMetalMap", 1);
-        }
-        if (material.roughnessTex) {
-            material.roughnessTex->bind(TEX_UNIT_ROUGHNESS);
-            shader->uniform1i("material.roughnessMap", TEX_UNIT_ROUGHNESS);
-            shader->uniform1i("material.hasRoughnessMap", 1);
+            // renderMesh(scene, e);
         }
     }
 
@@ -235,14 +213,14 @@ namespace Flux {
         if (useSkybox) {
             shader = skyboxShader;
             shader->bind();
-            skybox->bind(TEX_UNIT_DIFFUSE);
-            shader->uniform1i("skybox", TEX_UNIT_DIFFUSE);
+            skybox->bind(TextureUnit::TEXTURE);
+            shader->uniform1i("skybox", TextureUnit::TEXTURE);
         }
         else {
             shader = skysphereShader;
             shader->bind();
-            hdrMap->bind(TEX_UNIT_DIFFUSE);
-            shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+            hdrMap->bind(TextureUnit::TEXTURE);
+            shader->uniform1i("tex", TextureUnit::TEXTURE);
         }
 
         shader->uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
@@ -256,22 +234,22 @@ namespace Flux {
     void ForwardRenderer::applyPostprocess() {
         shader = tonemapShader;
         shader->bind();
-        hdrBuffer->getColorTexture().bind(TEX_UNIT_DIFFUSE);
-        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        hdrBuffer->getColorTexture().bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
         switchBuffers();
         drawQuad();
 
         shader = gammaShader;
         shader->bind();
-        getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
-        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        getCurrentFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
         switchBuffers();
         drawQuad();
 
         shader = fxaaShader;
         shader->bind();
-        getCurrentFramebuffer().getColorTexture().bind(TEX_UNIT_DIFFUSE);
-        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        getCurrentFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
         shader->uniform2f("rcpScreenSize", 1.0f / 1920, 1.0f / 1080);
         switchBuffers();
         drawQuad();
@@ -280,8 +258,8 @@ namespace Flux {
     void ForwardRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
         shader = textureShader;
         shader->bind();
-        framebuffer.getColorTexture().bind(TEX_UNIT_DIFFUSE);
-        shader->uniform1i("tex", TEX_UNIT_DIFFUSE);
+        framebuffer.getColorTexture().bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
         drawQuad();
     }
 }

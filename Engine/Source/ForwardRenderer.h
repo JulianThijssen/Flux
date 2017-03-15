@@ -18,7 +18,6 @@ namespace Flux {
         virtual void onResize(unsigned int width, unsigned int height);
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
-        virtual void uploadMaterial(const Material& material);
         virtual void renderMesh(const Scene& scene, Entity* e);
 
         void globalIllumination(const Scene& scene);

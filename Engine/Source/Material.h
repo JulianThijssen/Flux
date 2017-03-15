@@ -5,12 +5,17 @@
 #include "Texture.h"
 
 namespace Flux {
+    class Shader;
+
     class Material {
     public:
         Texture* diffuseTex;
         Texture* normalTex;
         Texture* metalTex;
         Texture* roughnessTex;
+
+        void bind(Shader& shader) const;
+        void release(Shader& shader) const;
     };
 }
 
