@@ -1,5 +1,8 @@
 #version 150 core
 
+#define D_GGX
+#define G_Schlick
+
 struct DirectionalLight {
     vec3 direction;
     vec3 color;
@@ -43,7 +46,7 @@ in vec3 pass_tangent;
 
 out vec4 fragColor;
 
-#define PI 3.14159265
+#define PI 3.14159265359
 
 /* Calculates the diffuse contribution of the light */
 float CosTheta(vec3 N, vec3 L) {
@@ -53,42 +56,86 @@ float CosTheta(vec3 N, vec3 L) {
 /* Calculates the normal of the fragment using a normal map */
 vec3 calcNormal(vec3 normal, vec3 tangent, vec2 texCoord) {
     vec3 bitangent = cross(tangent, normal);
-    vec3 mapNormal = texture(material.normalMap, texCoord).rgb * 2 - 1;
+    vec3 mapNormal = texture(material.normalMap, texCoord).rgb;
+    mapNormal.g = 1 - mapNormal.g;
+    mapNormal = mapNormal * 2 - 1;
     
     mat3 TBN = mat3(tangent, bitangent, normal);
     return normalize(TBN * mapNormal);
 }
 
+/* ------------------------ Fresnel functions -------------------------- */
+// Fresnel
 vec3 Fresnel(vec3 BaseColor, float Metalness, float b) {
-    float n1 = 1;
-    float n2 = 2.9304;
-    //float F0 = pow((n1 - n2) / (n1 + n2), 2);
     vec3 F0 = mix(vec3(0.04), BaseColor, Metalness);
-    return F0 + (1 - F0) * pow(1 - b, 5);
+    return F0 + (1.0 - F0) * pow(1.0 - b, 5.0);
 }
 
+/* ---------------------- Distribution functions ----------------------- */
+// GGX
 float GGX(float NdotH, float a) {
     float a2 = a * a;
-    float d = NdotH * NdotH * (a2 - 1) + 1;
+    float d = NdotH * NdotH * (a2 - 1.0) + 1.0;
     return a2 / (PI * d * d);
 }
 
+// Beckmann
+float Beckmann(float NdotH, float a) {
+    float a2 = a * a;
+    float r1 = 1.0 / (4.0 * a2 * pow(NdotH, 4.0));
+    float r2 = (NdotH * NdotH - 1.0) / (a2 * NdotH * NdotH);
+    return r1 * exp(r2);
+}
+
+/* --------------------- Geometric shadowing terms --------------------- */
+// Schlick
 float Schlick(float NdotL, float NdotV, float a) {
-    float a1 = a + 1;
+    float a1 = a + 1.0;
     float k = a1 * a1 * 0.125;
-    float G1 = NdotL / (NdotL * (1 - k) + k);
-    float G2 = NdotV / (NdotV * (1 - k) + k);
+    float G1 = NdotL / (NdotL * (1.0 - k) + k);
+    float G2 = NdotV / (NdotV * (1.0 - k) + k);
     return G1 * G2;
 }
 
+// Cook-Torrance
+float GCT(float NdotL, float NdotV, float NdotH, float VdotH) {
+    float G1 = (2.0 * NdotH * NdotV) / VdotH;
+    float G2 = (2.0 * NdotH * NdotL) / VdotH;
+    return min(1.0, min(G1, G2));
+}
+
+// Keleman
+float Keleman(float NdotL, float NdotV, float VdotH) {
+    return (NdotL * NdotV) / (VdotH * VdotH);
+}
+
+/* --------------------------- Shading model --------------------------- */
+// Cook-Torrance
 vec3 CookTorrance(vec3 N, vec3 V, vec3 H, vec3 L, vec3 BaseColor, float Metalness, float Roughness) {
-    float NdotH = dot(N, H);
-    float NdotV = dot(N, V);
-    float NdotL = dot(N, L);
+    float NdotH = max(0.0, dot(N, H));
+    float NdotV = max(1e-7, dot(N, V));
+    float NdotL = max(1e-7, dot(N, L));
+    float VdotH = max(0.0, dot(V, H));
+    #ifdef D_GGX
     float D = GGX(NdotH, Roughness);
-    vec3 F = Fresnel(BaseColor, Metalness, NdotV);
+    #endif
+    #ifdef D_Beckmann
+    float D = Beckmann(NdotH, Roughness);
+    #endif
+    
+    #ifdef G_Schlick
     float G = Schlick(NdotL, NdotV, Roughness);
-    return (D * F * G) / (4 * NdotL * NdotV);
+    #endif
+    #ifdef G_CookTorrance
+    float G = GCT(NdotL, NdotV, NdotH, VdotH);
+    #endif
+    #ifdef G_Keleman
+    float G = Keleman(NdotL, NdotV, VdotH);
+    #endif
+    
+    vec3 F = Fresnel(BaseColor, Metalness, VdotH);
+    
+    return (D * F * G) / (4.0 * NdotL * NdotV);
 }
 
 vec3 toLinear(vec3 gammaColor) {
@@ -114,12 +161,12 @@ void main() {
         vec3 dir = pointLight.position - position;
         float distance = dot(dir, dir);
         Attenuation = CosTheta(N, normalize(L)) * 1 / distance;
-        Li *= pointLight.color;
+        Li = pointLight.color;
     }
     if (isDirLight) {
         L = -dirLight.direction;
         Attenuation = CosTheta(N, L);
-        Li *= dirLight.color;
+        Li = dirLight.color;
     }
     vec3 H = normalize(L + V);
     
@@ -134,20 +181,20 @@ void main() {
     }
     
     // Base Color
-    vec3 BaseColor = vec3(1, 1, 1);
+    vec3 BaseColor = vec3(1);
     if (material.hasDiffuseMap) {
         BaseColor = toLinear(texture(material.diffuseMap, pass_texCoords).rgb);
     }
 
-    vec3 DiffuseColor = BaseColor * (1 - Metalness);
+    vec3 DiffuseColor = BaseColor;
     
     // Lambert Diffuse BRDF
-    //vec3 LambertBRDF = (BaseColor / PI);
+    vec3 LambertBRDF = (DiffuseColor / PI);
     
     // Cook Torrance Specular BRDF
     vec3 CookBRDF = CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness);
 
-    vec3 Radiance = (DiffuseColor + CookBRDF) * Li * Attenuation;
+    vec3 Radiance = (LambertBRDF + CookBRDF) * Li * Attenuation;
 
     fragColor = vec4(Radiance, 1.0);
 }
