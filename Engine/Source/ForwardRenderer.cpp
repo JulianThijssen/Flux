@@ -20,19 +20,21 @@
 
 namespace Flux {
     bool ForwardRenderer::create() {
-        IBLShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
-        lightShader = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
-        skyboxShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
-        textureShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
-        fxaaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
-        gammaShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
-        tonemapShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
-        skysphereShader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
+        shaders[IBL]       = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
+        shaders[DIRECT]    = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
+        shaders[SKYBOX]    = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
+        shaders[TEXTURE]   = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
+        shaders[FXAA]      = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
+        shaders[GAMMA]     = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
+        shaders[TONEMAP]   = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
+        shaders[SKYSPHERE] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
+        shaders[BLOOM]     = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag");
+        shaders[BLUR]      = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag");
 
-        if (IBLShader == nullptr || skyboxShader == nullptr || lightShader == nullptr 
-            || textureShader == nullptr || fxaaShader == nullptr || gammaShader == nullptr
-            || tonemapShader == nullptr || skysphereShader == nullptr) {
-            return false;
+        for (auto kv : shaders) {
+            if (kv.second == nullptr) {
+                return false;
+            }
         }
 
         const char* paths[] = {
@@ -94,7 +96,7 @@ namespace Flux {
     }
 
     void ForwardRenderer::globalIllumination(const Scene& scene) {
-        shader = IBLShader;
+        shader = shaders[IBL];
         shader->bind();
 
         setCamera(*scene.getMainCamera());
@@ -116,7 +118,7 @@ namespace Flux {
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
 
-        shader = lightShader;
+        shader = shaders[DIRECT];
         shader->bind();
 
         setCamera(*scene.getMainCamera());
@@ -211,13 +213,13 @@ namespace Flux {
         cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
         if (useSkybox) {
-            shader = skyboxShader;
+            shader = shaders[SKYBOX];
             shader->bind();
             skybox->bind(TextureUnit::TEXTURE);
             shader->uniform1i("skybox", TextureUnit::TEXTURE);
         }
         else {
-            shader = skysphereShader;
+            shader = shaders[SKYSPHERE];
             shader->bind();
             hdrMap->bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
@@ -232,21 +234,24 @@ namespace Flux {
     }
 
     void ForwardRenderer::applyPostprocess() {
-        shader = tonemapShader;
+        shader = shaders[BLOOM];
+        shader = shaders[BLUR];
+        shader->bind();
+        shader = shaders[TONEMAP];
         shader->bind();
         hdrBuffer->getColorTexture().bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         switchBuffers();
         drawQuad();
 
-        shader = gammaShader;
+        shader = shaders[GAMMA];
         shader->bind();
         getCurrentFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         switchBuffers();
         drawQuad();
 
-        shader = fxaaShader;
+        shader = shaders[FXAA];
         shader->bind();
         getCurrentFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
@@ -256,7 +261,7 @@ namespace Flux {
     }
 
     void ForwardRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
-        shader = textureShader;
+        shader = shaders[TEXTURE];
         shader->bind();
         framebuffer.getColorTexture().bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);

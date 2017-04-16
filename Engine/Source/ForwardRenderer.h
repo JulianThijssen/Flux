@@ -9,7 +9,11 @@
 
 #include "Texture.h"
 
+#include <unordered_map>
+
 namespace Flux {
+    enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR };
+
     class ForwardRenderer : public Renderer {
     public:
         ForwardRenderer() { }
@@ -26,14 +30,7 @@ namespace Flux {
         void applyPostprocess();
         void renderFramebuffer(const Framebuffer& framebuffer);
     private:
-        Shader* IBLShader;
-        Shader* lightShader;
-        Shader* skyboxShader;
-        Shader* textureShader;
-        Shader* fxaaShader;
-        Shader* gammaShader;
-        Shader* tonemapShader;
-        Shader* skysphereShader;
+        std::unordered_map<ShaderName, Shader*> shaders;
 
         IblSceneInfo iblSceneInfo;
 
