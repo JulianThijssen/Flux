@@ -14,6 +14,7 @@ namespace Flux {
         static const int SCALEBIAS = 6;
 
         static const int TEXTURE = 0;
+        static const int BLOOM = 1;
     };
 }
 

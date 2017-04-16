@@ -32,6 +32,10 @@ namespace Flux {
         return backBuffers[currentFramebuffer];
     }
 
+    const Framebuffer& Renderer::getCurrentHdrFramebuffer() {
+        return hdrBackBuffers[currentFramebuffer];
+    }
+
     const Framebuffer& Renderer::getOtherFramebuffer() {
         unsigned int otherFramebuffer = currentFramebuffer ? 0 : 1;
         return backBuffers[otherFramebuffer];
@@ -40,5 +44,10 @@ namespace Flux {
     void Renderer::switchBuffers() {
         currentFramebuffer = currentFramebuffer ? 0 : 1;
         backBuffers[currentFramebuffer].bind();
+    }
+
+    void Renderer::switchHdrBuffers() {
+        currentFramebuffer = currentFramebuffer ? 0 : 1;
+        hdrBackBuffers[currentFramebuffer].bind();
     }
 }

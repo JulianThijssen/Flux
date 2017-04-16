@@ -47,7 +47,7 @@ namespace Flux {
         };
 
         skybox = new Skybox(paths);
-        hdrMap = TextureLoader::loadTextureHDR(Path("res/Materials/PaperMill_E_3k.hdr"));
+        hdrMap = TextureLoader::loadTextureHDR(Path("res/Materials/Topanga_Forest_B_3k.hdr"));
 
         iblSceneInfo.PrecomputeEnvironmentData(*hdrMap);
 
@@ -69,7 +69,15 @@ namespace Flux {
         for (int i = 0; i < 2; i++) {
             Framebuffer framebuffer(width, height);
             framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST));
+            framebuffer.addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST));
+            framebuffer.validate();
+            framebuffer.release();
+            hdrBackBuffers.push_back(framebuffer);
+        }
+        for (int i = 0; i < 2; i++) {
+            Framebuffer framebuffer(width, height);
+            framebuffer.bind();
+            framebuffer.addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::LINEAR));
             framebuffer.validate();
             framebuffer.release();
             backBuffers.push_back(framebuffer);
@@ -168,7 +176,7 @@ namespace Flux {
                 }
             }
 
-            // renderMesh(scene, e);
+            //renderMesh(scene, e);
         }
     }
 
@@ -235,12 +243,32 @@ namespace Flux {
 
     void ForwardRenderer::applyPostprocess() {
         shader = shaders[BLOOM];
+        shader->bind();
+        hdrBuffer->getColorTexture().bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        shader->uniform1f("threshold", 0);
+        switchHdrBuffers();
+        drawQuad();
+        
         shader = shaders[BLUR];
         shader->bind();
+        for (int j = 1; j < 3; j++) {
+            for (int i = 0; i < 2; i++) {
+                getCurrentHdrFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
+                glGenerateMipmap(GL_TEXTURE_2D);
+                shader->uniform1i("tex", TextureUnit::TEXTURE);
+                shader->uniform2f("direction", i == 0 ? j : 0, i == 0 ? 0 : j);
+                switchHdrBuffers();
+                drawQuad();
+            }
+        }
+
         shader = shaders[TONEMAP];
         shader->bind();
         hdrBuffer->getColorTexture().bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
+        getCurrentHdrFramebuffer().getColorTexture().bind(TextureUnit::BLOOM);
+        shader->uniform1i("bloomTex", TextureUnit::BLOOM);
         switchBuffers();
         drawQuad();
 
@@ -255,6 +283,7 @@ namespace Flux {
         shader->bind();
         getCurrentFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
+        glGenerateMipmap(GL_TEXTURE_2D);
         shader->uniform2f("rcpScreenSize", 1.0f / 1920, 1.0f / 1080);
         switchBuffers();
         drawQuad();

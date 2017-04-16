@@ -35,8 +35,10 @@ namespace Flux {
         void drawQuad();
 
         const Framebuffer& getCurrentFramebuffer();
+        const Framebuffer& getCurrentHdrFramebuffer();
         const Framebuffer& getOtherFramebuffer();
         void switchBuffers();
+        void switchHdrBuffers();
     protected:
         Vector3f clearColor;
 
@@ -50,6 +52,7 @@ namespace Flux {
 
         Framebuffer* hdrBuffer;
         std::vector<Framebuffer> backBuffers;
+        std::vector<Framebuffer> hdrBackBuffers;
         unsigned int currentFramebuffer;
     };
 }
