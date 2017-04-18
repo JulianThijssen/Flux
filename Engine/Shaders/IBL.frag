@@ -35,10 +35,8 @@ out vec4 fragColor;
 
 /* Calculates the normal of the fragment using a normal map */
 vec3 calcNormal(vec3 normal, vec3 tangent, vec2 texCoord) {
-    vec3 bitangent = cross(tangent, normal);
-    vec3 mapNormal = texture(material.normalMap, texCoord).rgb;
-    mapNormal.g = 1 - mapNormal.g;
-    mapNormal = mapNormal * 2 - 1;
+    vec3 bitangent = cross(normal, tangent);
+    vec3 mapNormal = texture(material.normalMap, texCoord).rgb * 2 - 1;
     
     mat3 TBN = mat3(tangent, bitangent, normal);
     return normalize(TBN * mapNormal);
