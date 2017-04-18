@@ -184,10 +184,8 @@ void main() {
         BaseColor = toLinear(texture(material.diffuseMap, pass_texCoords).rgb);
     }
 
-    vec3 DiffuseColor = BaseColor;
-    
     // Lambert Diffuse BRDF
-    vec3 LambertBRDF = (DiffuseColor / PI);
+    vec3 LambertBRDF = (BaseColor / PI) * (1 - Metalness);
     
     // Cook Torrance Specular BRDF
     vec3 CookBRDF = CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness);
