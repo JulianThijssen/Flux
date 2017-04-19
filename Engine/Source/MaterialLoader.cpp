@@ -42,6 +42,10 @@ namespace Flux {
                 String path = tokens[1];
                 material->roughnessTex = TextureLoader::loadTexture(Path(path));
             }
+            if (key == "Tiling") {
+                material->tilingX = std::stof(tokens[1].c_str());
+                material->tilingY = std::stof(tokens[2].c_str());
+            }
         }
         return material;
     }

@@ -20,6 +20,8 @@ struct Material {
     sampler2D normalMap;
     sampler2D metalMap;
     sampler2D roughnessMap;
+    
+    vec2 tiling;
 
     bool hasDiffuseMap;
     bool hasNormalMap;
@@ -48,6 +50,11 @@ out vec4 fragColor;
 
 #define PI 3.14159265359
 
+/* Samples a tiled texture */
+vec4 sampleTiled(sampler2D tex, vec2 texCoords) {
+    return texture(tex, texCoords * material.tiling);
+}
+
 /* Calculates the diffuse contribution of the light */
 float CosTheta(vec3 N, vec3 L) {
 	return clamp(dot(N, L), 0, 1);
@@ -56,7 +63,7 @@ float CosTheta(vec3 N, vec3 L) {
 /* Calculates the normal of the fragment using a normal map */
 vec3 calcNormal(vec3 normal, vec3 tangent, vec2 texCoord) {
     vec3 bitangent = cross(normal, tangent);
-    vec3 mapNormal = texture(material.normalMap, texCoord).rgb * 2 - 1;
+    vec3 mapNormal = sampleTiled(material.normalMap, texCoord).rgb * 2 - 1;
     
     mat3 TBN = mat3(tangent, bitangent, normal);
     return normalize(TBN * mapNormal);
@@ -170,18 +177,18 @@ void main() {
     
     float Metalness = 0;
     if (material.hasMetalMap) {
-        Metalness = texture(material.metalMap, pass_texCoords).r;
+        Metalness = sampleTiled(material.metalMap, pass_texCoords).r;
     }
     
     float Roughness = 1;
     if (material.hasRoughnessMap) {
-        Roughness = texture(material.roughnessMap, pass_texCoords).r;
+        Roughness = sampleTiled(material.roughnessMap, pass_texCoords).r;
     }
     
     // Base Color
     vec3 BaseColor = vec3(1);
     if (material.hasDiffuseMap) {
-        BaseColor = toLinear(texture(material.diffuseMap, pass_texCoords).rgb);
+        BaseColor = toLinear(sampleTiled(material.diffuseMap, pass_texCoords).rgb);
     }
 
     // Lambert Diffuse BRDF

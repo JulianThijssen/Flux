@@ -25,6 +25,7 @@ namespace Flux {
             shader.uniform1i("material.roughnessMap", TextureUnit::ROUGHNESS);
             shader.uniform1i("material.hasRoughnessMap", 1);
         }
+        shader.uniform2f("material.tiling", tilingX, tilingY);
     }
 
     void Material::release(Shader& shader) const {

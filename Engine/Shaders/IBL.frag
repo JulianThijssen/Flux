@@ -8,6 +8,8 @@ struct Material {
     sampler2D metalMap;
     sampler2D roughnessMap;
 
+    vec2 tiling;
+
     bool hasDiffuseMap;
     bool hasNormalMap;
     bool hasMetalMap;
@@ -33,10 +35,15 @@ out vec4 fragColor;
 
 #define PI 3.14159265
 
+/* Samples a tiled texture */
+vec4 sampleTiled(sampler2D tex, vec2 texCoords) {
+    return texture(tex, texCoords * material.tiling);
+}
+
 /* Calculates the normal of the fragment using a normal map */
 vec3 calcNormal(vec3 normal, vec3 tangent, vec2 texCoord) {
     vec3 bitangent = cross(normal, tangent);
-    vec3 mapNormal = texture(material.normalMap, texCoord).rgb * 2 - 1;
+    vec3 mapNormal = sampleTiled(material.normalMap, texCoord).rgb * 2 - 1;
     
     mat3 TBN = mat3(tangent, bitangent, normal);
     return normalize(TBN * mapNormal);
@@ -71,18 +78,18 @@ void main() {
 
     float Metalness = 0;
     if (material.hasMetalMap) {
-        Metalness = texture(material.metalMap, pass_texCoords).r;
+        Metalness = sampleTiled(material.metalMap, pass_texCoords).r;
     }
     
     float Roughness = 1;
     if (material.hasRoughnessMap) {
-        Roughness = texture(material.roughnessMap, pass_texCoords).r;
+        Roughness = sampleTiled(material.roughnessMap, pass_texCoords).r;
     }
     
     // Base Color
     vec3 BaseColor = vec3(1);
     if (material.hasDiffuseMap) {
-        BaseColor = toLinear(texture(material.diffuseMap, pass_texCoords).rgb);
+        BaseColor = toLinear(sampleTiled(material.diffuseMap, pass_texCoords).rgb);
     }
     
     vec3 DiffuseColor = BaseColor * (1 - Metalness);
