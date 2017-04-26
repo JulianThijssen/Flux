@@ -33,7 +33,7 @@ void main()
     vec3 cz = cameraBasis[2].xyz;
     vec3 direction = normalize(persp.x * cx * uv.x + persp.y * cy * uv.y + cz);
 
-    float phi = atan(direction.z, direction.x) + PI;
+    float phi = atan(direction.z, direction.x);
     float theta = acos(direction.y);
     uv = toUV(vec2(phi, theta));
     
