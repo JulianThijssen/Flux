@@ -64,7 +64,7 @@ vec3 PrefilterEnvMap(float Roughness, vec3 R)
     
     vec3 Color = vec3(0, 0, 0);
     
-    uint NumSamples = 1024u;
+    uint NumSamples = 512u;
     float TotalWeight = 0;
     for (uint i = 0u; i < NumSamples; i++)
     {
