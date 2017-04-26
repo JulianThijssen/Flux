@@ -30,7 +30,7 @@ vec3 ImportanceSampleGGX(vec2 Xi, float Roughness, vec3 N) {
     vec3 H = vec3(SinTheta * cos(Phi), SinTheta * sin(Phi), CosTheta);
 
     vec3 UpVector = abs(N.z) < 0.999 ? vec3(0, 0, 1) : vec3(1, 0, 0);
-    vec3 TangentX = normalize(cross(UpVector, N));
+    vec3 TangentX = normalize(cross(N, UpVector));
     vec3 TangentY = cross(N, TangentX);
     
     // Tangent to world space
