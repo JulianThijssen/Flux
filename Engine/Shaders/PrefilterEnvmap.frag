@@ -70,7 +70,7 @@ vec3 PrefilterEnvMap(float Roughness, vec3 R)
     {
         vec2 Xi = Hammersley(i, NumSamples);
         vec3 H = ImportanceSampleGGX(Xi, Roughness, N);
-        vec3 L = 2 * dot(V, H) * H - V;
+        vec3 L = normalize(reflect(-V, H));
         
         float NdotL = clamp(dot(N, L), 0.0, 1.0);
         
