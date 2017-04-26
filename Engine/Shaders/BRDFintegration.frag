@@ -37,8 +37,9 @@ vec3 ImportanceSampleGGX(vec2 Xi, float Roughness, vec3 N) {
     return TangentX * H.x + TangentY * H.y + N * H.z;
 }
 
-float Schlick(float NdotL, float NdotV, float a) {
-    float k = (a * a) / 2.0;
+float Schlick(float NdotL, float NdotV, float Roughness) {
+    float a = Roughness * Roughness;
+    float k = a / 2.0;
     float G1 = NdotL / (NdotL * (1.0 - k) + k);
     float G2 = NdotV / (NdotV * (1.0 - k) + k);
     return G1 * G2;
