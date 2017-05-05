@@ -78,14 +78,16 @@ vec3 Fresnel(vec3 BaseColor, float Metalness, float b) {
 
 /* ---------------------- Distribution functions ----------------------- */
 // GGX
-float GGX(float NdotH, float a) {
+float GGX(float NdotH, float Roughness) {
+    float a = Roughness * Roughness;
     float a2 = a * a;
     float d = NdotH * NdotH * (a2 - 1.0) + 1.0;
     return a2 / (PI * d * d);
 }
 
 // Beckmann
-float Beckmann(float NdotH, float a) {
+float Beckmann(float NdotH, float Roughness) {
+    float a = Roughness * Roughness;
     float a2 = a * a;
     float r1 = 1.0 / (4.0 * a2 * pow(NdotH, 4.0));
     float r2 = (NdotH * NdotH - 1.0) / (a2 * NdotH * NdotH);
@@ -94,9 +96,9 @@ float Beckmann(float NdotH, float a) {
 
 /* --------------------- Geometric shadowing terms --------------------- */
 // Schlick
-float Schlick(float NdotL, float NdotV, float a) {
-    float a1 = a + 1.0;
-    float k = a1 * a1 * 0.125;
+float Schlick(float NdotL, float NdotV, float Roughness) {
+    float a = Roughness + 1.0;
+    float k = a * a * 0.125;
     float G1 = NdotL / (NdotL * (1.0 - k) + k);
     float G2 = NdotV / (NdotV * (1.0 - k) + k);
     return G1 * G2;
@@ -201,3 +203,4 @@ void main() {
 
     fragColor = vec4(Radiance, 1.0);
 }
+
