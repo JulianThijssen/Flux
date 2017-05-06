@@ -3,6 +3,8 @@
 #include "Model.h"
 #include "SceneDesc.h"
 #include "MaterialDesc.h"
+#include "Skybox.h"
+#include "Skysphere.h"
 
 #include <Engine/Source/Entity.h>
 #include <Engine/Source/AttachedTo.h>
@@ -29,6 +31,33 @@ namespace Flux {
 
         json j3 = json::parse(cont);
 
+        if (j3.find("skysphere") != j3.end()) {
+            std::string path = j3["skysphere"].get<std::string>();
+            scene.skysphere = new Skysphere(path);
+        }
+        if (j3.find("skybox") != j3.end()) {
+            scene.skybox = new Skybox();
+            for (json& face : j3["skybox"]) {
+                for (auto it = face.begin(); it != face.end(); ++it)
+                {
+                    std::string name = it.key();
+                    std::string path = it.value().get<std::string>();
+
+                    if (name == "right")
+                        scene.skybox->setRight(path);
+                    if (name == "left")
+                        scene.skybox->setLeft(path);
+                    if (name == "top")
+                        scene.skybox->setTop(path);
+                    if (name == "bottom")
+                        scene.skybox->setBottom(path);
+                    if (name == "front")
+                        scene.skybox->setFront(path);
+                    if (name == "back")
+                        scene.skybox->setBack(path);
+                }
+            }
+        }
         for (json& element : j3["materials"]) {
             std::string name = element["id"].get<std::string>();
             std::string path = element["path"].get<std::string>();
@@ -118,25 +147,27 @@ namespace Flux {
         camT->position.set(4, 4, 12);
         camT->rotation.set(0, 0, 0);
         mainCamera->addComponent(camT);
-        mainCamera->addComponent(new Camera(60, 1024.f/768, 0.1f, 100.f));
+        mainCamera->addComponent(new Camera(60, 1920.0f/1080, 0.1f, 100.f));
         scene.entities.push_back(mainCamera);
 
         Entity* light = new Entity();
         DirectionalLight* dirLight = new DirectionalLight();
-        dirLight->color.set(0.8, 0.6, 0.2);
+        dirLight->color.set(10, 5, 2.5f);
+        dirLight->direction.set(-0.471409702, -0.5061866455, 0.722182783);
+        dirLight->direction.normalise();
         light->addComponent(dirLight);
         Transform* t1 = new Transform();
         t1->position.set(0, 0, 0);
         light->addComponent(t1);
         scene.entities.push_back(light);
 
-        Entity* light2 = new Entity();
-        PointLight* pointLight = new PointLight();
-        pointLight->color.set(0.4, 0.4, 0.6);
-        light2->addComponent(pointLight);
-        Transform* t2 = new Transform();
-        t2->position.set(5, 4, 10);
-        light2->addComponent(t2);
-        scene.entities.push_back(light2);
+        //Entity* light2 = new Entity();
+        //PointLight* pointLight = new PointLight();
+        //pointLight->color.set(0.4, 0.4, 0.6);
+        //light2->addComponent(pointLight);
+        //Transform* t2 = new Transform();
+        //t2->position.set(5, 4, 10);
+        //light2->addComponent(t2);
+        //scene.entities.push_back(light2);
     }
 }

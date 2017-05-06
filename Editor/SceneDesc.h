@@ -3,6 +3,7 @@
 #define SCENE_DESC_H
 
 #include "MaterialDesc.h"
+#include "Skybox.h"
 
 #include <Engine/Source/Entity.h>
 #include <Engine/Source/Transform.h>
@@ -33,6 +34,9 @@ namespace Flux {
 
         std::vector<MaterialDesc*> materials;
         std::vector<Entity*> entities;
+
+        Skybox* skybox;
+        Skysphere* skysphere;
     };
 }
 
