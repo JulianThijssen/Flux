@@ -6,11 +6,15 @@
 namespace Flux {
     class Path;
     class SceneDesc;
+    class Skybox;
+    class Skysphere;
 
     class SceneConverter {
     public:
         static void convert(const SceneDesc& scene, Path outputPath);
     private:
+        static void writeSkybox(Skybox* skybox, std::ofstream& out);
+        static void writeSkysphere(Skysphere* skysphere, std::ofstream& out);
         static void writeMaterial(const uint32_t id, MaterialDesc* material, std::ofstream& out);
         static void writeEntity(const SceneDesc& scene, Entity* e, std::ofstream& out);
     };

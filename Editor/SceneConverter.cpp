@@ -1,6 +1,8 @@
 #include "SceneConverter.h"
 
 #include "SceneDesc.h"
+#include "Skybox.h"
+#include "Skysphere.h"
 
 #include "../Engine/Source/Path.h"
 
@@ -21,6 +23,13 @@ namespace Flux {
         std::ofstream outFile;
         outFile.open(outputPath.str().c_str(), ios::out | ios::binary);
 
+        if (scene.skybox) {
+            writeSkybox(scene.skybox, outFile);
+        }
+        else if (scene.skysphere) {
+            writeSkysphere(scene.skysphere, outFile);
+        }
+
         const uint32_t numMaterials = (uint32_t) scene.materials.size();
         outFile.write((char *)&numMaterials, sizeof(numMaterials));
         for (uint32_t i = 0; i < numMaterials; ++i) {
@@ -34,6 +43,24 @@ namespace Flux {
         }
 
         outFile.close();
+    }
+
+    void SceneConverter::writeSkybox(Skybox* skybox, std::ofstream& out) {
+        const uint32_t type = 0;
+        out.write((char *)&type, sizeof(type));
+        const std::string* paths = skybox->getPaths();
+
+        for (int i = 0; i < 6; i++) {
+            out.write(paths[0].c_str(), sizeof(char) * paths[0].length());
+        }
+    }
+
+    void SceneConverter::writeSkysphere(Skysphere* skysphere, std::ofstream& out) {
+        const uint32_t type = 1;
+        out.write((char *)&type, sizeof(type));
+
+        const std::string path = skysphere->getPath();
+        out.write(path.c_str(), sizeof(char) * path.length());
     }
 
     void SceneConverter::writeMaterial(const uint32_t id, MaterialDesc* material, std::ofstream& out) {

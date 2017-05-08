@@ -4,6 +4,7 @@
 
 #include "MaterialDesc.h"
 #include "Skybox.h"
+#include "Skysphere.h"
 
 #include <Engine/Source/Entity.h>
 #include <Engine/Source/Transform.h>

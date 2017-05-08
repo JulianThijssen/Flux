@@ -6,14 +6,19 @@
 
 using std::string;
 
-class Skysphere {
-public:
-    Skysphere(string path) {
-        this->path = path;
-    }
+namespace Flux {
+    class Skysphere {
+    public:
+        Skysphere(string path) {
+            this->path = path;
+        }
 
-private:
-    string path;
-};
+        const string getPath() const {
+            return path;
+        }
+    private:
+        string path;
+    };
+}
 
 #endif /* SKYSPHERE_H */
