@@ -51,6 +51,8 @@ namespace Flux {
         const std::string* paths = skybox->getPaths();
 
         for (int i = 0; i < 6; i++) {
+            const uint32_t pathLen = (uint32_t)paths[0].length();
+            out.write((char *)&pathLen, sizeof(pathLen));
             out.write(paths[0].c_str(), sizeof(char) * paths[0].length());
         }
     }
@@ -60,6 +62,8 @@ namespace Flux {
         out.write((char *)&type, sizeof(type));
 
         const std::string path = skysphere->getPath();
+        const uint32_t pathLen = (uint32_t)path.length();
+        out.write((char *)&pathLen, sizeof(pathLen));
         out.write(path.c_str(), sizeof(char) * path.length());
     }
 

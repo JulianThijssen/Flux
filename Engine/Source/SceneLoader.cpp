@@ -72,6 +72,27 @@ namespace Flux {
 
         inFile.open(path.str().c_str(), ios::in | ios::binary);
 
+        unsigned int skyType;
+        inFile.read((char *)&skyType, sizeof(skyType));
+        if (skyType == 0) {
+            for (int i = 0; i < 6; i++) {
+                uint32_t numChars;
+                inFile.read((char *)&numChars, sizeof(numChars));
+
+                char* path = new char[numChars + 1];
+                path[numChars] = 0;
+                inFile.read(path, numChars * sizeof(char));
+            }
+        }
+        if (skyType == 1) {
+            uint32_t numChars;
+            inFile.read((char *)&numChars, sizeof(numChars));
+
+            char* path = new char[numChars + 1];
+            path[numChars] = 0;
+            inFile.read(path, numChars * sizeof(char));
+        }
+
         unsigned int numMaterials;
         inFile.read((char *) &numMaterials, sizeof(numMaterials));
         std::cout << "NUM MATERIALS: " << numMaterials << std::endl;
