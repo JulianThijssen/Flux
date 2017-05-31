@@ -45,15 +45,15 @@ namespace Flux {
         outFile.close();
     }
 
-    void SceneConverter::writeSkybox(Skybox* skybox, std::ofstream& out) {
+    void SceneConverter::writeSkybox(Editor::Skybox* skybox, std::ofstream& out) {
         const uint32_t type = 0;
         out.write((char *)&type, sizeof(type));
         const std::string* paths = skybox->getPaths();
 
         for (int i = 0; i < 6; i++) {
-            const uint32_t pathLen = (uint32_t)paths[0].length();
+            const uint32_t pathLen = (uint32_t)paths[i].length();
             out.write((char *)&pathLen, sizeof(pathLen));
-            out.write(paths[0].c_str(), sizeof(char) * paths[0].length());
+            out.write(paths[i].c_str(), sizeof(char) * paths[i].length());
         }
     }
 

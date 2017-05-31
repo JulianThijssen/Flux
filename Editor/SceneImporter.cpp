@@ -36,7 +36,7 @@ namespace Flux {
             scene.skysphere = new Skysphere(path);
         }
         if (j3.find("skybox") != j3.end()) {
-            scene.skybox = new Skybox();
+            scene.skybox = new Editor::Skybox();
             for (json& face : j3["skybox"]) {
                 for (auto it = face.begin(); it != face.end(); ++it)
                 {

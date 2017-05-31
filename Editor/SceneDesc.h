@@ -36,7 +36,7 @@ namespace Flux {
         std::vector<MaterialDesc*> materials;
         std::vector<Entity*> entities;
 
-        Skybox* skybox;
+        Editor::Skybox* skybox;
         Skysphere* skysphere;
     };
 }

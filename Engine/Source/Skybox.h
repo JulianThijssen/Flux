@@ -7,7 +7,7 @@
 namespace Flux {
     class Skybox : public Cubemap {
     public:
-        Skybox(const char* paths[6]);
+        Skybox(char* const paths[6]);
 
         void render();
     private:

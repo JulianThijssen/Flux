@@ -18,7 +18,7 @@ namespace Flux {
     public:
         ForwardRenderer() { }
 
-        virtual bool create();
+        virtual bool create(const Scene& scene);
         virtual void onResize(unsigned int width, unsigned int height);
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
@@ -26,15 +26,13 @@ namespace Flux {
 
         void globalIllumination(const Scene& scene);
         void directLighting(const Scene& scene);
-        void renderSky(const Scene& scene, bool useSkybox);
+        void renderSky(const Scene& scene);
         void applyPostprocess();
         void renderFramebuffer(const Framebuffer& framebuffer);
     private:
         std::unordered_map<ShaderName, Shader*> shaders;
 
         IblSceneInfo iblSceneInfo;
-
-        Texture* hdrMap;
     };
 }
 

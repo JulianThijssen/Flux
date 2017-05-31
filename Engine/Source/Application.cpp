@@ -18,7 +18,8 @@ namespace Flux {
 
         SceneConverter::convert(scene, Path("res/Indoors.scene"));
         SceneLoader::loadScene(Path("res/Indoors.scene"), currentScene);
-        bool created = renderer.create();
+
+        bool created = renderer.create(currentScene);
         renderer.onResize(window.getWidth(), window.getHeight());
 
         currentScene.addScript(new FirstPersonView());

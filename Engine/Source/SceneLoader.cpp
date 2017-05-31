@@ -1,8 +1,10 @@
 #include "SceneLoader.h"
 #include "MaterialLoader.h"
+#include "TextureLoader.h"
 
 #include "Path.h"
 #include "Scene.h"
+#include "Skybox.h"
 
 #include "Transform.h"
 #include "Mesh.h"
@@ -75,14 +77,17 @@ namespace Flux {
         unsigned int skyType;
         inFile.read((char *)&skyType, sizeof(skyType));
         if (skyType == 0) {
+            char* paths[6];
             for (int i = 0; i < 6; i++) {
                 uint32_t numChars;
                 inFile.read((char *)&numChars, sizeof(numChars));
 
-                char* path = new char[numChars + 1];
-                path[numChars] = 0;
-                inFile.read(path, numChars * sizeof(char));
+                paths[i] = new char[numChars + 1];
+                paths[i][numChars] = 0;
+                inFile.read(paths[i], numChars * sizeof(char));
+                std::cout << paths[i] << std::endl;
             }
+            scene.skybox = new Skybox(paths);
         }
         if (skyType == 1) {
             uint32_t numChars;
@@ -91,6 +96,9 @@ namespace Flux {
             char* path = new char[numChars + 1];
             path[numChars] = 0;
             inFile.read(path, numChars * sizeof(char));
+
+            scene.skySphere = TextureLoader::loadTextureHDR(Path(path));
+            delete path;
         }
 
         unsigned int numMaterials;

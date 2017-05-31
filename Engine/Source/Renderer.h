@@ -24,7 +24,7 @@ namespace Flux {
             currentFramebuffer(0)
         { }
 
-        virtual bool create() = 0;
+        virtual bool create(const Scene& scene) = 0;
         virtual void onResize(unsigned int width, unsigned int height) = 0;
         virtual void update(const Scene& scene) = 0;
         virtual void renderScene(const Scene& scene) = 0;
@@ -47,8 +47,6 @@ namespace Flux {
         Matrix4f modelMatrix;
 
         Shader* shader;
-
-        Skybox* skybox;
 
         Framebuffer* hdrBuffer;
         std::vector<Framebuffer> backBuffers;

@@ -8,7 +8,7 @@
 #include <glad/glad.h>
 
 namespace Flux {
-    Skybox::Skybox(const char* paths[6]) {
+    Skybox::Skybox(char* const paths[6]) {
         create(paths, false);
     }
 

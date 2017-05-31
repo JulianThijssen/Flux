@@ -19,7 +19,7 @@
 #include "Matrix4f.h"
 
 namespace Flux {
-    bool ForwardRenderer::create() {
+    bool ForwardRenderer::create(const Scene& scene) {
         shaders[IBL]       = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
         shaders[DIRECT]    = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
         shaders[SKYBOX]    = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
@@ -37,19 +37,11 @@ namespace Flux {
             }
         }
 
-        const char* paths[] = {
-            "res/Materials/Grace_RIGHT.png",
-            "res/Materials/Grace_LEFT.png",
-            "res/Materials/Grace_TOP.png",
-            "res/Materials/Grace_BOTTOM.png",
-            "res/Materials/Grace_FRONT.png",
-            "res/Materials/Grace_BACK.png"
-        };
-
-        skybox = new Skybox(paths);
-        hdrMap = TextureLoader::loadTextureHDR(Path("res/Materials/Topanga_Forest_B_3k.hdr"));
-
-        iblSceneInfo.PrecomputeEnvironmentData(*hdrMap);
+        if (scene.skybox) {
+            iblSceneInfo.PrecomputeEnvironmentData(*scene.skybox);
+        }
+        else if (scene.skySphere)
+            iblSceneInfo.PrecomputeEnvironmentData(*scene.skySphere);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -95,7 +87,7 @@ namespace Flux {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         globalIllumination(scene);
         directLighting(scene);
-        renderSky(scene, false);
+        renderSky(scene);
         applyPostprocess();
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -207,7 +199,7 @@ namespace Flux {
         glDrawElements(GL_TRIANGLES, (GLsizei) mesh->indices.size(), GL_UNSIGNED_INT, 0);
     }
 
-    void ForwardRenderer::renderSky(const Scene& scene, bool useSkybox) {
+    void ForwardRenderer::renderSky(const Scene& scene) {
         Transform* transform = scene.getMainCamera()->getComponent<Transform>();
 
         Matrix4f yawMatrix;
@@ -220,17 +212,20 @@ namespace Flux {
         cameraBasis[10] = -1;
         cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
-        if (useSkybox) {
+        if (scene.skybox) {
             shader = shaders[SKYBOX];
             shader->bind();
-            skybox->bind(TextureUnit::TEXTURE);
+            scene.skybox->bind(TextureUnit::TEXTURE);
             shader->uniform1i("skybox", TextureUnit::TEXTURE);
         }
-        else {
+        else if (scene.skySphere) {
             shader = shaders[SKYSPHERE];
             shader->bind();
-            hdrMap->bind(TextureUnit::TEXTURE);
+            scene.skySphere->bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
+        }
+        else {
+            return;
         }
 
         shader->uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);

@@ -14,7 +14,7 @@ namespace Flux {
     public:
         Cubemap() : resolution(DEFAULT_RESOLUTION) { }
 
-        void create(const char* paths[6], bool mipmaps) {
+        void create(char* const paths[6], bool mipmaps) {
             glGenTextures(1, &handle);
             bind();
 

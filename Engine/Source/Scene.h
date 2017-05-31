@@ -8,6 +8,7 @@
 #include "PointLight.h"
 #include "Material.h"
 #include "Script.h"
+#include "Skybox.h"
 
 #include <vector>
 
@@ -54,6 +55,9 @@ namespace Flux {
         void addScript(Script* script) {
             scripts.push_back(script);
         }
+
+        Skybox* skybox;
+        Texture* skySphere;
 
         std::vector<Material*> materials;
         std::vector<Entity*> entities;
