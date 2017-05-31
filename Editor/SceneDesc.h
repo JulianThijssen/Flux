@@ -16,6 +16,13 @@
 namespace Flux {
     class SceneDesc {
     public:
+        SceneDesc()
+        :   skybox(nullptr),
+            skysphere(nullptr)
+        {
+
+        }
+
         void addMaterial(MaterialDesc* materialDesc) {
             materials.push_back(materialDesc);
         }
