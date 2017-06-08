@@ -15,7 +15,7 @@
 namespace Flux {
     class Scene {
     public:
-        Scene() : mainCamera() { }
+        Scene() : mainCamera(), skybox(0), skySphere(0) { }
 
         void update() {
             for (Script* script : scripts) {
