@@ -19,13 +19,14 @@ namespace Flux {
         SceneConverter::convert(scene, Path("res/Indoors.scene"));
         SceneLoader::loadScene(Path("res/Indoors.scene"), currentScene);
 
-        bool created = renderer.create(currentScene);
-        renderer.onResize(window.getWidth(), window.getHeight());
-
-        currentScene.addScript(new FirstPersonView());
-
+        renderer = std::make_unique<ForwardRenderer>();
+        bool created = renderer->create(currentScene);
         if (!created)
             return;
+
+        renderer->onResize(window.getWidth(), window.getHeight());
+
+        currentScene.addScript(new FirstPersonView());
 
         update();
     }
@@ -54,7 +55,7 @@ namespace Flux {
                 skipped++;
             }
 
-            renderer.update(currentScene);
+            renderer->update(currentScene);
 
             window.update();
             frames++;

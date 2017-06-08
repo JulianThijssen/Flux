@@ -2,10 +2,12 @@
 #include "Scene.h"
 #include "ForwardRenderer.h"
 
+#include <memory>
+
 namespace Flux {
     class Application {
     public:
-        Application() : window("Flux", 1024, 768), currentScene() { }
+        Application() : window("Flux", 1920, 1080) { }
 
         void startGame();
         void update();
@@ -13,7 +15,7 @@ namespace Flux {
     private:
         Window window;
         Scene currentScene;
-        ForwardRenderer renderer;
+        std::unique_ptr<ForwardRenderer> renderer;
 
         int framesPerSecond;
         int maxSkip = 15;
