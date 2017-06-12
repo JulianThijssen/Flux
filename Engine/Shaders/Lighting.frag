@@ -197,10 +197,9 @@ void main() {
     vec3 LambertBRDF = (BaseColor / PI) * (1 - Metalness);
     
     // Cook Torrance Specular BRDF
-    vec3 CookBRDF = CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness);
+    vec3 CookBRDF = clamp(CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness), 0, 1);
 
     vec3 Radiance = (LambertBRDF + CookBRDF) * Li * Attenuation;
-
+    
     fragColor = vec4(Radiance, 1.0);
 }
-
