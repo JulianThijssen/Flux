@@ -8,13 +8,14 @@
 #include "Log.h"
 
 #include <glad/glad.h>
+#include <vector>
 
 namespace Flux {
     class Framebuffer {
     public:
         Framebuffer(const unsigned int width, const unsigned int height)
             : width(width)
-            , height(height) 
+            , height(height)
         {
             glGenFramebuffers(1, &handle);
         }
@@ -27,20 +28,24 @@ namespace Flux {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
-        const Texture& getColorTexture() const {
-            return *colorTexture;
+        const Texture& getColorTexture(int attachment) const {
+            return *colorTexture[attachment];
         }
 
         void addColorTexture(int colorAttachment, Texture* texture) {
-            colorTexture = texture;
+            colorTexture[colorAttachment] = texture;
             GLint attachment = GL_COLOR_ATTACHMENT0 + colorAttachment;
-            setTexture(attachment, *colorTexture);
-            setDrawBuffer(attachment);
+            setTexture(attachment, *texture);
+            addDrawBuffer(attachment);
         }
 
         void addDepthTexture() {
             depthTexture = TextureLoader::createEmpty(width, height, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST);
             setTexture(GL_DEPTH_ATTACHMENT, *depthTexture);
+        }
+
+        void addDepthTexture(Texture* texture) {
+            setTexture(GL_DEPTH_ATTACHMENT, *texture);
         }
 
         void setTexture(GLuint attachment, Texture& texture) {
@@ -51,8 +56,9 @@ namespace Flux {
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, texture, mipmapLevel);
         }
 
-        void setDrawBuffer(GLuint target) {
-            glDrawBuffer(target);
+        void addDrawBuffer(GLenum target) {
+            drawBuffers.push_back(target);
+            glDrawBuffers(drawBuffers.size(), drawBuffers.data());
         }
 
         void validate() const {
@@ -84,8 +90,10 @@ namespace Flux {
         unsigned int height;
         GLuint handle;
 
-        Texture* colorTexture;
+        Texture* colorTexture[8];
         Texture* depthTexture;
+
+        std::vector<GLenum> drawBuffers;
     };
 }
 
