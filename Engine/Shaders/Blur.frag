@@ -20,10 +20,10 @@ vec3 blur(int lod, vec2 uv, vec2 resolution, vec2 direction) {
 void main()
 {
     vec3 color = vec3(0);
-    color += blur(4, pass_texCoords, vec2(120, 67.5), direction) * 0.2;
-    color += blur(3, pass_texCoords, vec2(240, 135), direction) * 0.2;
-    color += blur(2, pass_texCoords, vec2(480, 270), direction) * 0.2;
-    //color += blur(1, pass_texCoords, vec2(960, 540), direction) * 0.333333333333;
-    //color += blur(0, pass_texCoords, vec2(1920, 1080), direction) * 0.333333333333;
+    color += blur(4, pass_texCoords, vec2(120, 67.5), direction) * 0.1;
+    color += blur(3, pass_texCoords, vec2(240, 135), direction) * 0.1;
+    color += blur(2, pass_texCoords, vec2(480, 270), direction) * 0.1;
+    color += blur(1, pass_texCoords, vec2(960, 540), direction) * 0.1;
+    color += blur(0, pass_texCoords, vec2(1920, 1080), direction) * 0.1;
     fragColor = vec4(color, 1);
 }
