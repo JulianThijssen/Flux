@@ -1,6 +1,6 @@
 #include "Window.h"
 #include "Scene.h"
-#include "ForwardRenderer.h"
+#include "Renderer.h"
 
 #include <memory>
 
@@ -15,7 +15,7 @@ namespace Flux {
     private:
         Window window;
         Scene currentScene;
-        std::unique_ptr<ForwardRenderer> renderer;
+        std::unique_ptr<Renderer> renderer;
 
         int framesPerSecond;
         int maxSkip = 15;

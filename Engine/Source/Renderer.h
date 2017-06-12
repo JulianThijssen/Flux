@@ -13,6 +13,8 @@
 #include <vector>
 
 namespace Flux {
+	enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR, SSAO, GBUFFER, DINDIRECT, DDIRECT };
+
     class Renderer {
     public:
         Renderer() : 

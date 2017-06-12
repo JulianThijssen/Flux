@@ -4,12 +4,16 @@
 #include <Editor/SceneImporter.h>
 #include <Editor/SceneDesc.h>
 
+#include "ForwardRenderer.h"
+#include "DeferredRenderer.h"
 #include "FirstPersonView.h"
 #include "SceneLoader.h"
 #include "Path.h"
 
 #include <ctime>
 #include <iostream>
+
+#define DEFERRED
 
 namespace Flux {
     void Application::startGame() {
@@ -19,7 +23,11 @@ namespace Flux {
         SceneConverter::convert(scene, Path("res/Indoors.scene"));
         SceneLoader::loadScene(Path("res/Indoors.scene"), currentScene);
 
+#ifdef DEFERRED
+        renderer = std::make_unique<DeferredRenderer>();
+#else
         renderer = std::make_unique<ForwardRenderer>();
+#endif
         bool created = renderer->create(currentScene);
         if (!created)
             return;

@@ -18,7 +18,7 @@ namespace Flux
 
         Framebuffer framebuffer(textureSize, textureSize);
         framebuffer.bind();
-        framebuffer.setDrawBuffer(GL_COLOR_ATTACHMENT0);
+        framebuffer.addDrawBuffer(GL_COLOR_ATTACHMENT0);
 
         glClearColor(1, 0, 0, 1);
 
@@ -75,7 +75,7 @@ namespace Flux
 
         Framebuffer framebuffer(resolution, resolution);
         framebuffer.bind();
-        framebuffer.setDrawBuffer(GL_COLOR_ATTACHMENT0);
+        framebuffer.addDrawBuffer(GL_COLOR_ATTACHMENT0);
 
         glClearColor(1, 0, 0, 1);
 
@@ -102,6 +102,7 @@ namespace Flux
             unsigned int mipmapSize = resolution >> level;
             glViewport(0, 0, mipmapSize, mipmapSize);
             float Roughness = (float)level / (MIP_MAP_LEVELS - 1);
+            std::cout << "Roughness: " << Roughness << std::endl;
             shader->uniform1f("Roughness", Roughness);
 
             for (int i = 0; i < 6; i++)
@@ -153,7 +154,7 @@ namespace Flux
 
         Framebuffer framebuffer(256, 256);
         framebuffer.bind();
-        framebuffer.setDrawBuffer(GL_COLOR_ATTACHMENT0);
+        framebuffer.addDrawBuffer(GL_COLOR_ATTACHMENT0);
 
         glClearColor(1, 0, 0, 1);
 
