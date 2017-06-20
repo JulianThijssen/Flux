@@ -40,7 +40,7 @@ namespace Flux {
         }
 
         void addDepthTexture() {
-            depthTexture = TextureLoader::createEmpty(width, height, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST);
+            depthTexture = TextureLoader::createEmpty(width, height, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
             setTexture(GL_DEPTH_ATTACHMENT, *depthTexture);
         }
 
