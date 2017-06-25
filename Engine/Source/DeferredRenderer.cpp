@@ -72,7 +72,7 @@ namespace Flux {
         gBufferInfo.positionTex = TextureLoader::createEmpty(width, height, GL_RGBA32F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, false);
         gBufferInfo.depthTex = TextureLoader::createEmpty(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
 
-        gBuffer = new Framebuffer(width, height);
+        gBuffer = std::make_unique<Framebuffer>(width, height);
         gBuffer->bind();
         gBuffer->addColorTexture(0, gBufferInfo.albedoTex);
         gBuffer->addColorTexture(1, gBufferInfo.normalTex);

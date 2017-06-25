@@ -11,6 +11,7 @@
 #include "Texture.h"
 
 #include <unordered_map>
+#include <memory>
 
 namespace Flux {
     class GBuffer {
@@ -42,7 +43,7 @@ namespace Flux {
         std::unordered_map<ShaderName, Shader*> shaders;
 
         GBuffer gBufferInfo;
-        Framebuffer* gBuffer;
+        std::unique_ptr<Framebuffer> gBuffer;
         IblSceneInfo iblSceneInfo;
         SsaoInfo ssaoInfo;
     };
