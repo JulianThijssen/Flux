@@ -32,8 +32,8 @@ namespace Flux {
         shaders[BLUR] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag");
         shaders[SSAO] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/SSAO.frag");
         shaders[GBUFFER] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag");
-		shaders[DINDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag");
-		shaders[DDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
+        shaders[DINDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag");
+        shaders[DDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
 
         for (auto kv : shaders) {
             if (kv.second == nullptr) {
@@ -57,7 +57,7 @@ namespace Flux {
         return true;
     }
 
-    void DeferredRenderer::onResize(unsigned int width, unsigned int height) {
+    void DeferredRenderer::createGBuffer(const unsigned int width, const unsigned int height) {
         gBufferInfo.albedoTex = TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
         gBufferInfo.normalTex = TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
         gBufferInfo.positionTex = TextureLoader::createEmpty(width, height, GL_RGBA32F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, false);
@@ -67,13 +67,17 @@ namespace Flux {
         gBuffer->bind();
         gBuffer->addColorTexture(0, gBufferInfo.albedoTex);
         gBuffer->addColorTexture(1, gBufferInfo.normalTex);
-		gBuffer->addColorTexture(2, gBufferInfo.positionTex);
-		gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT0);
-		gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT1);
-		gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT2);
+        gBuffer->addColorTexture(2, gBufferInfo.positionTex);
+        gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT0);
+        gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT1);
+        gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT2);
         gBuffer->addDepthTexture(gBufferInfo.depthTex);
         gBuffer->validate();
         gBuffer->release();
+    }
+
+    void DeferredRenderer::onResize(unsigned int width, unsigned int height) {
+        createGBuffer(width, height);
 
         hdrBuffer = new Framebuffer(width, height);
         hdrBuffer->bind();
