@@ -19,28 +19,29 @@ namespace Flux {
             vector<String> tokens = line.split(' ');
 
             String key = tokens[0];
+            String value = tokens[1];
             if (key == "Name") {
-                std::cout << tokens[1].c_str() << std::endl;
+                Log::debug(value.c_str());
             }
             if (key == "DiffuseTex") {
-                std::cout << tokens[1].c_str() << std::endl;
-                String path = tokens[1];
+                Log::debug(value.c_str());
+                String path = value;
                 material->diffuseTex = TextureLoader::loadTexture(Path(path));
             }
             if (key == "NormalTex") {
-                std::cout << tokens[1].c_str() << std::endl;
-                String path = tokens[1];
+                Log::debug(value.c_str());
+                String path = value;
                 material->normalTex = TextureLoader::loadTexture(Path(path));
             }
             if (key == "MetalTex") {
-                std::cout << tokens[1].c_str() << std::endl;
-                String path = tokens[1];
-                material->metalTex = TextureLoader::loadTexture(Path(path));
+                Log::debug(value.c_str());
+                String path = value;
+                material->metalTex = TextureLoader::loadTextureGreyscale(Path(path));
             }
             if (key == "RoughnessTex") {
-                std::cout << tokens[1].c_str() << std::endl;
-                String path = tokens[1];
-                material->roughnessTex = TextureLoader::loadTexture(Path(path));
+                Log::debug(value.c_str());
+                String path = value;
+                material->roughnessTex = TextureLoader::loadTextureGreyscale(Path(path));
             }
             if (key == "Tiling") {
                 material->tilingX = std::stof(tokens[1].c_str());
