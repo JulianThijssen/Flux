@@ -17,6 +17,15 @@
 #include <iostream>
 
 #include "Matrix4f.h"
+#include "nvToolsExt.h"
+
+#define DEBUG_MODE
+
+#ifdef DEBUG_MODE
+#define LOG(str) do { Log::debug(str); } while(false)
+#else
+#define LOG(str) do { } while(false)
+#endif
 
 namespace Flux {
     bool DeferredRenderer::create(const Scene& scene) {
@@ -108,71 +117,85 @@ namespace Flux {
     }
 
     void DeferredRenderer::update(const Scene& scene) {
+        LOG("Updating");
         if (scene.getMainCamera() == nullptr)
             return;
 
+        LOG("Rendering GBuffer");
         gBuffer->bind();
-		shader = shaders[GBUFFER];
-		shader->bind();
+        shader = shaders[GBUFFER];
+        shader->bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		setCamera(*scene.getMainCamera());
-		renderScene(scene);
+        setCamera(*scene.getMainCamera());
+        nvtxRangePushA("GBuffer");
+        renderScene(scene);
+        nvtxRangePop();
+        LOG("Finished GBuffer");
 
-		hdrBuffer->bind();
-		glClear(GL_COLOR_BUFFER_BIT);
-		glDepthMask(false);
+        hdrBuffer->bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDepthMask(false);
+
         globalIllumination(scene);
         directLighting(scene);
-		glDepthMask(true);
+        glDepthMask(true);
         renderSky(scene);
         applyPostprocess();
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		renderFramebuffer(getCurrentFramebuffer());
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        renderFramebuffer(getCurrentFramebuffer());
+        LOG("Done updating");
     }
 
     void DeferredRenderer::globalIllumination(const Scene& scene) {
-		shader = shaders[DINDIRECT];
-		shader->bind();
+        LOG("Indirect lighting");
+        nvtxRangePushA("Indirect");
+        shader = shaders[DINDIRECT];
+        shader->bind();
 
         setCamera(*scene.getMainCamera());
 
-		gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
-		shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-		gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
-		shader->uniform1i("normalMap", TextureUnit::NORMAL);
-		gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
-		shader->uniform1i("positionMap", TextureUnit::POSITION);
+        gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
+        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
+        gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
+        shader->uniform1i("normalMap", TextureUnit::NORMAL);
+        gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
+        shader->uniform1i("positionMap", TextureUnit::POSITION);
+        gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
+        shader->uniform1i("depthMap", TextureUnit::DEPTH);
 
-		iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);
-		shader->uniform1i("irradianceMap", TextureUnit::IRRADIANCE);
 
-		iblSceneInfo.prefilterEnvmap->bind(TextureUnit::PREFILTER);
-		shader->uniform1i("prefilterEnvmap", TextureUnit::PREFILTER);
+        iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);
+        shader->uniform1i("irradianceMap", TextureUnit::IRRADIANCE);
 
-		iblSceneInfo.scaleBiasTexture->bind(TextureUnit::SCALEBIAS);
-		shader->uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
+        iblSceneInfo.prefilterEnvmap->bind(TextureUnit::PREFILTER);
+        shader->uniform1i("prefilterEnvmap", TextureUnit::PREFILTER);
 
-		drawQuad();
+        iblSceneInfo.scaleBiasTexture->bind(TextureUnit::SCALEBIAS);
+        shader->uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
+
+        drawQuad();
+        nvtxRangePop();
     }
 
     void DeferredRenderer::directLighting(const Scene& scene) {
+        LOG("Direct lighting");
+        nvtxRangePushA("Direct");
         glEnable(GL_BLEND);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
 
-		shader = shaders[DDIRECT];
-		shader->bind();
+        shader = shaders[DDIRECT];
+        shader->bind();
 
-		setCamera(*scene.getMainCamera());
+        setCamera(*scene.getMainCamera());
 
-		gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
-		shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-		gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
-		shader->uniform1i("normalMap", TextureUnit::NORMAL);
-		gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
-		shader->uniform1i("positionMap", TextureUnit::POSITION);
+        gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
+        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
+        gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
+        shader->uniform1i("normalMap", TextureUnit::NORMAL);
+        gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
+        shader->uniform1i("positionMap", TextureUnit::POSITION);
 
         for (Entity* light : scene.lights) {
             DirectionalLight* directionalLight = light->getComponent<DirectionalLight>();
@@ -195,10 +218,11 @@ namespace Flux {
                 continue;
             }
 
-			drawQuad();
+            drawQuad();
         }
 
         glDisable(GL_BLEND);
+        nvtxRangePop();
     }
 
     void DeferredRenderer::renderScene(const Scene& scene) {
@@ -224,6 +248,7 @@ namespace Flux {
     }
 
     void DeferredRenderer::renderMesh(const Scene& scene, Entity* e) {
+        nvtxRangePushA("Mesh");
         Transform* transform = e->getComponent<Transform>();
         Mesh* mesh = e->getComponent<Mesh>();
 
@@ -248,9 +273,11 @@ namespace Flux {
         glBindVertexArray(mesh->handle);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
         glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        nvtxRangePop();
     }
 
     void DeferredRenderer::renderSky(const Scene& scene) {
+        LOG("Sky rendering");
         Transform* transform = scene.getMainCamera()->getComponent<Transform>();
 
         Matrix4f yawMatrix;
@@ -288,6 +315,9 @@ namespace Flux {
     }
 
     void DeferredRenderer::applyPostprocess() {
+        LOG("Post-processing");
+        nvtxRangePushA("Post-process");
+        nvtxRangePushA("Bloom");
         shader = shaders[BLOOM];
         shader->bind();
         hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
@@ -295,7 +325,8 @@ namespace Flux {
         shader->uniform1f("threshold", 0);
         switchHdrBuffers();
         drawQuad();
-
+        nvtxRangePop();
+        nvtxRangePushA("Blur");
         shader = shaders[BLUR];
         shader->bind();
         for (int j = 1; j < 3; j++) {
@@ -308,7 +339,8 @@ namespace Flux {
                 drawQuad();
             }
         }
-
+        nvtxRangePop();
+        nvtxRangePushA("Tonemap");
         shader = shaders[TONEMAP];
         shader->bind();
         hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
@@ -317,14 +349,16 @@ namespace Flux {
         shader->uniform1i("bloomTex", TextureUnit::BLOOM);
         switchBuffers();
         drawQuad();
-
+        nvtxRangePop();
+        nvtxRangePushA("Gamma");
         shader = shaders[GAMMA];
         shader->bind();
         getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         switchBuffers();
         drawQuad();
-
+        nvtxRangePop();
+        nvtxRangePushA("FXAA");
         shader = shaders[FXAA];
         shader->bind();
         getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
@@ -333,9 +367,12 @@ namespace Flux {
         shader->uniform2f("rcpScreenSize", 1.0f / 1920, 1.0f / 1080);
         switchBuffers();
         drawQuad();
+        nvtxRangePop();
+        nvtxRangePop();
     }
 
     void DeferredRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
+        LOG("Rendering framebuffer");
         shader = shaders[TEXTURE];
         shader->bind();
         framebuffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
