@@ -49,6 +49,10 @@ namespace Flux {
         glUniform3f(location(name), v.x, v.y, v.z);
     }
 
+    void Shader::uniform3fv(const char* name, int count, Vector3f* v) {
+        glUniform3fv(location(name), count, (GLfloat*) v);
+    }
+
     void Shader::uniformMatrix4f(const char* name, Matrix4f& m) {
         glUniformMatrix4fv(location(name), 1, false, m.toArray());
     }
