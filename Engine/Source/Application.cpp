@@ -28,11 +28,11 @@ namespace Flux {
 #else
         renderer = std::make_unique<ForwardRenderer>();
 #endif
-        bool created = renderer->create(currentScene);
+        bool created = renderer->create(currentScene, Size(window.getWidth(), window.getHeight()));
         if (!created)
             return;
 
-        renderer->onResize(window.getWidth(), window.getHeight());
+        renderer->onResize(Size(window.getWidth(), window.getHeight()));
 
         currentScene.addScript(new FirstPersonView());
 

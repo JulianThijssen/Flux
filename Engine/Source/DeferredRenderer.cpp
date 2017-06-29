@@ -28,7 +28,7 @@
 #endif
 
 namespace Flux {
-    bool DeferredRenderer::create(const Scene& scene) {
+    bool DeferredRenderer::create(const Scene& scene, const Size windowSize) {
         shaders[IBL] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
         shaders[DIRECT] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
         shaders[SKYBOX] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
@@ -85,35 +85,40 @@ namespace Flux {
         gBuffer->release();
     }
 
-    void DeferredRenderer::onResize(unsigned int width, unsigned int height) {
-        createGBuffer(width, height);
-
-        hdrBuffer = new Framebuffer(width, height);
+    void DeferredRenderer::createBackBuffers(const unsigned int width, const unsigned int height) {
+        hdrBuffer = new Framebuffer(windowSize.width, windowSize.height);
         hdrBuffer->bind();
-        hdrBuffer->addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true));
+        hdrBuffer->addColorTexture(0, TextureLoader::createEmpty(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true));
         hdrBuffer->addDepthTexture(gBufferInfo.depthTex);
         hdrBuffer->validate();
         hdrBuffer->release();
 
         for (int i = 0; i < 2; i++) {
-            Framebuffer framebuffer(width, height);
+            Framebuffer framebuffer(windowSize.width, windowSize.height);
             framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true));
+            framebuffer.addColorTexture(0, TextureLoader::createEmpty(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true));
             framebuffer.validate();
             framebuffer.release();
             hdrBackBuffers.push_back(framebuffer);
         }
         for (int i = 0; i < 2; i++) {
-            Framebuffer framebuffer(width, height);
+            Framebuffer framebuffer(windowSize.width, windowSize.height);
             framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::LINEAR, true));
+            framebuffer.addColorTexture(0, TextureLoader::createEmpty(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::LINEAR, true));
             framebuffer.validate();
             framebuffer.release();
             backBuffers.push_back(framebuffer);
         }
+    }
+
+    void DeferredRenderer::onResize(const Size windowSize) {
+        this->windowSize.setSize(windowSize.width, windowSize.height);
+
+        createGBuffer(windowSize.width, windowSize.height);
+        createBackBuffers(windowSize.width, windowSize.height);
 
         setClearColor(1.0, 0.0, 1.0, 1.0);
-        glViewport(0, 0, width, height);
+        glViewport(0, 0, windowSize.width, windowSize.height);
     }
 
     void DeferredRenderer::update(const Scene& scene) {
@@ -329,6 +334,7 @@ namespace Flux {
         nvtxRangePushA("Blur");
         shader = shaders[BLUR];
         shader->bind();
+        shader->uniform2f("windowSize", windowSize.width, windowSize.height);
         for (int j = 1; j < 3; j++) {
             for (int i = 0; i < 2; i++) {
                 getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
@@ -364,7 +370,7 @@ namespace Flux {
         getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         glGenerateMipmap(GL_TEXTURE_2D);
-        shader->uniform2f("rcpScreenSize", 1.0f / 1920, 1.0f / 1080);
+        shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
         switchBuffers();
         drawQuad();
         nvtxRangePop();

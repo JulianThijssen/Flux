@@ -9,6 +9,7 @@
 
 #include "Framebuffer.h"
 #include "Texture.h"
+#include "Size.h"
 
 #include <vector>
 
@@ -17,17 +18,18 @@ namespace Flux {
 
     class Renderer {
     public:
-        Renderer() : 
+        Renderer() :
             clearColor(1, 0, 1),
             projMatrix(),
             viewMatrix(),
             modelMatrix(),
             shader(0),
-            currentFramebuffer(0)
+            currentFramebuffer(0),
+            windowSize(800, 600)
         { }
 
-        virtual bool create(const Scene& scene) = 0;
-        virtual void onResize(unsigned int width, unsigned int height) = 0;
+        virtual bool create(const Scene& scene, const Size windowSize) = 0;
+        virtual void onResize(const Size windowSize) = 0;
         virtual void update(const Scene& scene) = 0;
         virtual void renderScene(const Scene& scene) = 0;
         virtual void renderMesh(const Scene& scene, Entity* entity) = 0;
@@ -49,6 +51,8 @@ namespace Flux {
         Matrix4f modelMatrix;
 
         Shader* shader;
+
+        Size windowSize;
 
         Framebuffer* hdrBuffer;
         std::vector<Framebuffer> backBuffers;

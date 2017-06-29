@@ -26,14 +26,15 @@ namespace Flux {
     public:
         DeferredRenderer() { }
 
-        virtual bool create(const Scene& scene);
-        virtual void onResize(unsigned int width, unsigned int height);
+        virtual bool create(const Scene& scene, const Size windowSize);
+        virtual void onResize(const Size windowSize);
         virtual void update(const Scene& scene);
         virtual void renderScene(const Scene& scene);
         virtual void renderMesh(const Scene& scene, Entity* e);
 
     private:
         void createGBuffer(const unsigned int width, const unsigned int height);
+        void createBackBuffers(const unsigned int width, const unsigned int height);
         void globalIllumination(const Scene& scene);
         void directLighting(const Scene& scene);
         void renderSky(const Scene& scene);
