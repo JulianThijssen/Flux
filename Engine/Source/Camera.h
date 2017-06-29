@@ -32,6 +32,11 @@ namespace Flux {
         float getAspectRatio() const;
         float getZNear() const;
         float getZFar() const;
+        bool isPerspective() const;
+        float getLeft() const;
+        float getRight() const;
+        float getBottom() const;
+        float getTop() const;
 
         void setFovy(float fovy);
         void setAspectRatio(float aspect);

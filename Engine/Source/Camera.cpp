@@ -27,7 +27,8 @@ namespace Flux {
         bottom(bottom),
         top(top),
         zNear(zNear),
-        zFar(zFar) {
+        zFar(zFar),
+        perspective(false) {
 
     }
 
@@ -35,7 +36,8 @@ namespace Flux {
         fovy(fovy),
         aspect(aspect),
         zNear(zNear),
-        zFar(zFar) {
+        zFar(zFar),
+        perspective(true) {
 
     }
 
@@ -82,6 +84,26 @@ namespace Flux {
 
     float Camera::getZFar() const {
         return zFar;
+    }
+
+    bool Camera::isPerspective() const {
+        return perspective;
+    }
+
+    float Camera::getLeft() const {
+        return left;
+    }
+
+    float Camera::getRight() const {
+        return right;
+    }
+
+    float Camera::getBottom() const {
+        return bottom;
+    }
+
+    float Camera::getTop() const {
+        return top;
     }
 
     void Camera::setFovy(float fovy) {
