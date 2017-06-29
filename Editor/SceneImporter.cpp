@@ -147,7 +147,7 @@ namespace Flux {
         camT->position.set(4, 4, 12);
         camT->rotation.set(0, 0, 0);
         mainCamera->addComponent(camT);
-        mainCamera->addComponent(new Camera(60, 1920.0f/1080, 0.1f, 100.f));
+        mainCamera->addComponent(new Camera(60, 1920.0f/1080, 0.1f, 400.f));
         scene.entities.push_back(mainCamera);
 
         Entity* light = new Entity();
@@ -156,8 +156,10 @@ namespace Flux {
         dirLight->direction.set(-0.471409702, -0.5061866455, 0.722182783);
         dirLight->direction.normalise();
         light->addComponent(dirLight);
+        light->addComponent(new Camera(-10, 10, -10, 10, -100, 100));
         Transform* t1 = new Transform();
         t1->position.set(0, 0, 0);
+        t1->rotation.set(-45, 0, 0);
         light->addComponent(t1);
         scene.entities.push_back(light);
 

@@ -22,7 +22,7 @@ namespace Flux {
     void SceneConverter::convert(const SceneDesc& scene, Path outputPath) {
         std::ofstream outFile;
         outFile.open(outputPath.str().c_str(), ios::out | ios::binary);
-
+        std::cout << "CONVERT" << std::endl;
         if (scene.skybox) {
             writeSkybox(scene.skybox, outFile);
         }
@@ -138,15 +138,35 @@ namespace Flux {
             out.write("c", sizeof(char));
             Camera* camera = e->getComponent<Camera>();
 
-            const float fieldOfView = camera->getFovy();
-            const float aspectRatio = camera->getAspectRatio();
-            const float zNear = camera->getZNear();
-            const float zFar = camera->getZFar();
+            const bool perspective = camera->isPerspective();
+            out.write((char *)&perspective, sizeof(bool));
 
-            out.write((char *)&fieldOfView, sizeof(float));
-            out.write((char *)&aspectRatio, sizeof(float));
-            out.write((char *)&zNear, sizeof(float));
-            out.write((char *)&zFar, sizeof(float));
+            if (perspective) {
+                const float fieldOfView = camera->getFovy();
+                const float aspectRatio = camera->getAspectRatio();
+                const float zNear = camera->getZNear();
+                const float zFar = camera->getZFar();
+
+                out.write((char *)&fieldOfView, sizeof(float));
+                out.write((char *)&aspectRatio, sizeof(float));
+                out.write((char *)&zNear, sizeof(float));
+                out.write((char *)&zFar, sizeof(float));
+            }
+            else {
+                const float left = camera->getLeft();
+                const float right = camera->getRight();
+                const float bottom = camera->getBottom();
+                const float top = camera->getTop();
+                const float zNear = camera->getZNear();
+                const float zFar = camera->getZFar();
+
+                out.write((char *)&left, sizeof(float));
+                out.write((char *)&right, sizeof(float));
+                out.write((char *)&bottom, sizeof(float));
+                out.write((char *)&top, sizeof(float));
+                out.write((char *)&zNear, sizeof(float));
+                out.write((char *)&zFar, sizeof(float));
+            }
         }
         if (e->hasComponent<PointLight>()) {
             out.write("p", sizeof(char));

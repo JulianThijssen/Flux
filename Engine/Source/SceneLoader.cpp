@@ -186,15 +186,32 @@ namespace Flux {
                     e->addComponent(mr);
                 }
                 if (component == 'c') {
-                    // TODO Orthographic camera
-                    float fovy, aspect, zNear, zFar;
+                    bool perspective = true;
+                    inFile.read((char *)&perspective, sizeof(bool));
+                    Camera* camera = nullptr;
 
-                    inFile.read((char *) &fovy, sizeof(fovy));
-                    inFile.read((char *) &aspect, sizeof(aspect));
-                    inFile.read((char *) &zNear, sizeof(zNear));
-                    inFile.read((char *) &zFar, sizeof(zFar));
+                    if (perspective) {
+                        float fovy, aspect, zNear, zFar;
 
-                    Camera* camera = new Camera(fovy, aspect, zNear, zFar);
+                        inFile.read((char *)&fovy, sizeof(fovy));
+                        inFile.read((char *)&aspect, sizeof(aspect));
+                        inFile.read((char *)&zNear, sizeof(zNear));
+                        inFile.read((char *)&zFar, sizeof(zFar));
+                        std::cout << fovy << " " << aspect << " " << zNear << " " << zFar << std::endl;
+                        camera = new Camera(fovy, aspect, zNear, zFar);
+                    }
+                    else {
+                        float left, right, bottom, top, zNear, zFar;
+
+                        inFile.read((char *)&left, sizeof(left));
+                        inFile.read((char *)&right, sizeof(right));
+                        inFile.read((char *)&bottom, sizeof(bottom));
+                        inFile.read((char *)&top, sizeof(top));
+                        inFile.read((char *)&zNear, sizeof(zNear));
+                        inFile.read((char *)&zFar, sizeof(zFar));
+                        std::cout << left << " " << right << " " << bottom << " " << top << " " << zNear << " " << zFar << std::endl;
+                        camera = new Camera(left, right, bottom, top, zNear, zFar);
+                    }
 
                     e->addComponent(camera);
                 }
@@ -229,12 +246,12 @@ namespace Flux {
             }
 
             // TODO add main camera id to the scene description
-            if (e->hasComponent<Camera>()) {
+            if (e->hasComponent<PointLight>() || e->hasComponent<DirectionalLight>()) {
+                scene.lights.push_back(e);
+            }
+            else if (e->hasComponent<Camera>()) {
                 std::cout << "SETTING MAIN CAMERA" << std::endl;
                 scene.mainCamera = e;
-            }
-            else if (e->hasComponent<PointLight>() || e->hasComponent<DirectionalLight>()) {
-                scene.lights.push_back(e);
             }
             else {
                 scene.addEntity(e);
