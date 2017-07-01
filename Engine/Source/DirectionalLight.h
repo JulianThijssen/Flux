@@ -4,6 +4,7 @@
 
 #include "Component.h"
 #include "Vector3f.h"
+#include "Matrix4f.h"
 
 namespace Flux {
     class DirectionalLight : public Component {
@@ -19,6 +20,9 @@ namespace Flux {
         float energy;
         Vector3f direction;
         Vector3f color;
+
+        Texture* shadowMap;
+        Matrix4f shadowSpace;
     };
 }
 

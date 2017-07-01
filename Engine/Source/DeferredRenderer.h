@@ -35,16 +35,19 @@ namespace Flux {
     private:
         void createGBuffer(const unsigned int width, const unsigned int height);
         void createBackBuffers(const unsigned int width, const unsigned int height);
+        void createShadowMaps(const Scene& scene);
         void globalIllumination(const Scene& scene);
         void directLighting(const Scene& scene);
         void renderSky(const Scene& scene);
         void applyPostprocess();
+        void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);
 
         std::unordered_map<ShaderName, Shader*> shaders;
 
         GBuffer gBufferInfo;
         std::unique_ptr<Framebuffer> gBuffer;
+        std::unique_ptr<Framebuffer> shadowBuffer;
         IblSceneInfo iblSceneInfo;
         SsaoInfo ssaoInfo;
     };

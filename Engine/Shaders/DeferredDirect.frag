@@ -8,6 +8,8 @@
 struct DirectionalLight {
     vec3 direction;
     vec3 color;
+    sampler2D shadowMap;
+    mat4 shadowMatrix;
 };
 
 struct PointLight {
@@ -129,6 +131,7 @@ void main() {
     vec3 V = normalize(camPos - P);
     vec3 R = normalize(reflect(-V, N));
     
+    vec3 S = ((dirLight.shadowMatrix * vec4(P, 1)) * 0.5 + 0.5).xyz;
     
     vec3 L;
     vec3 Li = vec3(1, 1, 1);
@@ -146,6 +149,8 @@ void main() {
     }
     vec3 H = normalize(L + V);
     
+    float visibility = texture(dirLight.shadowMap, S.xy).r < S.z - 0.0005 ? 0.0 : 1.0;
+    
     // Lambert Diffuse BRDF
     vec3 LambertBRDF = (BaseColor / PI) * (1 - Metalness);
     
@@ -154,5 +159,5 @@ void main() {
 
     vec3 Radiance = (LambertBRDF + CookBRDF) * Li * Attenuation;
 
-    fragColor = vec4(Radiance, 1.0);
+    fragColor = vec4(Radiance * visibility, 1.0);
 }

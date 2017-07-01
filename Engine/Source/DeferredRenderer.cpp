@@ -43,12 +43,15 @@ namespace Flux {
         shaders[GBUFFER] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag");
         shaders[DINDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag");
         shaders[DDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
+        shaders[SHADOW] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag");
 
         for (auto kv : shaders) {
             if (kv.second == nullptr) {
                 return false;
             }
         }
+
+        createShadowMaps(scene);
 
         if (scene.skybox) {
             iblSceneInfo.PrecomputeEnvironmentData(*scene.skybox);
@@ -111,6 +114,21 @@ namespace Flux {
         }
     }
 
+    void DeferredRenderer::createShadowMaps(const Scene& scene) {
+        shadowBuffer = std::make_unique<Framebuffer>(4096, 4096);
+        shadowBuffer->bind();
+        shadowBuffer->disableColor();
+        shadowBuffer->release();
+
+        for (Entity* entity : scene.lights) {
+            Transform* t = entity->getComponent<Transform>();
+            Camera* camera = entity->getComponent<Camera>();
+            DirectionalLight* light = entity->getComponent<DirectionalLight>();
+
+            light->shadowMap = TextureLoader::createEmpty(4096, 4096, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
+        }
+    }
+
     void DeferredRenderer::onResize(const Size windowSize) {
         this->windowSize.setSize(windowSize.width, windowSize.height);
 
@@ -118,7 +136,6 @@ namespace Flux {
         createBackBuffers(windowSize.width, windowSize.height);
 
         setClearColor(1.0, 0.0, 1.0, 1.0);
-        glViewport(0, 0, windowSize.width, windowSize.height);
     }
 
     void DeferredRenderer::update(const Scene& scene) {
@@ -126,6 +143,9 @@ namespace Flux {
         if (scene.getMainCamera() == nullptr)
             return;
 
+        renderShadowMaps(scene);
+
+        glViewport(0, 0, windowSize.width, windowSize.height);
         LOG("Rendering GBuffer");
         gBuffer->bind();
         shader = shaders[GBUFFER];
@@ -212,6 +232,9 @@ namespace Flux {
                 shader->uniform3f("dirLight.color", directionalLight->color);
                 shader->uniform1i("isDirLight", true);
                 shader->uniform1i("isPointLight", false);
+                directionalLight->shadowMap->bind(TextureUnit::SHADOW);
+                shader->uniform1i("dirLight.shadowMap", TextureUnit::SHADOW);
+                shader->uniformMatrix4f("dirLight.shadowMatrix", directionalLight->shadowSpace);
             }
             else if (pointLight) {
                 shader->uniform3f("pointLight.position", transform->position);
@@ -375,6 +398,33 @@ namespace Flux {
         drawQuad();
         nvtxRangePop();
         nvtxRangePop();
+    }
+
+    void DeferredRenderer::renderShadowMaps(const Scene& scene) {
+        shader = shaders[SHADOW];
+        shader->bind();
+
+        glViewport(0, 0, 4096, 4096);
+        shadowBuffer->bind();
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        for (Entity* entity : scene.lights) {
+            Transform* t = entity->getComponent<Transform>();
+            Camera* camera = entity->getComponent<Camera>();
+            DirectionalLight* light = entity->getComponent<DirectionalLight>();
+
+            setCamera(*entity);
+
+            Matrix4f shadowSpace;
+            shadowSpace = viewMatrix * shadowSpace;
+            shadowSpace = projMatrix * shadowSpace;
+            light->shadowSpace = shadowSpace;
+
+            shadowBuffer->addDepthTexture(light->shadowMap);
+            shadowBuffer->validate();
+
+            renderScene(scene);
+        }
     }
 
     void DeferredRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
