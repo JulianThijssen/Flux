@@ -56,12 +56,12 @@ namespace Flux {
             m[0] = 2 / (right - left);
             m[5] = 2 / (top - bottom);
             m[10] = -2 / (zFar - zNear);
-            m[12] = (left - right) / (right - left);
-            m[13] = (bottom - top) / (top - bottom);
-            m[14] = (zNear - zFar) / (zFar - zNear);
+            m[12] = (-right - left) / (right - left);
+            m[13] = (-top - bottom) / (top - bottom);
+            m[14] = (-zFar - zNear) / (zFar - zNear);
         }
     }
-
+    
     void Camera::setPerspective() {
         perspective = true;
     }
