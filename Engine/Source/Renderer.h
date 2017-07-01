@@ -12,6 +12,7 @@
 #include "Size.h"
 
 #include <vector>
+#include <unordered_map>
 
 namespace Flux {
 	enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR, SSAO, GBUFFER, DINDIRECT, DDIRECT, SHADOW, MULTIPLY, SSAOBLUR };
@@ -35,6 +36,10 @@ namespace Flux {
         virtual void renderScene(const Scene& scene) = 0;
         virtual void renderMesh(const Scene& scene, Entity* entity) = 0;
 
+        void addShader(const ShaderName name, Shader* shader);
+        void setShader(const ShaderName shader);
+        bool validateShaders();
+
         void setClearColor(float r, float g, float b, float a);
         void setCamera(Entity& camera);
         void drawQuad();
@@ -56,11 +61,15 @@ namespace Flux {
 
         Size windowSize;
 
+        
+
         Framebuffer* hdrBuffer;
         std::vector<Framebuffer> backBuffers;
         std::vector<Framebuffer> hdrBackBuffers;
         unsigned int currentFramebuffer;
         unsigned int currentHdrFramebuffer;
+    private:
+        std::unordered_map<ShaderName, Shader*> shaders;
     };
 }
 

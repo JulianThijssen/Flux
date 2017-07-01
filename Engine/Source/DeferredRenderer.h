@@ -10,7 +10,6 @@
 
 #include "Texture.h"
 
-#include <unordered_map>
 #include <memory>
 
 namespace Flux {
@@ -42,8 +41,6 @@ namespace Flux {
         void applyPostprocess();
         void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);
-
-        std::unordered_map<ShaderName, Shader*> shaders;
 
         GBuffer gBufferInfo;
         std::unique_ptr<Framebuffer> gBuffer;

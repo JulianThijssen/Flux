@@ -6,14 +6,11 @@
 
 #include "Cubemap.h"
 #include "Renderer/ImageBasedRendering.h"
+#include "Renderer/SSAORendering.h"
 
 #include "Texture.h"
 
-#include <unordered_map>
-
 namespace Flux {
-    enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR };
-
     class ForwardRenderer : public Renderer {
     public:
         ForwardRenderer() { }
@@ -30,9 +27,8 @@ namespace Flux {
         void applyPostprocess();
         void renderFramebuffer(const Framebuffer& framebuffer);
     private:
-        std::unordered_map<ShaderName, Shader*> shaders;
-
         IblSceneInfo iblSceneInfo;
+        SsaoInfo ssaoInfo;
     };
 }
 

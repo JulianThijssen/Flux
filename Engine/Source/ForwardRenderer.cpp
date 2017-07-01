@@ -20,28 +20,30 @@
 
 namespace Flux {
     bool ForwardRenderer::create(const Scene& scene) {
-        shaders[IBL]       = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
-        shaders[DIRECT]    = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
-        shaders[SKYBOX]    = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
-        shaders[TEXTURE]   = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
-        shaders[FXAA]      = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
-        shaders[GAMMA]     = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
-        shaders[TONEMAP]   = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
-        shaders[SKYSPHERE] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
-        shaders[BLOOM]     = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag");
-        shaders[BLUR]      = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag");
+        addShader(IBL, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
+        addShader(DIRECT, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag"));
+        addShader(SKYBOX, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
+        addShader(TEXTURE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
+        addShader(FXAA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
+        addShader(GAMMA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
+        addShader(TONEMAP, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
+        addShader(SKYSPHERE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag"));
+        addShader(BLOOM, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
+        addShader(BLUR, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag"));
+        addShader(SSAO, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/SSAO.frag"));
 
-        for (auto kv : shaders) {
-            if (kv.second == nullptr) {
-                return false;
-            }
+        if (!validateShaders()) {
+            return false;
         }
 
         if (scene.skybox) {
             iblSceneInfo.PrecomputeEnvironmentData(*scene.skybox);
         }
-        else if (scene.skySphere)
+        else if (scene.skySphere) {
             iblSceneInfo.PrecomputeEnvironmentData(*scene.skySphere);
+        }
+
+        ssaoInfo.generate(30, 16);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -86,7 +88,7 @@ namespace Flux {
         hdrBuffer->bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         globalIllumination(scene);
-        directLighting(scene);
+        //directLighting(scene);
         renderSky(scene);
         applyPostprocess();
 
@@ -96,8 +98,7 @@ namespace Flux {
     }
 
     void ForwardRenderer::globalIllumination(const Scene& scene) {
-        shader = shaders[IBL];
-        shader->bind();
+        setShader(IBL);
 
         setCamera(*scene.getMainCamera());
 
@@ -109,6 +110,10 @@ namespace Flux {
 
         iblSceneInfo.scaleBiasTexture->bind(TextureUnit::SCALEBIAS);
         shader->uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
+        //shader = shaders[SSAO];
+        //shader->bind();
+
+        //setCamera(*scene.getMainCamera());
 
         renderScene(scene);
     }
@@ -118,8 +123,7 @@ namespace Flux {
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
 
-        shader = shaders[DIRECT];
-        shader->bind();
+        setShader(DIRECT);
 
         setCamera(*scene.getMainCamera());
 
@@ -213,14 +217,12 @@ namespace Flux {
         cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
         if (scene.skybox) {
-            shader = shaders[SKYBOX];
-            shader->bind();
+            setShader(SKYBOX);
             scene.skybox->bind(TextureUnit::TEXTURE);
             shader->uniform1i("skybox", TextureUnit::TEXTURE);
         }
         else if (scene.skySphere) {
-            shader = shaders[SKYSPHERE];
-            shader->bind();
+            setShader(SKYSPHERE);
             scene.skySphere->bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
         }
@@ -237,19 +239,17 @@ namespace Flux {
     }
 
     void ForwardRenderer::applyPostprocess() {
-        shader = shaders[BLOOM];
-        shader->bind();
-        hdrBuffer->getColorTexture().bind(TextureUnit::TEXTURE);
+        setShader(BLOOM);
+        hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         shader->uniform1f("threshold", 0);
         switchHdrBuffers();
         drawQuad();
         
-        shader = shaders[BLUR];
-        shader->bind();
+        setShader(BLUR);
         for (int j = 1; j < 3; j++) {
             for (int i = 0; i < 2; i++) {
-                getCurrentHdrFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
+                getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
                 glGenerateMipmap(GL_TEXTURE_2D);
                 shader->uniform1i("tex", TextureUnit::TEXTURE);
                 shader->uniform2f("direction", i == 0 ? j : 0, i == 0 ? 0 : j);
@@ -258,36 +258,32 @@ namespace Flux {
             }
         }
 
-        shader = shaders[TONEMAP];
-        shader->bind();
-        hdrBuffer->getColorTexture().bind(TextureUnit::TEXTURE);
+        setShader(TONEMAP);
+        hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
-        getCurrentHdrFramebuffer().getColorTexture().bind(TextureUnit::BLOOM);
+        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::BLOOM);
         shader->uniform1i("bloomTex", TextureUnit::BLOOM);
         switchBuffers();
         drawQuad();
 
-        shader = shaders[GAMMA];
-        shader->bind();
-        getCurrentFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
+        setShader(GAMMA);
+        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         switchBuffers();
         drawQuad();
 
-        shader = shaders[FXAA];
-        shader->bind();
-        getCurrentFramebuffer().getColorTexture().bind(TextureUnit::TEXTURE);
+        setShader(FXAA);
+        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         glGenerateMipmap(GL_TEXTURE_2D);
-        shader->uniform2f("rcpScreenSize", 1.0f / 1920, 1.0f / 1080);
+        shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
         switchBuffers();
         drawQuad();
     }
 
     void ForwardRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
-        shader = shaders[TEXTURE];
-        shader->bind();
-        framebuffer.getColorTexture().bind(TextureUnit::TEXTURE);
+        setShader(TEXTURE);
+        framebuffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         drawQuad();
     }

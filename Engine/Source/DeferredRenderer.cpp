@@ -29,28 +29,26 @@
 
 namespace Flux {
     bool DeferredRenderer::create(const Scene& scene, const Size windowSize) {
-        shaders[IBL] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag");
-        shaders[DIRECT] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag");
-        shaders[SKYBOX] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
-        shaders[TEXTURE] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
-        shaders[FXAA] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
-        shaders[GAMMA] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
-        shaders[TONEMAP] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
-        shaders[SKYSPHERE] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
-        shaders[BLOOM] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag");
-        shaders[BLUR] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag");
-        shaders[SSAO] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag");
-        shaders[MULTIPLY] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag");
-        shaders[GBUFFER] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag");
-        shaders[DINDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag");
-        shaders[DDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
-        shaders[SHADOW] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag");
-        shaders[SSAOBLUR] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag");
+        addShader(IBL, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
+        addShader(DIRECT, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag"));
+        addShader(SKYBOX, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
+        addShader(TEXTURE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
+        addShader(FXAA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
+        addShader(GAMMA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
+        addShader(TONEMAP, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
+        addShader(SKYSPHERE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag"));
+        addShader(BLOOM, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
+        addShader(BLUR, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag"));
+        addShader(SSAO, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag"));
+        addShader(MULTIPLY, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag"));
+        addShader(GBUFFER, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
+        addShader(DINDIRECT, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag"));
+        addShader(DDIRECT, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag"));
+        addShader(SHADOW, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag"));
+        addShader(SSAOBLUR, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag"));
 
-        for (auto kv : shaders) {
-            if (kv.second == nullptr) {
-                return false;
-            }
+        if (!validateShaders()) {
+            return false;
         }
 
         createShadowMaps(scene);
@@ -150,8 +148,7 @@ namespace Flux {
         glViewport(0, 0, windowSize.width, windowSize.height);
         LOG("Rendering GBuffer");
         gBuffer->bind();
-        shader = shaders[GBUFFER];
-        shader->bind();
+        setShader(GBUFFER);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         setCamera(*scene.getMainCamera());
         nvtxRangePushA("GBuffer");
@@ -178,8 +175,7 @@ namespace Flux {
         glClear(GL_COLOR_BUFFER_BIT);
         LOG("Indirect lighting");
         nvtxRangePushA("Indirect");
-        shader = shaders[DINDIRECT];
-        shader->bind();
+        setShader(DINDIRECT);
 
         setCamera(*scene.getMainCamera());
 
@@ -206,8 +202,7 @@ namespace Flux {
         switchBuffers();
 
         glClear(GL_COLOR_BUFFER_BIT);
-        shader = shaders[SSAO];
-        shader->bind();
+        setShader(SSAO);
 
         setCamera(*scene.getMainCamera());
 
@@ -228,8 +223,7 @@ namespace Flux {
         drawQuad();
         nvtxRangePop();
 
-        shader = shaders[SSAOBLUR];
-        shader->bind();
+        setShader(SSAOBLUR);
         shader->uniform2f("windowSize", windowSize.width, windowSize.height);
 
         getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
@@ -241,9 +235,7 @@ namespace Flux {
 
         hdrBuffer->bind();
 
-        shader = shaders[MULTIPLY];
-        shader->bind();
-
+        setShader(MULTIPLY);
         getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::ALBEDO);
         getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::NORMAL);
         shader->uniform1i("texA", TextureUnit::ALBEDO);
@@ -259,9 +251,7 @@ namespace Flux {
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
 
-        shader = shaders[DDIRECT];
-        shader->bind();
-
+        setShader(DDIRECT);
         setCamera(*scene.getMainCamera());
 
         gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
@@ -368,14 +358,12 @@ namespace Flux {
         cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
         if (scene.skybox) {
-            shader = shaders[SKYBOX];
-            shader->bind();
+            setShader(SKYBOX);
             scene.skybox->bind(TextureUnit::TEXTURE);
             shader->uniform1i("skybox", TextureUnit::TEXTURE);
         }
         else if (scene.skySphere) {
-            shader = shaders[SKYSPHERE];
-            shader->bind();
+            setShader(SKYSPHERE);
             scene.skySphere->bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
         }
@@ -395,8 +383,7 @@ namespace Flux {
         LOG("Post-processing");
         nvtxRangePushA("Post-process");
         nvtxRangePushA("Bloom");
-        shader = shaders[BLOOM];
-        shader->bind();
+        setShader(BLOOM);
         hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         shader->uniform1f("threshold", 0);
@@ -405,8 +392,7 @@ namespace Flux {
         nvtxRangePop();
 
         nvtxRangePushA("Blur");
-        shader = shaders[BLUR];
-        shader->bind();
+        setShader(BLUR);
         shader->uniform2f("windowSize", windowSize.width, windowSize.height);
         for (int j = 1; j < 3; j++) {
             for (int i = 0; i < 2; i++) {
@@ -421,8 +407,7 @@ namespace Flux {
         nvtxRangePop();
 
         nvtxRangePushA("Tonemap");
-        shader = shaders[TONEMAP];
-        shader->bind();
+        setShader(TONEMAP);
         hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::BLOOM);
@@ -432,8 +417,7 @@ namespace Flux {
         nvtxRangePop();
 
         nvtxRangePushA("Gamma");
-        shader = shaders[GAMMA];
-        shader->bind();
+        setShader(GAMMA);
         getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         switchBuffers();
@@ -441,8 +425,7 @@ namespace Flux {
         nvtxRangePop();
 
         nvtxRangePushA("FXAA");
-        shader = shaders[FXAA];
-        shader->bind();
+        setShader(FXAA);
         getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -454,8 +437,7 @@ namespace Flux {
     }
 
     void DeferredRenderer::renderShadowMaps(const Scene& scene) {
-        shader = shaders[SHADOW];
-        shader->bind();
+        setShader(SHADOW);
 
         glViewport(0, 0, 4096, 4096);
         shadowBuffer->bind();
@@ -482,8 +464,7 @@ namespace Flux {
 
     void DeferredRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
         LOG("Rendering framebuffer");
-        shader = shaders[TEXTURE];
-        shader->bind();
+        setShader(TEXTURE);
         framebuffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         drawQuad();

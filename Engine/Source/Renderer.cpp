@@ -3,6 +3,24 @@
 #include <glad/glad.h>
 
 namespace Flux {
+    void Renderer::addShader(const ShaderName name, Shader* shader) {
+        shaders[name] = shader;
+    }
+
+    void Renderer::setShader(const ShaderName shaderName) {
+        shader = shaders[shaderName];
+        shader->bind();
+    }
+
+    bool Renderer::validateShaders() {
+        for (auto kv : shaders) {
+            if (kv.second == nullptr) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     void Renderer::setClearColor(float r, float g, float b, float a) {
         glClearColor(r, g, b, a);
     }
