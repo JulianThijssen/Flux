@@ -61,6 +61,16 @@ namespace Flux {
             glDrawBuffers(drawBuffers.size(), drawBuffers.data());
         }
 
+        void enableColor(int target) {
+            glReadBuffer(target);
+            glDrawBuffer(target);
+        }
+
+        void disableColor() {
+            glReadBuffer(GL_NONE);
+            glDrawBuffer(GL_NONE);
+        }
+
         void validate() const {
             GLuint error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
