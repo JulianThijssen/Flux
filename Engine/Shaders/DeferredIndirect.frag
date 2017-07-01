@@ -3,12 +3,15 @@
 uniform sampler2D albedoMap;
 uniform sampler2D normalMap;
 uniform sampler2D positionMap;
+uniform sampler2D depthMap;
 
 uniform samplerCube irradianceMap;
 uniform samplerCube prefilterEnvmap;
 uniform sampler2D scaleBiasMap;
 
 uniform vec3 camPos;
+uniform mat4 projMatrix;
+uniform mat4 viewMatrix;
 
 in vec3 pass_position;
 in vec2 pass_texCoords;

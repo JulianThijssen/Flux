@@ -12,11 +12,14 @@ namespace Flux {
         static const int IRRADIANCE = 4;
         static const int PREFILTER = 5;
         static const int SCALEBIAS = 6;
+        static const int NOISE = 7;
 
         static const int TEXTURE = 0;
         static const int BLOOM = 1;
 
         static const int POSITION = 2;
+        static const int DEPTH = 3;
+
         static const int SHADOW = 8;
     };
 }

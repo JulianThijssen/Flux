@@ -22,6 +22,8 @@ namespace Flux {
         shader->uniform3f("camPos", ct->position);
         shader->uniformMatrix4f("projMatrix", projMatrix);
         shader->uniformMatrix4f("viewMatrix", viewMatrix);
+        shader->uniform1f("zNear", cam->getZNear());
+        shader->uniform1f("zFar", cam->getZFar());
     }
 
     void Renderer::drawQuad() {

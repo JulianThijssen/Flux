@@ -19,7 +19,7 @@
 #include "Matrix4f.h"
 #include "nvToolsExt.h"
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 
 #ifdef DEBUG_MODE
 #define LOG(str) do { Log::debug(str); } while(false)
@@ -39,7 +39,8 @@ namespace Flux {
         shaders[SKYSPHERE] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
         shaders[BLOOM] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag");
         shaders[BLUR] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag");
-        shaders[SSAO] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/SSAO.frag");
+        shaders[SSAO] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag");
+        shaders[MULTIPLY] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag");
         shaders[GBUFFER] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag");
         shaders[DINDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag");
         shaders[DDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
@@ -60,7 +61,7 @@ namespace Flux {
             iblSceneInfo.PrecomputeEnvironmentData(*scene.skySphere);
         }
 
-        ssaoInfo.generate(30, 16);
+        ssaoInfo.generate(32, 4);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -157,8 +158,6 @@ namespace Flux {
         nvtxRangePop();
         LOG("Finished GBuffer");
 
-        hdrBuffer->bind();
-        glClear(GL_COLOR_BUFFER_BIT);
         glDepthMask(false);
 
         globalIllumination(scene);
@@ -173,6 +172,9 @@ namespace Flux {
     }
 
     void DeferredRenderer::globalIllumination(const Scene& scene) {
+        switchHdrBuffers();
+
+        glClear(GL_COLOR_BUFFER_BIT);
         LOG("Indirect lighting");
         nvtxRangePushA("Indirect");
         shader = shaders[DINDIRECT];
@@ -189,7 +191,6 @@ namespace Flux {
         gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
         shader->uniform1i("depthMap", TextureUnit::DEPTH);
 
-
         iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);
         shader->uniform1i("irradianceMap", TextureUnit::IRRADIANCE);
 
@@ -200,7 +201,43 @@ namespace Flux {
         shader->uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
 
         drawQuad();
+
+        switchHdrBuffers();
+
+        glClear(GL_COLOR_BUFFER_BIT);
+        shader = shaders[SSAO];
+        shader->bind();
+
+        setCamera(*scene.getMainCamera());
+
+        gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
+        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
+        gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
+        shader->uniform1i("normalMap", TextureUnit::NORMAL);
+        gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
+        shader->uniform1i("positionMap", TextureUnit::POSITION);
+        gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
+        shader->uniform1i("depthMap", TextureUnit::DEPTH);
+
+        ssaoInfo.noiseTexture->bind(TextureUnit::NOISE);
+        shader->uniform1i("noiseMap", TextureUnit::NOISE);
+        shader->uniform3fv("kernel", ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
+        shader->uniform1i("kernelSize", ssaoInfo.kernel.size());
+
+        drawQuad();
         nvtxRangePop();
+
+        hdrBuffer->bind();
+
+        shader = shaders[MULTIPLY];
+        shader->bind();
+
+        getOtherHdrFramebuffer().getColorTexture(0).bind(TextureUnit::ALBEDO);
+        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::NORMAL);
+        shader->uniform1i("texA", TextureUnit::ALBEDO);
+        shader->uniform1i("texB", TextureUnit::NORMAL);
+
+        drawQuad();
     }
 
     void DeferredRenderer::directLighting(const Scene& scene) {
@@ -354,6 +391,7 @@ namespace Flux {
         switchHdrBuffers();
         drawQuad();
         nvtxRangePop();
+
         nvtxRangePushA("Blur");
         shader = shaders[BLUR];
         shader->bind();
@@ -369,6 +407,7 @@ namespace Flux {
             }
         }
         nvtxRangePop();
+
         nvtxRangePushA("Tonemap");
         shader = shaders[TONEMAP];
         shader->bind();
@@ -379,6 +418,7 @@ namespace Flux {
         switchBuffers();
         drawQuad();
         nvtxRangePop();
+
         nvtxRangePushA("Gamma");
         shader = shaders[GAMMA];
         shader->bind();
@@ -387,6 +427,7 @@ namespace Flux {
         switchBuffers();
         drawQuad();
         nvtxRangePop();
+
         nvtxRangePushA("FXAA");
         shader = shaders[FXAA];
         shader->bind();
