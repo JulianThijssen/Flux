@@ -29,23 +29,23 @@
 
 namespace Flux {
     bool DeferredRenderer::create(const Scene& scene, const Size windowSize) {
-        addShader(IBL, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
-        addShader(DIRECT, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag"));
-        addShader(SKYBOX, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
-        addShader(TEXTURE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
-        addShader(FXAA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
-        addShader(GAMMA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
-        addShader(TONEMAP, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
+        addShader(IBL,       Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
+        addShader(DIRECT,    Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag"));
+        addShader(SKYBOX,    Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
+        addShader(TEXTURE,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
+        addShader(FXAA,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
+        addShader(GAMMA,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
+        addShader(TONEMAP,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
         addShader(SKYSPHERE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag"));
-        addShader(BLOOM, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
-        addShader(BLUR, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag"));
-        addShader(SSAO, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag"));
-        addShader(MULTIPLY, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag"));
-        addShader(GBUFFER, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
+        addShader(BLOOM,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
+        addShader(BLUR,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag"));
+        addShader(SSAO,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag"));
+        addShader(MULTIPLY,  Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag"));
+        addShader(GBUFFER,   Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
         addShader(DINDIRECT, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag"));
-        addShader(DDIRECT, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag"));
-        addShader(SHADOW, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag"));
-        addShader(SSAOBLUR, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag"));
+        addShader(DDIRECT,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag"));
+        addShader(SHADOW,    Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag"));
+        addShader(SSAOBLUR,  Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag"));
 
         if (!validateShaders()) {
             return false;

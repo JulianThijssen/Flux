@@ -20,17 +20,17 @@
 
 namespace Flux {
     bool ForwardRenderer::create(const Scene& scene) {
-        addShader(IBL, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
-        addShader(DIRECT, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag"));
-        addShader(SKYBOX, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
-        addShader(TEXTURE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
-        addShader(FXAA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
-        addShader(GAMMA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
-        addShader(TONEMAP, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
+        addShader(IBL,       Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
+        addShader(DIRECT,    Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag"));
+        addShader(SKYBOX,    Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
+        addShader(TEXTURE,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
+        addShader(FXAA,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
+        addShader(GAMMA,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
+        addShader(TONEMAP,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
         addShader(SKYSPHERE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag"));
-        addShader(BLOOM, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
-        addShader(BLUR, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag"));
-        addShader(SSAO, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/SSAO.frag"));
+        addShader(BLOOM,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
+        addShader(BLUR,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag"));
+        addShader(SSAO,      Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/SSAO.frag"));
 
         if (!validateShaders()) {
             return false;
