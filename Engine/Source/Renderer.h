@@ -14,7 +14,7 @@
 #include <vector>
 
 namespace Flux {
-	enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR, SSAO, GBUFFER, DINDIRECT, DDIRECT };
+	enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR, SSAO, GBUFFER, DINDIRECT, DDIRECT, SHADOW, MULTIPLY };
 
     class Renderer {
     public:
@@ -25,6 +25,7 @@ namespace Flux {
             modelMatrix(),
             shader(0),
             currentFramebuffer(0),
+            currentHdrFramebuffer(0),
             windowSize(800, 600)
         { }
 
@@ -41,6 +42,7 @@ namespace Flux {
         const Framebuffer& getCurrentFramebuffer();
         const Framebuffer& getCurrentHdrFramebuffer();
         const Framebuffer& getOtherFramebuffer();
+        const Framebuffer& getOtherHdrFramebuffer();
         void switchBuffers();
         void switchHdrBuffers();
     protected:
@@ -58,6 +60,7 @@ namespace Flux {
         std::vector<Framebuffer> backBuffers;
         std::vector<Framebuffer> hdrBackBuffers;
         unsigned int currentFramebuffer;
+        unsigned int currentHdrFramebuffer;
     };
 }
 
