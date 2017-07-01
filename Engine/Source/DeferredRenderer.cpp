@@ -45,6 +45,7 @@ namespace Flux {
         shaders[DINDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag");
         shaders[DDIRECT] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
         shaders[SHADOW] = Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag");
+        shaders[SSAOBLUR] = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag");
 
         for (auto kv : shaders) {
             if (kv.second == nullptr) {
@@ -202,7 +203,7 @@ namespace Flux {
 
         drawQuad();
 
-        switchHdrBuffers();
+        switchBuffers();
 
         glClear(GL_COLOR_BUFFER_BIT);
         shader = shaders[SSAO];
@@ -227,13 +228,24 @@ namespace Flux {
         drawQuad();
         nvtxRangePop();
 
+        shader = shaders[SSAOBLUR];
+        shader->bind();
+        shader->uniform2f("windowSize", windowSize.width, windowSize.height);
+
+        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        switchBuffers();
+        glClear(GL_COLOR_BUFFER_BIT);
+        drawQuad();
+
         hdrBuffer->bind();
 
         shader = shaders[MULTIPLY];
         shader->bind();
 
-        getOtherHdrFramebuffer().getColorTexture(0).bind(TextureUnit::ALBEDO);
-        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::NORMAL);
+        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::ALBEDO);
+        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::NORMAL);
         shader->uniform1i("texA", TextureUnit::ALBEDO);
         shader->uniform1i("texB", TextureUnit::NORMAL);
 
