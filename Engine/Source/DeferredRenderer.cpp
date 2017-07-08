@@ -62,6 +62,15 @@ namespace Flux {
 
         ssaoInfo.generate(13, 4);
 
+        enableRenderPhase(RP_INDIRECT);
+        enableRenderPhase(RP_DIRECT);
+        enableRenderPhase(RP_SKY);
+        enableRenderPhase(RP_BLOOM);
+        enableRenderPhase(RP_BLUR);
+        enableRenderPhase(RP_TONEMAP);
+        enableRenderPhase(RP_GAMMA);
+        enableRenderPhase(RP_ANTIALIAS);
+        enableRenderPhase(RP_SSAO);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -171,6 +180,9 @@ namespace Flux {
     }
 
     void DeferredRenderer::globalIllumination(const Scene& scene) {
+        if (!isEnabled(RP_INDIRECT)) {
+            return;
+        }
         switchHdrBuffers();
 
         glClear(GL_COLOR_BUFFER_BIT);
@@ -202,38 +214,47 @@ namespace Flux {
 
         switchBuffers();
 
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        setShader(SSAO);
+        if (isEnabled(RP_SSAO)) {
+            nvtxRangePushA("SSAO");
+            setShader(SSAO);
 
-        setCamera(*scene.getMainCamera());
+            setCamera(*scene.getMainCamera());
 
-        gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
-        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
-        shader->uniform1i("normalMap", TextureUnit::NORMAL);
-        gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
-        shader->uniform1i("positionMap", TextureUnit::POSITION);
-        gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
-        shader->uniform1i("depthMap", TextureUnit::DEPTH);
+            gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
+            shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
+            gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
+            shader->uniform1i("normalMap", TextureUnit::NORMAL);
+            gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
+            shader->uniform1i("positionMap", TextureUnit::POSITION);
+            gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
+            shader->uniform1i("depthMap", TextureUnit::DEPTH);
 
-        ssaoInfo.noiseTexture->bind(TextureUnit::NOISE);
-        shader->uniform1i("noiseMap", TextureUnit::NOISE);
-        shader->uniform3fv("kernel", ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
-        shader->uniform1i("kernelSize", ssaoInfo.kernel.size());
+            ssaoInfo.noiseTexture->bind(TextureUnit::NOISE);
+            shader->uniform1i("noiseMap", TextureUnit::NOISE);
+            shader->uniform3fv("kernel", ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
+            shader->uniform1i("kernelSize", ssaoInfo.kernel.size());
 
-        drawQuad();
-        nvtxRangePop();
+            shader->uniform2f("windowSize", windowSize.width, windowSize.height);
 
-        setShader(SSAOBLUR);
-        shader->uniform2f("windowSize", windowSize.width, windowSize.height);
+            drawQuad();
+            nvtxRangePop();
 
-        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        switchBuffers();
-        glClear(GL_COLOR_BUFFER_BIT);
-        drawQuad();
+            nvtxRangePushA("SSAO Blur");
+            setShader(SSAOBLUR);
+            shader->uniform2f("windowSize", windowSize.width, windowSize.height);
 
+            getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            shader->uniform1i("tex", TextureUnit::TEXTURE);
+            switchBuffers();
+            glClear(GL_COLOR_BUFFER_BIT);
+            drawQuad();
+            nvtxRangePop();
+        }
+
+        nvtxRangePushA("Multiply");
         hdrBuffer->bind();
 
         setShader(MULTIPLY);
@@ -243,9 +264,14 @@ namespace Flux {
         shader->uniform1i("texB", TextureUnit::NORMAL);
 
         drawQuad();
+        nvtxRangePop();
+        nvtxRangePop();
     }
 
     void DeferredRenderer::directLighting(const Scene& scene) {
+        if (!isEnabled(RP_DIRECT)) {
+            return;
+        }
         LOG("Direct lighting");
         nvtxRangePushA("Direct");
         glEnable(GL_BLEND);
@@ -345,6 +371,10 @@ namespace Flux {
     }
 
     void DeferredRenderer::renderSky(const Scene& scene) {
+        if (!isEnabled(RP_SKY)) {
+            return;
+        }
+
         LOG("Sky rendering");
         Transform* transform = scene.getMainCamera()->getComponent<Transform>();
 
@@ -383,57 +413,69 @@ namespace Flux {
     void DeferredRenderer::applyPostprocess() {
         LOG("Post-processing");
         nvtxRangePushA("Post-process");
-        nvtxRangePushA("Bloom");
-        setShader(BLOOM);
-        hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        shader->uniform1f("threshold", 0);
-        switchHdrBuffers();
-        drawQuad();
-        nvtxRangePop();
 
-        nvtxRangePushA("Blur");
-        setShader(BLUR);
-        shader->uniform2f("windowSize", windowSize.width, windowSize.height);
-        for (int j = 1; j < 3; j++) {
-            for (int i = 0; i < 2; i++) {
-                getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-                glGenerateMipmap(GL_TEXTURE_2D);
-                shader->uniform1i("tex", TextureUnit::TEXTURE);
-                shader->uniform2f("direction", i == 0 ? j : 0, i == 0 ? 0 : j);
-                switchHdrBuffers();
-                drawQuad();
-            }
+        if (isEnabled(RP_BLOOM)) {
+            nvtxRangePushA("Bloom");
+            setShader(BLOOM);
+            hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
+            shader->uniform1i("tex", TextureUnit::TEXTURE);
+            shader->uniform1f("threshold", 0);
+            switchHdrBuffers();
+            drawQuad();
+            nvtxRangePop();
         }
-        nvtxRangePop();
 
-        nvtxRangePushA("Tonemap");
-        setShader(TONEMAP);
-        hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::BLOOM);
-        shader->uniform1i("bloomTex", TextureUnit::BLOOM);
-        switchBuffers();
-        drawQuad();
-        nvtxRangePop();
+        if (isEnabled(RP_BLUR)) {
+            nvtxRangePushA("Blur");
+            setShader(BLUR);
+            shader->uniform2f("windowSize", windowSize.width, windowSize.height);
+            for (int j = 1; j < 3; j++) {
+                for (int i = 0; i < 2; i++) {
+                    getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+                    glGenerateMipmap(GL_TEXTURE_2D);
+                    shader->uniform1i("tex", TextureUnit::TEXTURE);
+                    shader->uniform2f("direction", i == 0 ? j : 0, i == 0 ? 0 : j);
+                    switchHdrBuffers();
+                    drawQuad();
+                }
+            }
+            nvtxRangePop();
+        }
 
-        nvtxRangePushA("Gamma");
-        setShader(GAMMA);
-        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        switchBuffers();
-        drawQuad();
-        nvtxRangePop();
+        if (isEnabled(RP_TONEMAP)) {
+            nvtxRangePushA("Tonemap");
+            setShader(TONEMAP);
+            hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
+            shader->uniform1i("tex", TextureUnit::TEXTURE);
+            getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::BLOOM);
+            shader->uniform1i("bloomTex", TextureUnit::BLOOM);
+            switchBuffers();
+            drawQuad();
+            nvtxRangePop();
+        }
 
-        nvtxRangePushA("FXAA");
-        setShader(FXAA);
-        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
-        switchBuffers();
-        drawQuad();
-        nvtxRangePop();
+        if (isEnabled(RP_GAMMA)) {
+            nvtxRangePushA("Gamma");
+            setShader(GAMMA);
+            getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+            shader->uniform1i("tex", TextureUnit::TEXTURE);
+            switchBuffers();
+            drawQuad();
+            nvtxRangePop();
+        }
+
+        if (isEnabled(RP_ANTIALIAS)) {
+            nvtxRangePushA("FXAA");
+            setShader(FXAA);
+            getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+            shader->uniform1i("tex", TextureUnit::TEXTURE);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
+            switchBuffers();
+            drawQuad();
+            nvtxRangePop();
+        }
+
         nvtxRangePop();
     }
 

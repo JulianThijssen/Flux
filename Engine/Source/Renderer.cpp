@@ -21,6 +21,18 @@ namespace Flux {
         return true;
     }
 
+    bool Renderer::isEnabled(RenderPhase phase) {
+        return renderPhases[phase];
+    }
+
+    void Renderer::enableRenderPhase(RenderPhase phase) {
+        renderPhases[phase] = true;
+    }
+
+    void Renderer::disableRenderPhase(RenderPhase phase) {
+        renderPhases[phase] = false;
+    }
+
     void Renderer::setClearColor(float r, float g, float b, float a) {
         glClearColor(r, g, b, a);
     }

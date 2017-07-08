@@ -15,7 +15,9 @@
 #include <unordered_map>
 
 namespace Flux {
-	enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR, SSAO, GBUFFER, DINDIRECT, DDIRECT, SHADOW, MULTIPLY, SSAOBLUR };
+    enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR, SSAO, GBUFFER, DINDIRECT, DDIRECT, SHADOW, MULTIPLY, SSAOBLUR };
+
+    enum RenderPhase { RP_INDIRECT, RP_DIRECT, RP_SKY, RP_BLOOM, RP_BLUR, RP_TONEMAP, RP_GAMMA, RP_ANTIALIAS, RP_SSAO };
 
     class Renderer {
     public:
@@ -39,6 +41,10 @@ namespace Flux {
         void addShader(const ShaderName name, Shader* shader);
         void setShader(const ShaderName shader);
         bool validateShaders();
+
+        bool isEnabled(RenderPhase phase);
+        void enableRenderPhase(RenderPhase phase);
+        void disableRenderPhase(RenderPhase phase);
 
         void setClearColor(float r, float g, float b, float a);
         void setCamera(Entity& camera);
@@ -70,6 +76,7 @@ namespace Flux {
         unsigned int currentHdrFramebuffer;
     private:
         std::unordered_map<ShaderName, Shader*> shaders;
+        std::unordered_map<RenderPhase, bool> renderPhases;
     };
 }
 
