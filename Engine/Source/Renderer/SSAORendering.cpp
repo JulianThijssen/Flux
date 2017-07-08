@@ -31,13 +31,11 @@ Flux::Vector3f uniformHemisphereSample()
 Flux::Vector3f ssaoKernel(int i, int numSamples)
 {
     Flux::Vector3f point = uniformHemisphereSample();
-    float dist = random(0, 1);
-    point *= dist;
 
     float scale = (float)i / numSamples;
     scale = (1 - scale*scale) * 0.1f + scale*scale;
-
     point *= scale;
+
     return point;
 }
 
@@ -47,10 +45,27 @@ namespace Flux
     {
         // Generate a hemispherical kernel
         srand(0);
-        kernel.reserve(samples);
+        kernel.resize(samples);
+
+        kernel[0].set(0, -0.92388, 0.38268);
+        kernel[1].set(0.92388, 0, 0.38268);
+        kernel[2].set(0, 0.92388, 0.38268);
+        kernel[3].set(-0.92388, 0, 0.2);
+        kernel[4].set(0.5, -0.5, 0.70711);
+        kernel[5].set(0.5, 0.5, 0.70711);
+        kernel[6].set(-0.5, 0.5, 0.70711);
+        kernel[7].set(-0.5, -0.5, 0.70711);
+        kernel[8].set(0, -0.38268, 0.92388);
+        kernel[9].set(0.38268, 0, 0.92388);
+        kernel[10].set(0, 0.38268, 0.92388);
+        kernel[11].set(-0.38268, 0, 0.92388);
+        kernel[12].set(0, 0, 1);
+
         for (int i = 0; i < samples; i++) {
-            Vector3f v = ssaoKernel(i, samples);
-            kernel.push_back(v);
+            float scale = (float)i / samples;
+            scale = (1 - scale*scale) * 0.1f + scale*scale;
+
+            kernel[i] *= scale * 0.5;
         }
 
         // Generate a noise texture
