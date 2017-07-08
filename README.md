@@ -15,17 +15,18 @@ Welcome to the Flux Rendering Engine repository. This application is meant to be
  - Gamma Correction
  - HDR + Tone mapping
  - HDR Bloom
+ - SSAO
+ - Shadow mapping
+ - Deferred Rendering
 
 ### Planned
  - Automatic exposure adjustment
  - Fog
  - Spherical Harmonics
  - Crepuscular rays
- - SSAO
- - Shadow mapping
  - Omni-directional shadow mapping
- - Deferred Rendering
  - Light probes
+ - PBR Lens flares
 
 ## Building
 ### Compilation
