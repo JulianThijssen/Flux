@@ -145,6 +145,16 @@ namespace Flux {
         createGBuffer(windowSize.width, windowSize.height);
         createBackBuffers(windowSize.width, windowSize.height);
 
+        // Generate half sized framebuffers for low-resolution SSAO rendering
+        halfBuffers.resize(2);
+        for (int i = 0; i < 2; i++) {
+            halfBuffers[i] = new Framebuffer(windowSize.width / 2, windowSize.height / 2);
+            halfBuffers[i]->bind();
+            halfBuffers[i]->addColorTexture(0, TextureLoader::createEmpty(windowSize.width / 2, windowSize.height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false));
+            halfBuffers[i]->validate();
+            halfBuffers[i]->release();
+        }
+
         setClearColor(1.0, 0.0, 1.0, 1.0);
     }
 
@@ -220,6 +230,7 @@ namespace Flux {
             nvtxRangePushA("SSAO");
             setShader(SSAO);
 
+            glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
             setCamera(*scene.getMainCamera());
 
             gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
@@ -236,8 +247,9 @@ namespace Flux {
             shader->uniform3fv("kernel", ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
             shader->uniform1i("kernelSize", ssaoInfo.kernel.size());
 
-            shader->uniform2f("windowSize", windowSize.width, windowSize.height);
+            shader->uniform2f("windowSize", windowSize.width / 2, windowSize.height / 2);
 
+            halfBuffers[0]->bind();
             drawQuad();
             nvtxRangePop();
 
@@ -245,12 +257,13 @@ namespace Flux {
             setShader(SSAOBLUR);
             shader->uniform2f("windowSize", windowSize.width, windowSize.height);
 
-            getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            halfBuffers[0]->getColorTexture(0).bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
-            switchBuffers();
-            glClear(GL_COLOR_BUFFER_BIT);
+            
+            halfBuffers[1]->bind();
             drawQuad();
+
+            glViewport(0, 0, windowSize.width, windowSize.height);
             nvtxRangePop();
         }
 
@@ -259,7 +272,7 @@ namespace Flux {
 
         setShader(MULTIPLY);
         getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::ALBEDO);
-        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::NORMAL);
+        halfBuffers[1]->getColorTexture(0).bind(TextureUnit::NORMAL);
         shader->uniform1i("texA", TextureUnit::ALBEDO);
         shader->uniform1i("texB", TextureUnit::NORMAL);
 

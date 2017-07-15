@@ -46,7 +46,9 @@ namespace Flux {
         std::unique_ptr<Framebuffer> gBuffer;
         std::unique_ptr<Framebuffer> shadowBuffer;
         IblSceneInfo iblSceneInfo;
+
         SsaoInfo ssaoInfo;
+        std::vector<Framebuffer*> halfBuffers;
     };
 }
 

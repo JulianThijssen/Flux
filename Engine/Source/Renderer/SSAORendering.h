@@ -17,8 +17,6 @@ namespace Flux
 
         void generate(int samples, int noiseSamples);
 
-        //void bindNoiseTexture();
-    //private:
         std::vector<Vector3f> kernel;
         std::vector<Vector3f> noise;
         Texture* noiseTexture;
