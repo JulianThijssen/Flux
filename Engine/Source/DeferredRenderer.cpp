@@ -375,7 +375,10 @@ namespace Flux {
         modelMatrix.translate(transform->position);
         modelMatrix.rotate(transform->rotation);
         modelMatrix.scale(transform->scale);
+
+        Matrix4f PVM = projMatrix * viewMatrix * modelMatrix;
         shader->uniformMatrix4f("modelMatrix", modelMatrix);
+        shader->uniformMatrix4f("PVM", PVM);
 
         glBindVertexArray(mesh->handle);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);

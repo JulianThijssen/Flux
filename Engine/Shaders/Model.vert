@@ -3,6 +3,7 @@
 uniform mat4 projMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
+uniform mat4 PVM;
 
 in vec3 position;
 in vec2 texCoords;
@@ -20,5 +21,5 @@ void main() {
     pass_normal = normal;
     pass_tangent = tangent;
 
-    gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(position, 1);
+    gl_Position = PVM * vec4(position, 1);
 }
