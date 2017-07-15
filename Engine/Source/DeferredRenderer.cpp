@@ -442,15 +442,18 @@ namespace Flux {
             nvtxRangePushA("Blur");
             setShader(BLUR);
             shader->uniform2f("windowSize", windowSize.width, windowSize.height);
-            for (int j = 1; j < 3; j++) {
-                for (int i = 0; i < 2; i++) {
-                    getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-                    glGenerateMipmap(GL_TEXTURE_2D);
-                    shader->uniform1i("tex", TextureUnit::TEXTURE);
-                    shader->uniform2f("direction", i == 0 ? j : 0, i == 0 ? 0 : j);
-                    switchHdrBuffers();
-                    drawQuad();
-                }
+            for (int i = 0; i < 2; i++) {
+                getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+                glGenerateMipmap(GL_TEXTURE_2D);
+                shader->uniform1i("tex", TextureUnit::TEXTURE);
+
+                shader->uniform2f("direction", i, 0);
+                switchHdrBuffers();
+                drawQuad();
+
+                shader->uniform2f("direction", 0, i);
+                switchHdrBuffers();
+                drawQuad();
             }
             nvtxRangePop();
         }
