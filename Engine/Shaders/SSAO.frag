@@ -46,7 +46,7 @@ void main() {
     
     // Apply kernel
     float occlusion = 0.0;
-    float radius = 0.3;
+    float radius = 0.2;
     for (int i = 0; i < kernelSize; ++i) {
         vec3 sample = TBN * kernel[i];
         sample = sample + viewP;

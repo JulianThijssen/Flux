@@ -65,7 +65,7 @@ namespace Flux
             float scale = (float)i / samples;
             scale = (1 - scale*scale) * 0.1f + scale*scale;
 
-            kernel[i] *= scale * 0.5;
+            kernel[i] *= scale;
         }
 
         // Generate a noise texture
