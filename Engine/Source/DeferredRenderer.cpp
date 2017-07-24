@@ -38,9 +38,10 @@ namespace Flux {
         addShader(TONEMAP,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
         addShader(SKYSPHERE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag"));
         addShader(BLOOM,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
-        addShader(BLUR,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Blur.frag"));
+        addShader(BLUR,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/BlurFast.frag"));
         addShader(SSAO,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag"));
         addShader(MULTIPLY,  Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag"));
+        addShader(ADD,       Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Add.frag"));
         addShader(GBUFFER,   Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
         addShader(DINDIRECT, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag"));
         addShader(DDIRECT,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag"));
@@ -153,6 +154,24 @@ namespace Flux {
             halfBuffers[i]->addColorTexture(0, TextureLoader::createEmpty(windowSize.width / 2, windowSize.height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false));
             halfBuffers[i]->validate();
             halfBuffers[i]->release();
+        }
+
+        blurBuffers.resize(4);
+        for (unsigned int i = 0; i < blurBuffers.size(); i++) {
+            blurBuffers[i] = new Framebuffer(windowSize.width / pow(2, i+1), windowSize.height / pow(2, i+1));
+            blurBuffers[i]->bind();
+            blurBuffers[i]->addColorTexture(0, TextureLoader::createEmpty(windowSize.width / pow(2, i+1), windowSize.height / pow(2, i+1), GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, false));
+            blurBuffers[i]->validate();
+            blurBuffers[i]->release();
+        }
+
+        blurBuffers2.resize(4);
+        for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
+            blurBuffers2[i] = new Framebuffer(windowSize.width / pow(2, i + 1), windowSize.height / pow(2, i + 1));
+            blurBuffers2[i]->bind();
+            blurBuffers2[i]->addColorTexture(0, TextureLoader::createEmpty(windowSize.width / pow(2, i + 1), windowSize.height / pow(2, i + 1), GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, false));
+            blurBuffers2[i]->validate();
+            blurBuffers2[i]->release();
         }
 
         setClearColor(1.0, 0.0, 1.0, 1.0);
@@ -444,21 +463,52 @@ namespace Flux {
         if (isEnabled(RP_BLUR)) {
             nvtxRangePushA("Blur");
             setShader(BLUR);
-            shader->uniform2f("windowSize", windowSize.width, windowSize.height);
-            for (int i = 0; i < 2; i++) {
-                getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-                glGenerateMipmap(GL_TEXTURE_2D);
+            
+            getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            for (unsigned int i = 0; i < blurBuffers.size(); i++) {
+                int width = windowSize.width / pow(2, i + 1);
+                int height = windowSize.height / pow(2, i + 1);
+                glViewport(0, 0, width, height);
+                shader->uniform2f("windowSize", width, height);
+                blurBuffers[i]->bind();
+                
                 shader->uniform1i("tex", TextureUnit::TEXTURE);
-
-                shader->uniform2f("direction", i, 0);
-                switchHdrBuffers();
+                shader->uniform1i("mipmap", i + 1);
+                
+                shader->uniform2f("direction", 1, 0);
                 drawQuad();
+            }
+            for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
+                blurBuffers[i]->getColorTexture(0).bind(TextureUnit::TEXTURE);
+                int width = windowSize.width / pow(2, i + 1);
+                int height = windowSize.height / pow(2, i + 1);
+                glViewport(0, 0, width, height);
+                shader->uniform2f("windowSize", width, height);
+                blurBuffers2[i]->bind();
 
-                shader->uniform2f("direction", 0, i);
-                switchHdrBuffers();
+                shader->uniform1i("tex", TextureUnit::TEXTURE);
+                shader->uniform1i("mipmap", 0);
+
+                shader->uniform2f("direction", 0, 1);
                 drawQuad();
             }
             nvtxRangePop();
+
+            glViewport(0, 0, windowSize.width, windowSize.height);
+            setShader(ADD);
+            switchHdrBuffers();
+            blurBuffers2[0]->getColorTexture(0).bind(TextureUnit::TEXTURE0);
+            blurBuffers2[1]->getColorTexture(0).bind(TextureUnit::TEXTURE1);
+            blurBuffers2[2]->getColorTexture(0).bind(TextureUnit::TEXTURE2);
+            blurBuffers2[3]->getColorTexture(0).bind(TextureUnit::TEXTURE3);
+            shader->uniform1i("texA", TextureUnit::TEXTURE0);
+            shader->uniform1i("texB", TextureUnit::TEXTURE1);
+            shader->uniform1i("texC", TextureUnit::TEXTURE2);
+            shader->uniform1i("texD", TextureUnit::TEXTURE3);
+
+            drawQuad();
         }
 
         if (isEnabled(RP_TONEMAP)) {
