@@ -31,7 +31,7 @@ void main()
 {
     if (material.hasStencilMap) {
         float Stencil = sampleTiled(material.stencilMap, pass_texCoords).r;
-        if (Stencil < 0.999) {
+        if (Stencil < 0.5) {
             discard;
         }
     }

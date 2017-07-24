@@ -50,7 +50,7 @@ vec3 calcNormal(vec3 normal, vec3 tangent, vec2 texCoord) {
 void main() {
     if (material.hasStencilMap) {
         float Stencil = sampleTiled(material.stencilMap, pass_texCoords).r;
-        if (Stencil < 0.01) {
+        if (Stencil < 0.5) {
             discard;
         }
     }
