@@ -16,6 +16,7 @@ namespace Flux {
         static Texture* create(const int width, const int height, const int bpp, const unsigned char* data, Sampling sampling);
         static Texture* createHDR(const int width, const int height, const float* data, Sampling sampling);
         static Texture* createEmpty(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Sampling sampling, bool mipmaps);
+        static Texture* createShadowMap(const int width, const int height);
     };
 }
 

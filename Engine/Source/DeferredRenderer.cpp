@@ -136,7 +136,7 @@ namespace Flux {
             Camera* camera = entity->getComponent<Camera>();
             DirectionalLight* light = entity->getComponent<DirectionalLight>();
 
-            light->shadowMap = TextureLoader::createEmpty(4096, 4096, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
+            light->shadowMap = TextureLoader::createShadowMap(4096, 4096);
         }
     }
 
