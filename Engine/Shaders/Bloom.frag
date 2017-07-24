@@ -12,11 +12,8 @@ const vec3 toLuma = vec3(0.299, 0.587, 0.114);
 
 void main()
 {
-    vec3 radiance = texture(tex, pass_texCoords).rgb;
+    vec3 radiance = textureLod(tex, pass_texCoords, 1).rgb;
     float luma = dot(radiance, toLuma);
-    
-    // luma = max(0.0, luma - threshold);
-    // radiance * sign(luma);
     
     if (luma > threshold) {
         fragColor = vec4(radiance, 1);

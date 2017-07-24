@@ -17,5 +17,5 @@ void main() {
     vec3 radiance = texture(tex, pass_texCoords).rgb;
     vec3 bloom = texture(bloomTex, pass_texCoords).rgb;
     
-    fragColor = vec4(reinhardToneMapping(radiance + bloom, 2.0), 1);
+    fragColor = vec4(reinhardToneMapping(radiance + bloom*0.75, 1.5), 1);
 }

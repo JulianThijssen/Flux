@@ -453,6 +453,7 @@ namespace Flux {
             nvtxRangePushA("Bloom");
             setShader(BLOOM);
             hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
+            glGenerateMipmap(GL_TEXTURE_2D);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
             shader->uniform1f("threshold", 0);
             switchHdrBuffers();
