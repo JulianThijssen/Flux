@@ -73,25 +73,30 @@ namespace Flux {
             std::string name = element["name"].get<std::string>();
             e->name = name;
 
-            MeshRenderer* meshRenderer = nullptr;
+            std::vector<MeshRenderer*> meshRenderers;
             for (json::iterator it = element["components"][0].begin(); it != element["components"][0].end(); ++it) {
-                std::cout << it.key() << " : " << it.value() << "\n";
+                std::cout << "Iterator: " << it.key() << " : " << it.value() << "\n";
 
-                if (it.key() == "material") {
-                    std::string name = it.value().get<std::string>();
+                if (it.key() == "materials") {
+                    unsigned int numMaterials = it.value().size();
 
-                    int id = 0;
-                    for (int i = 0; i < scene.materials.size(); i++) {
-                        MaterialDesc* desc = scene.materials[i];
+                    for (unsigned int i = 0; i < numMaterials; i++) {
+                        std::string name = it.value()[i].get<std::string>();
 
-                        if (name == desc->name) {
-                            id = i;
-                            break;
+                        int id = 0;
+                        for (int mId = 0; mId < scene.materials.size(); mId++) {
+                            MaterialDesc* desc = scene.materials[mId];
+
+                            if (name == desc->name) {
+                                id = mId;
+                                break;
+                            }
                         }
-                    }
 
-                    meshRenderer = new MeshRenderer();
-                    meshRenderer->materialID = id;
+                        MeshRenderer* meshRenderer = new MeshRenderer();
+                        meshRenderer->materialID = id;
+                        meshRenderers.push_back(meshRenderer);
+                    }
                 }
                 if (it.key() == "model") {
                     std::string path = it.value()["path"].get<std::string>();
@@ -110,8 +115,8 @@ namespace Flux {
                         Mesh* mesh = &model->meshes[i];
                         child->addComponent(mesh);
 
-                        if (meshRenderer != nullptr) {
-                            child->addComponent(meshRenderer);
+                        if (i < meshRenderers.size()) {
+                            child->addComponent(meshRenderers[i]);
                         }
 
                         scene.addEntity(child);
@@ -144,8 +149,8 @@ namespace Flux {
 
         Entity* mainCamera = new Entity();
         Transform* camT = new Transform();
-        camT->position.set(4, 4, 12);
-        camT->rotation.set(0, 0, 0);
+        camT->position.set(-26, 2, 14); //camT->position.set(4, 4, 12);
+        camT->rotation.set(0, -90, 0);
         mainCamera->addComponent(camT);
         mainCamera->addComponent(new Camera(60, 1920.0f/1080, 0.1f, 400.f));
         scene.entities.push_back(mainCamera);
@@ -156,10 +161,10 @@ namespace Flux {
         dirLight->direction.set(-0.471409702, -0.5061866455, 0.722182783);
         dirLight->direction.normalise();
         light->addComponent(dirLight);
-        light->addComponent(new Camera(-10, 10, -10, 10, -100, 100));
+        light->addComponent(new Camera(-20, 20, -20, 20, -50, 50));
         Transform* t1 = new Transform();
-        t1->position.set(0, 0, 0);
-        t1->rotation.set(-45, 0, 0);
+        t1->position.set(-4, 0, 16);
+        t1->rotation.set(-30, 160, 0);
         light->addComponent(t1);
         scene.entities.push_back(light);
 
