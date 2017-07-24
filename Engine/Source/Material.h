@@ -13,6 +13,7 @@ namespace Flux {
         Texture* normalTex;
         Texture* metalTex;
         Texture* roughnessTex;
+        Texture* stencilTex;
         float tilingX = 1, tilingY = 1;
 
         void bind(Shader& shader) const;

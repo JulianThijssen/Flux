@@ -25,6 +25,11 @@ namespace Flux {
             shader.uniform1i("material.roughnessMap", TextureUnit::ROUGHNESS);
             shader.uniform1i("material.hasRoughnessMap", 1);
         }
+        if (stencilTex) {
+            stencilTex->bind(TextureUnit::STENCIL);
+            shader.uniform1i("material.stencilMap", TextureUnit::STENCIL);
+            shader.uniform1i("material.hasStencilMap", 1);
+        }
         shader.uniform2f("material.tiling", tilingX, tilingY);
     }
 
@@ -33,5 +38,6 @@ namespace Flux {
         shader.uniform1i("material.hasNormalMap", 0);
         shader.uniform1i("material.hasMetalMap", 0);
         shader.uniform1i("material.hasRoughnessMap", 0);
+        shader.uniform1i("material.hasStencilMap", 0);
     }
 }

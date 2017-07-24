@@ -9,10 +9,11 @@ namespace Flux {
         static const int NORMAL = 1;
         static const int ROUGHNESS = 2;
         static const int METALNESS = 3;
-        static const int IRRADIANCE = 4;
-        static const int PREFILTER = 5;
-        static const int SCALEBIAS = 6;
-        static const int NOISE = 7;
+        static const int STENCIL = 4;
+        static const int IRRADIANCE = 5;
+        static const int PREFILTER = 6;
+        static const int SCALEBIAS = 7;
+        static const int NOISE = 8;
 
         static const int TEXTURE = 0;
         static const int BLOOM = 1;
@@ -20,7 +21,7 @@ namespace Flux {
         static const int POSITION = 2;
         static const int DEPTH = 3;
 
-        static const int SHADOW = 8;
+        static const int SHADOW = 9;
 
         static const int TEXTURE0 = 0;
         static const int TEXTURE1 = 1;

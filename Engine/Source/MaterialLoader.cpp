@@ -43,6 +43,11 @@ namespace Flux {
                 String path = value;
                 material->roughnessTex = TextureLoader::loadTextureGreyscale(Path(path));
             }
+            if (key == "StencilTex") {
+                Log::debug(value.c_str());
+                String path = value;
+                material->stencilTex = TextureLoader::loadTextureGreyscale(Path(path));
+            }
             if (key == "Tiling") {
                 material->tilingX = std::stof(tokens[1].c_str());
                 material->tilingY = std::stof(tokens[2].c_str());

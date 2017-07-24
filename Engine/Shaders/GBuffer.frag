@@ -7,6 +7,7 @@ struct Material {
     sampler2D normalMap;
     sampler2D metalMap;
     sampler2D roughnessMap;
+    sampler2D stencilMap;
 
     vec2 tiling;
 
@@ -14,6 +15,7 @@ struct Material {
     bool hasNormalMap;
     bool hasMetalMap;
     bool hasRoughnessMap;
+    bool hasStencilMap;
 };
 
 uniform mat4 modelMatrix;
@@ -46,6 +48,13 @@ vec3 calcNormal(vec3 normal, vec3 tangent, vec2 texCoord) {
 }
 
 void main() {
+    if (material.hasStencilMap) {
+        float Stencil = sampleTiled(material.stencilMap, pass_texCoords).r;
+        if (Stencil < 0.01) {
+            discard;
+        }
+    }
+    
     vec3 P = (modelMatrix * (vec4(pass_position, 1))).xyz;
     vec3 N = pass_normal;
 
