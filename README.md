@@ -2,7 +2,7 @@
 
 Welcome to the Flux Rendering Engine repository. This application is meant to be an exploration into modern rendering techniques used in the game industry. One of the major improvements over its progenitor [Radiant](https://github.com/JulianThijssen/Radiant) are its Physically Based Rendering capabilities.
 
-![alt text](https://cloud.githubusercontent.com/assets/2978176/25197553/c28de59a-2544-11e7-8a70-5240754edd87.png "Latest screenshot")
+![alt text](https://user-images.githubusercontent.com/2978176/28695328-c4917b8a-732e-11e7-894b-e197d280a9e5.png "Latest screenshot")
 
 ## Technology
 ### Implemented
