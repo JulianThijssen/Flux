@@ -27,6 +27,7 @@ namespace Flux {
         void correctSlashes();
 
         std::string str() const;
+        const char* c_str() const;
 
         /* Operator overloads */
         bool operator==(const Path& path) const;

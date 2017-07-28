@@ -50,6 +50,10 @@ namespace Flux {
         return string;
     }
 
+    const char* Path::c_str() const {
+        return string.c_str();
+    }
+
     /* Operator overloads */
     bool Path::operator ==(const Path& path) const {
         return string == path.string;
