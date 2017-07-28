@@ -12,13 +12,18 @@ namespace Flux {
         class Skybox;
     }
 
+    struct Buffer {
+        char* buf;
+        int pos = 0;
+    } typedef Buffer;
+
     class SceneConverter {
     public:
         static void convert(const SceneDesc& scene, Path outputPath);
     private:
-        static void writeSkybox(Editor::Skybox* skybox, std::ofstream& out);
-        static void writeSkysphere(Skysphere* skysphere, std::ofstream& out);
-        static void writeMaterial(const uint32_t id, MaterialDesc* material, std::ofstream& out);
-        static void writeEntity(const SceneDesc& scene, Entity* e, std::ofstream& out);
+        static void writeSkybox(Editor::Skybox* skybox, Buffer& buffer);
+        static void writeSkysphere(Skysphere* skysphere, Buffer& buffer);
+        static void writeMaterial(const uint32_t id, MaterialDesc* material, Buffer& buffer);
+        static void writeEntity(const SceneDesc& scene, Entity* e, Buffer& buffer);
     };
 }

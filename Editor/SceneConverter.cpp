@@ -17,72 +17,113 @@
 
 #include <fstream>
 #include <iostream> // Temp
+#include <ctime>
 
 namespace Flux {
+    uint32_t swap(unsigned int i) {
+        uint32_t h = (i & 0xFF000000) >> 24;
+        uint32_t mh = (i & 0x00FF0000) >> 8;
+        uint32_t ml = (i & 0x0000FF00) << 8;
+        uint32_t l = (i & 0x000000FF) << 24;
+
+        return l | ml | mh | h;
+    }
+
+    void copy(Buffer& buffer, uint32_t i) {
+        //uint32_t swapped = swap(i);
+        memcpy((void *)&buffer.buf[buffer.pos], &i, sizeof(uint32_t));
+        buffer.pos += sizeof(uint32_t);
+    }
+
+    void copy(Buffer& buffer, const void* data, unsigned int size) {
+        memcpy((void *) &buffer.buf[buffer.pos], data, size);
+        buffer.pos += size;
+    }
+
     void SceneConverter::convert(const SceneDesc& scene, Path outputPath) {
-        std::ofstream outFile;
-        outFile.open(outputPath.str().c_str(), ios::out | ios::binary);
-        std::cout << "CONVERT" << std::endl;
+        clock_t startTime = clock();
+
+        Buffer buffer;
+        buffer.buf = new char[300000000];
+
         if (scene.skybox) {
-            writeSkybox(scene.skybox, outFile);
+            writeSkybox(scene.skybox, buffer);
         }
         else if (scene.skysphere) {
-            writeSkysphere(scene.skysphere, outFile);
+            writeSkysphere(scene.skysphere, buffer);
         }
 
         const uint32_t numMaterials = (uint32_t) scene.materials.size();
-        outFile.write((char *)&numMaterials, sizeof(numMaterials));
+        copy(buffer, numMaterials);
         for (uint32_t i = 0; i < numMaterials; ++i) {
-            writeMaterial(i, scene.materials[i], outFile);
+            writeMaterial(i, scene.materials[i], buffer);
         }
 
+        clock_t entityTime = clock();
         const uint32_t numEntities = (uint32_t) scene.entities.size();
-        outFile.write((char *) &numEntities, sizeof(numEntities));
+        copy(buffer, numEntities);
         for (Entity* e : scene.entities) {
-            writeEntity(scene, e, outFile);
+            writeEntity(scene, e, buffer);
         }
 
-        outFile.close();
+        FILE* outFile;
+        outFile = fopen(outputPath.c_str(), "wb");
+        fwrite(buffer.buf, 1, buffer.pos * sizeof(char), outFile);
+        fclose(outFile);
+
+        std::cout << "Final buffer position: " << buffer.pos << std::endl;
+        clock_t endTime = clock();
+        double elapsed = double(endTime - startTime) / CLOCKS_PER_SEC;
+        double entityElapsed = double(endTime - entityTime) / CLOCKS_PER_SEC;
+        std::cout << "Converting scene took: " << elapsed << " " << entityElapsed << " seconds." << std::endl;
     }
 
-    void SceneConverter::writeSkybox(Editor::Skybox* skybox, std::ofstream& out) {
+    void SceneConverter::writeSkybox(Editor::Skybox* skybox, Buffer& buffer) {
         const uint32_t type = 0;
-        out.write((char *)&type, sizeof(type));
+
+        copy(buffer, type);
+
         const std::string* paths = skybox->getPaths();
 
         for (int i = 0; i < 6; i++) {
             const uint32_t pathLen = (uint32_t)paths[i].length();
-            out.write((char *)&pathLen, sizeof(pathLen));
-            out.write(paths[i].c_str(), sizeof(char) * paths[i].length());
+            copy(buffer, pathLen);
+            const char* path = paths[i].c_str();
+            copy(buffer, path, sizeof(char) * pathLen);
         }
     }
 
-    void SceneConverter::writeSkysphere(Skysphere* skysphere, std::ofstream& out) {
+    void SceneConverter::writeSkysphere(Skysphere* skysphere, Buffer& buffer) {
         const uint32_t type = 1;
-        out.write((char *)&type, sizeof(type));
-
+        std::cout << "SKYSPHERE" << std::endl;
+        copy(buffer, type);
         const std::string path = skysphere->getPath();
-        const uint32_t pathLen = (uint32_t)path.length();
-        out.write((char *)&pathLen, sizeof(pathLen));
-        out.write(path.c_str(), sizeof(char) * path.length());
+        const uint32_t pathLen = path.length();
+        copy(buffer, pathLen);
+        const char* cpath = path.c_str();
+        copy(buffer, cpath, sizeof(char) * pathLen);
     }
 
-    void SceneConverter::writeMaterial(const uint32_t id, MaterialDesc* material, std::ofstream& out) {
-        out.write((char *)&id, sizeof(id));
+    void SceneConverter::writeMaterial(const uint32_t id, MaterialDesc* material, Buffer& buffer) {
+        std::cout << "Writing material" << std::endl;
+        copy(buffer, id);
 
-        const uint32_t pathLen = (uint32_t) material->path.length();
-        out.write((char *)&pathLen, sizeof(pathLen));
+        const uint32_t pathLen = material->path.length();
+        copy(buffer, pathLen);
 
-        out.write(material->path.c_str(), sizeof(char) * pathLen);
+        const char* path = material->path.c_str();
+        copy(buffer, path, sizeof(char) * pathLen);
     }
 
-    void SceneConverter::writeEntity(const SceneDesc& scene, Entity* e, std::ofstream& out) {
+    void SceneConverter::writeEntity(const SceneDesc& scene, Entity* e, Buffer& buffer) {
         const uint32_t id = (uint32_t)e->getId();
-        out.write((char *)&id, sizeof(id));
-        const uint32_t numComponents = (uint32_t)e->numComponents();
-        out.write((char *)&numComponents, sizeof(numComponents));
+        copy(buffer, id);
+
+        const uint32_t numComponents = (uint32_t) e->numComponents();
+        copy(buffer, numComponents);
+
         if (e->hasComponent<Transform>()) {
-            out.write("t", sizeof(char));
+            copy(buffer, "t", sizeof(char));
             Transform* t = e->getComponent<Transform>();
 
             if (e->hasComponent<AttachedTo>()) {
@@ -93,18 +134,21 @@ namespace Flux {
                 Vector3f pos = t->position + pt->position;
                 Vector3f rot = t->rotation + pt->rotation;
                 Vector3f scale = t->scale * pt->scale;
-                out.write((char *)&pos, sizeof(Vector3f));
-                out.write((char *)&rot, sizeof(Vector3f));
-                out.write((char *)&scale, sizeof(Vector3f));
+
+                copy(buffer, &pos, sizeof(Vector3f));
+                copy(buffer, &rot, sizeof(Vector3f));
+                copy(buffer, &scale, sizeof(Vector3f));
             }
             else {
-                out.write((char *)&t->position, sizeof(Vector3f));
-                out.write((char *)&t->rotation, sizeof(Vector3f));
-                out.write((char *)&t->scale, sizeof(Vector3f));
+                copy(buffer, &t->position, sizeof(Vector3f));
+                copy(buffer, &t->rotation, sizeof(Vector3f));
+                copy(buffer, &t->scale, sizeof(Vector3f));
             }
         }
         if (e->hasComponent<Mesh>()) {
-            out.write("m", sizeof(char));
+            clock_t meshTime = clock();
+
+            copy(buffer, "m", sizeof(char));
             Mesh* mesh = e->getComponent<Mesh>();
 
             const uint32_t numVertices = (uint32_t)mesh->vertices.size();
@@ -113,33 +157,37 @@ namespace Flux {
             const uint32_t numTangents = (uint32_t)mesh->tangents.size();
             const uint32_t numIndices = (uint32_t)mesh->indices.size();
 
-            out.write((char *)&numVertices, sizeof(numVertices));
-            out.write((char *)&mesh->vertices[0], numVertices * sizeof(Vector3f));
+            copy(buffer, numVertices);
+            copy(buffer, &mesh->vertices[0], numVertices * sizeof(Vector3f));
 
-            out.write((char *)&numTexCoords, sizeof(numTexCoords));
-            out.write((char *)&mesh->texCoords[0], numTexCoords * sizeof(Vector2f));
+            copy(buffer, numTexCoords);
+            copy(buffer, &mesh->texCoords[0], numTexCoords * sizeof(Vector2f));
 
-            out.write((char *)&numNormals, sizeof(numNormals));
-            out.write((char *)&mesh->normals[0], numNormals * sizeof(Vector3f));
+            copy(buffer, numNormals);
+            copy(buffer, &mesh->normals[0], numNormals * sizeof(Vector3f));
 
-            out.write((char *)&numTangents, sizeof(numTangents));
-            out.write((char *)&mesh->tangents[0], numTangents * sizeof(Vector3f));
+            copy(buffer, numTangents);
+            copy(buffer, &mesh->tangents[0], numTangents * sizeof(Vector3f));
 
-            out.write((char *)&numIndices, sizeof(numIndices));
-            out.write((char *)&mesh->indices[0], numIndices * sizeof(unsigned int));
+            copy(buffer, numIndices);
+            copy(buffer, &mesh->indices[0], numIndices * sizeof(unsigned int));
+
+            clock_t endMeshTime = clock();
+            double elapsed = double(endMeshTime - meshTime) / CLOCKS_PER_SEC;
+            std::cout << "Writing mesh took: " << elapsed << " seconds." << std::endl;
         }
         if (e->hasComponent<MeshRenderer>()) {
-            out.write("r", sizeof(char));
+            copy(buffer, "r", sizeof(char));
             MeshRenderer* mr = e->getComponent<MeshRenderer>();
 
-            out.write((char *)&mr->materialID, sizeof(uint32_t));
+            copy(buffer, mr->materialID);
         }
         if (e->hasComponent<Camera>()) {
-            out.write("c", sizeof(char));
+            copy(buffer, "c", sizeof(char));
             Camera* camera = e->getComponent<Camera>();
 
             const bool perspective = camera->isPerspective();
-            out.write((char *)&perspective, sizeof(bool));
+            copy(buffer, &perspective, sizeof(bool));
 
             if (perspective) {
                 const float fieldOfView = camera->getFovy();
@@ -147,10 +195,10 @@ namespace Flux {
                 const float zNear = camera->getZNear();
                 const float zFar = camera->getZFar();
 
-                out.write((char *)&fieldOfView, sizeof(float));
-                out.write((char *)&aspectRatio, sizeof(float));
-                out.write((char *)&zNear, sizeof(float));
-                out.write((char *)&zFar, sizeof(float));
+                copy(buffer, &fieldOfView, sizeof(float));
+                copy(buffer, &aspectRatio, sizeof(float));
+                copy(buffer, &zNear, sizeof(float));
+                copy(buffer, &zFar, sizeof(float));
             }
             else {
                 const float left = camera->getLeft();
@@ -160,39 +208,39 @@ namespace Flux {
                 const float zNear = camera->getZNear();
                 const float zFar = camera->getZFar();
 
-                out.write((char *)&left, sizeof(float));
-                out.write((char *)&right, sizeof(float));
-                out.write((char *)&bottom, sizeof(float));
-                out.write((char *)&top, sizeof(float));
-                out.write((char *)&zNear, sizeof(float));
-                out.write((char *)&zFar, sizeof(float));
+                copy(buffer, &left, sizeof(float));
+                copy(buffer, &right, sizeof(float));
+                copy(buffer, &bottom, sizeof(float));
+                copy(buffer, &top, sizeof(float));
+                copy(buffer, &zNear, sizeof(float));
+                copy(buffer, &zFar, sizeof(float));
             }
         }
         if (e->hasComponent<PointLight>()) {
-            out.write("p", sizeof(char));
+            copy(buffer, "p", sizeof(char));
             PointLight* pointLight = e->getComponent<PointLight>();
 
-            out.write((char *)&pointLight->color, sizeof(Vector3f));
+            copy(buffer, &pointLight->color, sizeof(Vector3f));
             const float energy = pointLight->energy;
-            out.write((char *)&energy, sizeof(float));
+            copy(buffer, &energy, sizeof(float));
         }
         if (e->hasComponent<DirectionalLight>()) {
-            out.write("d", sizeof(char));
+            copy(buffer, "d", sizeof(char));
             DirectionalLight* dirLight = e->getComponent<DirectionalLight>();
 
-            out.write((char *)&dirLight->direction, sizeof(Vector3f));
-            out.write((char *)&dirLight->color, sizeof(Vector3f));
+            copy(buffer, &dirLight->direction, sizeof(Vector3f));
+            copy(buffer, &dirLight->color, sizeof(Vector3f));
 
             const float energy = dirLight->energy;
-            out.write((char *)&energy, sizeof(float));
+            copy(buffer, &energy, sizeof(float));
         }
         if (e->hasComponent<AttachedTo>()) {
-            out.write("a", sizeof(char));
+            copy(buffer, "a", sizeof(char));
             AttachedTo* attachedTo = e->getComponent<AttachedTo>();
 
             Entity* parent = scene.getEntityById(attachedTo->parentId);
             const uint32_t pid = (uint32_t)parent->getId();
-            out.write((char *)&pid, sizeof(pid));
+            copy(buffer, pid);
         }
     }
 }
