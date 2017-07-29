@@ -126,24 +126,9 @@ namespace Flux {
             copy(buffer, "t", sizeof(char));
             Transform* t = e->getComponent<Transform>();
 
-            if (e->hasComponent<AttachedTo>()) {
-                AttachedTo* at = e->getComponent<AttachedTo>();
-                Entity* parent = scene.getEntityById(at->parentId);
-                Transform* pt = parent->getComponent<Transform>();
-
-                Vector3f pos = t->position + pt->position;
-                Vector3f rot = t->rotation + pt->rotation;
-                Vector3f scale = t->scale * pt->scale;
-
-                copy(buffer, &pos, sizeof(Vector3f));
-                copy(buffer, &rot, sizeof(Vector3f));
-                copy(buffer, &scale, sizeof(Vector3f));
-            }
-            else {
-                copy(buffer, &t->position, sizeof(Vector3f));
-                copy(buffer, &t->rotation, sizeof(Vector3f));
-                copy(buffer, &t->scale, sizeof(Vector3f));
-            }
+            copy(buffer, &t->position, sizeof(Vector3f));
+            copy(buffer, &t->rotation, sizeof(Vector3f));
+            copy(buffer, &t->scale, sizeof(Vector3f));
         }
         if (e->hasComponent<Mesh>()) {
             clock_t meshTime = clock();
