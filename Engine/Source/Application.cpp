@@ -21,7 +21,9 @@ namespace Flux {
         SceneImporter::loadScene(Path("res/Indoors.json"), scene);
 
         SceneConverter::convert(scene, Path("res/Indoors.scene"));
-        SceneLoader::loadScene(Path("res/Indoors.scene"), currentScene);
+        bool loaded = SceneLoader::loadScene(Path("res/Temple.scene"), currentScene);
+        if (!loaded)
+            return;
 
 #ifdef DEFERRED
         renderer = std::make_unique<DeferredRenderer>();

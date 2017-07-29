@@ -69,11 +69,15 @@ namespace Flux {
         glBindVertexArray(0);
     }
 
-    void SceneLoader::loadScene(const Path path, Scene& scene) {
+    bool SceneLoader::loadScene(const Path path, Scene& scene) {
         std::ifstream inFile;
 
         inFile.open(path.str().c_str(), ios::in | ios::binary);
 
+        if (inFile.fail()) {
+            std::cout << "Failed to load file: " << path.str() << std::endl;
+            return false;
+        }
         unsigned int skyType;
         inFile.read((char *)&skyType, sizeof(skyType));
         if (skyType == 0) {
@@ -271,5 +275,7 @@ namespace Flux {
         //transform->position.set(5, 2, 5);
         //light->addComponent(transform);
         //scene.lights.push_back(light);
+
+        return true;
     }
 }

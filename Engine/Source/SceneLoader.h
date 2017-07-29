@@ -8,7 +8,7 @@ namespace Flux {
 
     class SceneLoader {
     public:
-        static void loadScene(const Path path, Scene& scene);
+        static bool loadScene(const Path path, Scene& scene);
     };
 }
 
