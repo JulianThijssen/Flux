@@ -469,10 +469,10 @@ namespace Flux {
             glGenerateMipmap(GL_TEXTURE_2D);
 
             for (unsigned int i = 0; i < blurBuffers.size(); i++) {
-                int width = windowSize.width / pow(2, i + 1);
-                int height = windowSize.height / pow(2, i + 1);
+                int width = (int)(windowSize.width / pow(2, i + 1));
+                int height = (int)(windowSize.height / pow(2, i + 1));
                 glViewport(0, 0, width, height);
-                shader->uniform2f("windowSize", width, height);
+                shader->uniform2i("windowSize", width, height);
                 blurBuffers[i]->bind();
                 
                 shader->uniform1i("tex", TextureUnit::TEXTURE);
@@ -483,10 +483,10 @@ namespace Flux {
             }
             for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
                 blurBuffers[i]->getColorTexture(0).bind(TextureUnit::TEXTURE);
-                int width = windowSize.width / pow(2, i + 1);
-                int height = windowSize.height / pow(2, i + 1);
+                float width = (int)(windowSize.width / pow(2, i + 1));
+                float height = (int)(windowSize.height / pow(2, i + 1));
                 glViewport(0, 0, width, height);
-                shader->uniform2f("windowSize", width, height);
+                shader->uniform2i("windowSize", width, height);
                 blurBuffers2[i]->bind();
 
                 shader->uniform1i("tex", TextureUnit::TEXTURE);
