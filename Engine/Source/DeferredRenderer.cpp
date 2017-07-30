@@ -156,20 +156,20 @@ namespace Flux {
             halfBuffers[i]->release();
         }
 
+        int blurWidth = windowSize.width;
+        int blurHeight = windowSize.height;
         blurBuffers.resize(4);
+        blurBuffers2.resize(4);
         for (unsigned int i = 0; i < blurBuffers.size(); i++) {
-            blurBuffers[i] = new Framebuffer(windowSize.width / pow(2, i+1), windowSize.height / pow(2, i+1));
+            blurWidth = blurWidth >> 1; blurHeight = blurHeight >> 1;
+            blurBuffers[i] = new Framebuffer(blurWidth, blurHeight);
             blurBuffers[i]->bind();
-            blurBuffers[i]->addColorTexture(0, TextureLoader::createEmpty(windowSize.width / pow(2, i+1), windowSize.height / pow(2, i+1), GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, false));
+            blurBuffers[i]->addColorTexture(0, TextureLoader::createEmpty(blurWidth, blurHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, false));
             blurBuffers[i]->validate();
             blurBuffers[i]->release();
-        }
-
-        blurBuffers2.resize(4);
-        for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
-            blurBuffers2[i] = new Framebuffer(windowSize.width / pow(2, i + 1), windowSize.height / pow(2, i + 1));
+            blurBuffers2[i] = new Framebuffer(blurWidth, blurHeight);
             blurBuffers2[i]->bind();
-            blurBuffers2[i]->addColorTexture(0, TextureLoader::createEmpty(windowSize.width / pow(2, i + 1), windowSize.height / pow(2, i + 1), GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, false));
+            blurBuffers2[i]->addColorTexture(0, TextureLoader::createEmpty(blurWidth, blurHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, false));
             blurBuffers2[i]->validate();
             blurBuffers2[i]->release();
         }
