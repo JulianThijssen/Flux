@@ -9,6 +9,7 @@
 #include "FirstPersonView.h"
 #include "SceneLoader.h"
 #include "Path.h"
+#include "Size.h"
 
 #include <ctime>
 #include <iostream>
@@ -56,6 +57,7 @@ namespace Flux {
                 lastFpsCount = clock();
                 framesPerSecond = frames;
                 std::cout << frames << std::endl;
+                std::cout << 1000.0f / frames << std::endl;
                 frames = 0;
             }
 

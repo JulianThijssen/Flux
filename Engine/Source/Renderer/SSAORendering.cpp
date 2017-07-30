@@ -47,19 +47,19 @@ namespace Flux
         srand(0);
         kernel.resize(samples);
 
-        kernel[0].set(0, -0.92388, 0.38268);
-        kernel[1].set(0.92388, 0, 0.38268);
-        kernel[2].set(0, 0.92388, 0.38268);
-        kernel[3].set(-0.92388, 0, 0.2);
-        kernel[4].set(0.5, -0.5, 0.70711);
-        kernel[5].set(0.5, 0.5, 0.70711);
-        kernel[6].set(-0.5, 0.5, 0.70711);
-        kernel[7].set(-0.5, -0.5, 0.70711);
-        kernel[8].set(0, -0.38268, 0.92388);
-        kernel[9].set(0.38268, 0, 0.92388);
-        kernel[10].set(0, 0.38268, 0.92388);
-        kernel[11].set(-0.38268, 0, 0.92388);
-        kernel[12].set(0, 0, 1);
+        kernel[0].set(0.0f, -0.92388f, 0.38268f);
+        kernel[1].set(0.92388f, 0.0f, 0.38268f);
+        kernel[2].set(0.0f, 0.92388f, 0.38268f);
+        kernel[3].set(-0.92388f, 0.0f, 0.2f);
+        kernel[4].set(0.5f, -0.5f, 0.70711f);
+        kernel[5].set(0.5f, 0.5f, 0.70711f);
+        kernel[6].set(-0.5f, 0.5f, 0.70711f);
+        kernel[7].set(-0.5f, -0.5f, 0.70711f);
+        kernel[8].set(0.0f, -0.38268f, 0.92388f);
+        kernel[9].set(0.38268f, 0.0f, 0.92388f);
+        kernel[10].set(0.0f, 0.38268f, 0.92388f);
+        kernel[11].set(-0.38268f, 0.0f, 0.92388f);
+        kernel[12].set(0.0f, 0.0f, 1.0f);
 
         for (int i = 0; i < samples; i++) {
             float scale = (float)i / samples;

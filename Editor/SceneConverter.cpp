@@ -98,7 +98,7 @@ namespace Flux {
         std::cout << "SKYSPHERE" << std::endl;
         copy(buffer, type);
         const std::string path = skysphere->getPath();
-        const uint32_t pathLen = path.length();
+        const uint32_t pathLen = (uint32_t) path.length();
         copy(buffer, pathLen);
         const char* cpath = path.c_str();
         copy(buffer, cpath, sizeof(char) * pathLen);
@@ -108,7 +108,7 @@ namespace Flux {
         std::cout << "Writing material" << std::endl;
         copy(buffer, id);
 
-        const uint32_t pathLen = material->path.length();
+        const uint32_t pathLen = (uint32_t) material->path.length();
         copy(buffer, pathLen);
 
         const char* path = material->path.c_str();
