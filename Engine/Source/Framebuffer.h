@@ -58,7 +58,7 @@ namespace Flux {
 
         void addDrawBuffer(GLenum target) {
             drawBuffers.push_back(target);
-            glDrawBuffers(drawBuffers.size(), drawBuffers.data());
+            glDrawBuffers((GLsizei) drawBuffers.size(), drawBuffers.data());
         }
 
         void enableColor(int target) {

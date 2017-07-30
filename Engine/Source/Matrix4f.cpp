@@ -25,7 +25,7 @@ namespace Flux {
 
     void Matrix4f::setIdentity() {
         for (int i = 0; i < 16; i++) {
-            a[i] = i % 5 == 0 ? 1 : 0;
+            a[i] = i % 5 == 0 ? 1.0f : 0.0f;
         }
     }
 

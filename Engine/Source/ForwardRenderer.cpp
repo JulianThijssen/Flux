@@ -252,7 +252,7 @@ namespace Flux {
                 getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
                 glGenerateMipmap(GL_TEXTURE_2D);
                 shader->uniform1i("tex", TextureUnit::TEXTURE);
-                shader->uniform2f("direction", i == 0 ? j : 0, i == 0 ? 0 : j);
+                shader->uniform2f("direction", (float) (i == 0 ? j : 0), (float) (i == 0 ? 0 : j));
                 switchHdrBuffers();
                 drawQuad();
             }

@@ -263,10 +263,10 @@ namespace Flux {
 
             ssaoInfo.noiseTexture->bind(TextureUnit::NOISE);
             shader->uniform1i("noiseMap", TextureUnit::NOISE);
-            shader->uniform3fv("kernel", ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
-            shader->uniform1i("kernelSize", ssaoInfo.kernel.size());
+            shader->uniform3fv("kernel", (int) ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
+            shader->uniform1i("kernelSize", (int) ssaoInfo.kernel.size());
 
-            shader->uniform2f("windowSize", windowSize.width / 2, windowSize.height / 2);
+            shader->uniform2i("windowSize", windowSize.width / 2, windowSize.height / 2);
 
             halfBuffers[0]->bind();
             drawQuad();
@@ -274,7 +274,7 @@ namespace Flux {
 
             nvtxRangePushA("SSAO Blur");
             setShader(SSAOBLUR);
-            shader->uniform2f("windowSize", windowSize.width, windowSize.height);
+            shader->uniform2i("windowSize", windowSize.width, windowSize.height);
 
             halfBuffers[0]->getColorTexture(0).bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
@@ -483,8 +483,8 @@ namespace Flux {
             }
             for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
                 blurBuffers[i]->getColorTexture(0).bind(TextureUnit::TEXTURE);
-                float width = (int)(windowSize.width / pow(2, i + 1));
-                float height = (int)(windowSize.height / pow(2, i + 1));
+                int width = (int)(windowSize.width / pow(2, i + 1));
+                int height = (int)(windowSize.height / pow(2, i + 1));
                 glViewport(0, 0, width, height);
                 shader->uniform2i("windowSize", width, height);
                 blurBuffers2[i]->bind();

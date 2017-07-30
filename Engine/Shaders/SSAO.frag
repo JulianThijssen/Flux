@@ -9,7 +9,7 @@ uniform sampler2D noiseMap;
 uniform vec3 kernel[13];
 uniform int kernelSize;
 
-uniform vec2 windowSize;
+uniform ivec2 windowSize;
 uniform vec3 camPos;
 uniform float zNear;
 uniform float zFar;

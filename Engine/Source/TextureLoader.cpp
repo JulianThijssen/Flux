@@ -106,7 +106,7 @@ namespace Flux {
         }
         GLfloat maxAnisotropy;
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy > 5.0f ? 5.0f : maxAnisotropy);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy > 5.0f ? 5.0f : maxAnisotropy);
 
         if (bpp == 1) {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

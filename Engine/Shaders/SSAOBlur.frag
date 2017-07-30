@@ -3,7 +3,7 @@
 const int blurSize = 4;
 
 uniform sampler2D tex;
-uniform vec2 windowSize;
+uniform ivec2 windowSize;
 
 in vec2 pass_texCoords;
 
