@@ -121,7 +121,7 @@ namespace Flux {
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        return new Texture(handle);
+        return new Texture(handle, width, height);
     }
 
     Texture* TextureLoader::createHDR(const int width, const int height, const float* data, Sampling sampling) {
@@ -145,7 +145,7 @@ namespace Flux {
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        return new Texture(handle);
+        return new Texture(handle, width, height);
     }
 
     Texture* TextureLoader::createEmpty(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Sampling sampling, bool mipmaps) {
@@ -183,7 +183,7 @@ namespace Flux {
         if (mipmaps) glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        return new Texture(handle);
+        return new Texture(handle, width, height);
     }
 
     Texture* TextureLoader::createShadowMap(const int width, const int height) {
@@ -208,6 +208,6 @@ namespace Flux {
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        return new Texture(handle);
+        return new Texture(handle, width, height);
     }
 }

@@ -580,7 +580,7 @@ namespace Flux {
             light->shadowSpace = shadowSpace;
 
             shadowBuffer->addDepthTexture(light->shadowMap);
-            glViewport(0, 0, 4096, 4096);
+            glViewport(0, 0, light->shadowMap->getWidth(), light->shadowMap->getHeight());
 
             renderScene(scene);
         }
