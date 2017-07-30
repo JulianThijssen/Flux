@@ -552,9 +552,19 @@ namespace Flux {
     void DeferredRenderer::renderShadowMaps(const Scene& scene) {
         setShader(SHADOW);
 
-        glViewport(0, 0, 4096, 4096);
         shadowBuffer->bind();
         glClear(GL_DEPTH_BUFFER_BIT);
+        glColorMask(false, false, false, false);
+
+        Matrix4f biasMatrix;
+        biasMatrix[0] = 0.5f;
+        biasMatrix[5] = 0.5f;
+        biasMatrix[10] = 0.5f;
+        biasMatrix[12] = 0.5f;
+        biasMatrix[13] = 0.5f;
+        biasMatrix[14] = 0.5f;
+        glPolygonOffset(2.5f, 10.0f);
+        glEnable(GL_POLYGON_OFFSET_FILL);
 
         for (Entity* entity : scene.lights) {
             Transform* t = entity->getComponent<Transform>();
@@ -566,13 +576,16 @@ namespace Flux {
             Matrix4f shadowSpace;
             shadowSpace = viewMatrix * shadowSpace;
             shadowSpace = projMatrix * shadowSpace;
+            shadowSpace = biasMatrix * shadowSpace;
             light->shadowSpace = shadowSpace;
 
             shadowBuffer->addDepthTexture(light->shadowMap);
-            shadowBuffer->validate();
+            glViewport(0, 0, 4096, 4096);
 
             renderScene(scene);
         }
+        glDisable(GL_POLYGON_OFFSET_FILL);
+        glColorMask(true, true, true, true);
     }
 
     void DeferredRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
