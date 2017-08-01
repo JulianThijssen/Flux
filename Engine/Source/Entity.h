@@ -18,6 +18,10 @@ namespace Flux {
 
         }
 
+        void setId(uint32_t id) {
+            this->id = id;
+        }
+
         uint32_t getId() const {
             return id;
         }
@@ -57,7 +61,7 @@ namespace Flux {
 
         std::string name;
     private:
-        const uint32_t id;
+        uint32_t id;
         std::vector<Component*> components;
     };
 }

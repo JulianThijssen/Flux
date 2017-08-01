@@ -70,6 +70,7 @@ namespace Flux {
     }
 
     bool SceneLoader::loadScene(const Path path, Scene& scene) {
+        std::cout << "LOADING SCENE" << std::endl;
         std::ifstream inFile;
 
         inFile.open(path.str().c_str(), ios::in | ios::binary);
@@ -78,8 +79,10 @@ namespace Flux {
             std::cout << "Failed to load file: " << path.str() << std::endl;
             return false;
         }
+
         unsigned int skyType;
         inFile.read((char *)&skyType, sizeof(skyType));
+        std::cout << "Sky type: " << skyType << std::endl;
         if (skyType == 0) {
             char* paths[6];
             for (int i = 0; i < 6; i++) {
@@ -96,11 +99,11 @@ namespace Flux {
         if (skyType == 1) {
             uint32_t numChars;
             inFile.read((char *)&numChars, sizeof(numChars));
-
+            std::cout << "Sky num chars: " << numChars << std::endl;
             char* path = new char[numChars + 1];
             path[numChars] = 0;
             inFile.read(path, numChars * sizeof(char));
-
+            std::cout << "Reading skysphere: " << path << std::endl;
             scene.skySphere = TextureLoader::loadTextureHDR(Path(path));
             delete path;
         }
@@ -134,6 +137,8 @@ namespace Flux {
 
             uint32_t id;
             inFile.read((char *) &id, sizeof(id));
+            e->setId(id);
+            std::cout << "Loading entity with id: " << e->getId() << std::endl;
             unsigned int numComponents;
             inFile.read((char *) &numComponents, sizeof(numComponents));
             
@@ -144,6 +149,7 @@ namespace Flux {
                 if (component == 't') {
                     Transform* t = new Transform();
                     inFile.read((char *)&t->position, sizeof(Vector3f));
+                    std::cout << "Position: " << t->position.str() << std::endl;
                     inFile.read((char *)&t->rotation, sizeof(Vector3f));
                     inFile.read((char *)&t->scale, sizeof(Vector3f));
                     e->addComponent(t);
@@ -242,7 +248,7 @@ namespace Flux {
                 if (component == 'a') {
                     uint32_t pid;
                     inFile.read((char *) &pid, sizeof(pid));
-                    
+                    std::cout << "Attached to: " << pid << std::endl;
                     AttachedTo* attachedTo = new AttachedTo(pid);
 
                     e->addComponent(attachedTo);

@@ -4,15 +4,18 @@
 #include <assimp/scene.h>
 
 namespace Flux {
-    class Model;
     class Path;
 
-    class ModelImporter {
-    public:
-        static Model* loadModel(const Path& path);
-    private:
-        static Model* uploadModel(const aiScene& scene);
-    };
+    namespace Editor {
+        class Model;
+
+        class ModelImporter {
+        public:
+            static Model* loadModel(const Path& path);
+        private:
+            static Model* copyModel(const aiScene& scene);
+        };
+    }
 }
 
 #endif /* MODEL_IMPORTER_H */

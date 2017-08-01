@@ -1,11 +1,13 @@
 #include "Model.h"
 
 namespace Flux {
-    void Model::addMesh(const Mesh& mesh) {
-        meshes.push_back(mesh);
-    }
+    namespace Editor {
+        void Model::addMesh(const Mesh& mesh) {
+            meshes.push_back(mesh);
+        }
 
-    void Model::addMaterial(const Flux::Material& material) {
-        materials.push_back(material);
-    }
-}
+        void Model::addMaterial(const Flux::Material& material) {
+            materials.push_back(material);
+        }
+    } // namespace Editor
+} // namespace Flux

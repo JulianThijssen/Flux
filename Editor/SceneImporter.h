@@ -4,12 +4,15 @@
 
 namespace Flux {
     class Path;
-    class SceneDesc;
 
-    class SceneImporter {
-    public:
-        static void loadScene(const Path path, SceneDesc& scene);
-    };
+    namespace Editor {
+        class SceneDesc;
+
+        class SceneImporter {
+        public:
+            static void loadScene(const Path path, SceneDesc& scene);
+        };
+    }
 }
 
 #endif /* SCENE_IMPORTER_H */

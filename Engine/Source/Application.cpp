@@ -18,10 +18,10 @@
 
 namespace Flux {
     void Application::startGame() {
-        SceneDesc scene;
-        SceneImporter::loadScene(Path("res/Indoors.json"), scene);
+        Editor::SceneDesc scene;
+        Editor::SceneImporter::loadScene(Path("res/Temple.json"), scene);
 
-        SceneConverter::convert(scene, Path("res/Indoors.scene"));
+        Editor::SceneConverter::convert(scene, Path("res/Temple.scene"));
         bool loaded = SceneLoader::loadScene(Path("res/Temple.scene"), currentScene);
         if (!loaded)
             return;
@@ -68,8 +68,8 @@ namespace Flux {
             }
 
             renderer->update(currentScene);
-
             window.update();
+
             frames++;
         }
     }
