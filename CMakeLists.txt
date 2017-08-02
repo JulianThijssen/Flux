@@ -22,7 +22,6 @@ add_subdirectory(Engine/Source)
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/Engine/Includes/)
-include_directories ("C:/Includes/")
 
 add_executable(${ENGINE} WIN32
     ${EDITOR_HEADERS}
