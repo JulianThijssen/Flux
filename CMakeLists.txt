@@ -26,13 +26,14 @@ include_directories(${CMAKE_SOURCE_DIR}/Engine/Includes/)
 add_executable(${ENGINE} WIN32
     ${EDITOR_HEADERS}
     ${EDITOR_SOURCES}
-    ${ENGINE_HEADERS}
-    ${ENGINE_SOURCES}
-    ${EXCEPTION_HEADERS}
-    ${INPUT_HEADERS}
-    ${INPUT_SOURCES}
-    ${RENDERING_HEADERS}
-    ${RENDERING_SOURCES}
+    ${BASE}
+    ${SCRIPTS}
+    ${COMPONENTS}
+    ${UTIL}
+    ${EXCEPTIONS}
+    ${INPUT}
+    ${RENDERING}
+    ${LOADERS}
 )
 
 if(WIN32)
@@ -40,10 +41,14 @@ if(WIN32)
 endif(WIN32)
 
 source_group( Editor FILES ${EDITOR_SOURCES} ${EDITOR_HEADERS})
-source_group( Engine FILES ${ENGINE_SOURCES} ${ENGINE_HEADERS})
-source_group( Engine\\Exceptions FILES ${EXCEPTION_HEADERS})
-source_group( Engine\\Input FILES ${INPUT_SOURCES} ${INPUT_HEADERS})
-source_group( Engine\\Rendering FILES ${RENDERING_SOURCES} ${RENDERING_HEADERS})
+source_group( Engine FILES ${BASE})
+source_group( Engine\\Exceptions FILES ${EXCEPTIONS})
+source_group( Engine\\Input FILES ${INPUT})
+source_group( Engine\\Scripts FILES ${SCRIPTS})
+source_group( Engine\\Components FILES ${COMPONENTS})
+source_group( Engine\\Util FILES ${UTIL})
+source_group( Engine\\Loaders FILES ${LOADERS})
+source_group( Engine\\Rendering FILES ${RENDERING})
 
 target_link_libraries(${ENGINE} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/assimp.lib)
 target_link_libraries(${ENGINE} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/glfw3.lib)
