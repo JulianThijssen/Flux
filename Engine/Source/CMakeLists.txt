@@ -1,0 +1,98 @@
+set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(ENGINE_HEADERS
+    ${DIR}/Application.h
+    ${DIR}/AssetManager.h
+    ${DIR}/AttachedTo.h
+    ${DIR}/Camera.h
+    ${DIR}/Component.h
+    ${DIR}/Cubemap.h
+    ${DIR}/DeferredRenderer.h
+    ${DIR}/DirectionalLight.h
+    ${DIR}/Entity.h
+    ${DIR}/File.h
+    ${DIR}/FirstPersonView.h
+    ${DIR}/ForwardRenderer.h
+    ${DIR}/Framebuffer.h
+    ${DIR}/Log.h
+    ${DIR}/Material.h
+    ${DIR}/MaterialLoader.h
+    ${DIR}/Math.h
+    ${DIR}/Matrix4f.h
+    ${DIR}/Mesh.h
+    ${DIR}/MeshRenderer.h
+    ${DIR}/Path.h
+    ${DIR}/PointLight.h
+    ${DIR}/Renderer.h
+    ${DIR}/Scene.h
+    ${DIR}/SceneLoader.h
+    ${DIR}/Script.h
+    ${DIR}/Shader.h
+    ${DIR}/ShaderLoader.h
+    ${DIR}/Size.h
+    ${DIR}/Skybox.h
+    ${DIR}/String.h
+    ${DIR}/Texture.h
+    ${DIR}/TextureLoader.h
+    ${DIR}/TextureUnit.h
+    ${DIR}/Transform.h
+    ${DIR}/Vector2f.h
+    ${DIR}/Vector3f.h
+    ${DIR}/Window.h
+    PARENT_SCOPE
+)
+
+set(EXCEPTION_HEADERS
+    ${DIR}/Exceptions/ComponentNotFoundException.h
+    ${DIR}/Exceptions/ShaderCompilationException.h
+    ${DIR}/Exceptions/ShaderLinkException.h
+    PARENT_SCOPE
+)
+
+set(INPUT_HEADERS
+    ${DIR}/Input/Input.h
+    PARENT_SCOPE
+)
+
+set(INPUT_SOURCES
+    ${DIR}/Input/Input.cpp
+    PARENT_SCOPE
+)
+
+set(RENDERING_HEADERS
+    ${DIR}/Renderer/ImageBasedRendering.h
+    ${DIR}/Renderer/SSAORendering.h
+    PARENT_SCOPE
+)
+
+set(RENDERING_SOURCES
+    ${DIR}/Renderer/ImageBasedRendering.cpp
+    ${DIR}/Renderer/SSAORendering.cpp
+    PARENT_SCOPE
+)
+
+set(ENGINE_SOURCES
+    ${DIR}/Application.cpp
+    ${DIR}/AssetManager.cpp
+    ${DIR}/Camera.cpp
+    ${DIR}/DeferredRenderer.cpp
+    ${DIR}/FirstPersonView.cpp
+    ${DIR}/ForwardRenderer.cpp
+    ${DIR}/Log.cpp
+    ${DIR}/Material.cpp
+    ${DIR}/MaterialLoader.cpp
+    ${DIR}/Math.cpp
+    ${DIR}/Matrix4f.cpp
+    ${DIR}/Path.cpp
+    ${DIR}/Renderer.cpp
+    ${DIR}/SceneLoader.cpp
+    ${DIR}/Shader.cpp
+    ${DIR}/ShaderLoader.cpp
+    ${DIR}/Skybox.cpp
+    ${DIR}/TextureLoader.cpp
+    ${DIR}/Vector2f.cpp
+    ${DIR}/Vector3f.cpp
+    ${DIR}/Window.cpp
+    ${DIR}/glad.c
+    PARENT_SCOPE
+)

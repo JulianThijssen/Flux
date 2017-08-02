@@ -1,0 +1,2 @@
+#define Flux_VERSION_MAJOR @Flux_VERSION_MAJOR@
+#define Flux_VERSION_MINOR @Flux_VERSION_MINOR@
