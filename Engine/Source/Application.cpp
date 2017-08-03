@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include "FluxConfig.h"
+
 #include <Editor/SceneConverter.h>
 #include <Editor/SceneImporter.h>
 #include <Editor/SceneDesc.h>
@@ -18,6 +20,8 @@
 
 namespace Flux {
     void Application::startGame() {
+        std::cout << "Flux version " << Flux_VERSION_MAJOR << "." << Flux_VERSION_MINOR << std::endl;
+
         Editor::SceneDesc scene;
         Editor::SceneImporter::loadScene(Path("res/Temple.json"), scene);
 
