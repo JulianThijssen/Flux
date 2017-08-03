@@ -28,6 +28,7 @@ in vec3 pass_position;
 in vec2 pass_texCoords;
 in vec3 pass_normal;
 in vec3 pass_tangent;
+in vec3 pass_worldPos;
 
 out vec4 fragColor;
 out vec4 fragNormal;
@@ -55,7 +56,7 @@ void main() {
         }
     }
     
-    vec3 P = (modelMatrix * (vec4(pass_position, 1))).xyz;
+    vec3 P = pass_worldPos;
     vec3 N = pass_normal;
 
     if (material.hasNormalMap) {
