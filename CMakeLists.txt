@@ -58,3 +58,8 @@ add_custom_command(TARGET ${ENGINE} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_SOURCE_DIR}/Engine/Binaries/"
         ${CMAKE_BINARY_DIR}/Release)
+
+add_custom_command(TARGET ${ENGINE} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/Engine/Shaders/"
+        ${CMAKE_SOURCE_DIR}/build/res/Shaders)
