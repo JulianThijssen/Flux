@@ -36,7 +36,7 @@ namespace Flux {
         addShader(FXAA,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
         addShader(GAMMA,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
         addShader(TONEMAP,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
-        addShader(SKYSPHERE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag"));
+        addShader(SKYSPHERE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag"));
         addShader(BLOOM,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
         addShader(BLUR,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/BlurFast.frag"));
         addShader(SSAO,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag"));
@@ -432,6 +432,7 @@ namespace Flux {
             setShader(SKYSPHERE);
             scene.skySphere->bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
+            shader->uniform3f("sun", -0.471409702f, -0.5061866455f, 0.722182783f);
         }
         else {
             return;
