@@ -48,7 +48,6 @@ namespace Flux {
         IblSceneInfo iblSceneInfo;
 
         SsaoInfo ssaoInfo;
-        std::vector<Framebuffer*> halfBuffers;
 
         std::vector<Framebuffer*> blurBuffers;
         std::vector<Framebuffer*> blurBuffers2;

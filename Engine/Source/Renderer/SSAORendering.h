@@ -8,18 +8,32 @@
 
 namespace Flux
 {
+    class Framebuffer;
     class Vector3f;
+
+    class SsaoRendering
+    {
+    public:
+        
+    };
 
     class SsaoInfo
     {
     public:
         SsaoInfo() : noiseTexture(0) {}
 
+        Framebuffer* getCurrentBuffer();
+        void switchBuffers();
+        void createBuffers(unsigned int width, unsigned int height);
         void generate(int samples, int noiseSamples);
 
         std::vector<Vector3f> kernel;
         std::vector<Vector3f> noise;
         Texture* noiseTexture;
+    private:
+        int bufferIndex = 0;
+
+        std::vector<Framebuffer*> buffers;
     };
 }
 

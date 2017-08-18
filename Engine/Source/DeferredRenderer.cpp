@@ -147,14 +147,7 @@ namespace Flux {
         createBackBuffers(windowSize.width, windowSize.height);
 
         // Generate half sized framebuffers for low-resolution SSAO rendering
-        halfBuffers.resize(2);
-        for (int i = 0; i < 2; i++) {
-            halfBuffers[i] = new Framebuffer(windowSize.width / 2, windowSize.height / 2);
-            halfBuffers[i]->bind();
-            halfBuffers[i]->addColorTexture(0, TextureLoader::createEmpty(windowSize.width / 2, windowSize.height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false));
-            halfBuffers[i]->validate();
-            halfBuffers[i]->release();
-        }
+        ssaoInfo.createBuffers(windowSize.width, windowSize.height);
 
         int blurWidth = windowSize.width;
         int blurHeight = windowSize.height;
@@ -268,7 +261,7 @@ namespace Flux {
 
             shader->uniform2i("windowSize", windowSize.width / 2, windowSize.height / 2);
 
-            halfBuffers[0]->bind();
+            ssaoInfo.getCurrentBuffer()->bind();
             drawQuad();
             nvtxRangePop();
 
@@ -276,10 +269,11 @@ namespace Flux {
             setShader(SSAOBLUR);
             shader->uniform2i("windowSize", windowSize.width, windowSize.height);
 
-            halfBuffers[0]->getColorTexture(0).bind(TextureUnit::TEXTURE);
+            ssaoInfo.getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
             
-            halfBuffers[1]->bind();
+            ssaoInfo.switchBuffers();
+            ssaoInfo.getCurrentBuffer()->bind();
             drawQuad();
 
             glViewport(0, 0, windowSize.width, windowSize.height);
@@ -291,7 +285,7 @@ namespace Flux {
 
         setShader(MULTIPLY);
         getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::ALBEDO);
-        halfBuffers[1]->getColorTexture(0).bind(TextureUnit::NORMAL);
+        ssaoInfo.getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::NORMAL);
         shader->uniform1i("texA", TextureUnit::ALBEDO);
         shader->uniform1i("texB", TextureUnit::NORMAL);
 

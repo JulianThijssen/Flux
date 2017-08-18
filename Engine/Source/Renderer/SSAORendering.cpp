@@ -3,6 +3,8 @@
 #include <Engine/Source/Vector3f.h>
 #include <Engine/Source/TextureLoader.h>
 
+#include <Engine/Source/Framebuffer.h>
+
 #include <glad/glad.h>
 #include <cstdlib>
 #include <random>
@@ -41,6 +43,29 @@ Flux::Vector3f ssaoKernel(int i, int numSamples)
 
 namespace Flux
 {
+    Framebuffer* SsaoInfo::getCurrentBuffer()
+    {
+        return buffers[bufferIndex];
+    }
+
+    void SsaoInfo::switchBuffers()
+    {
+        bufferIndex = bufferIndex == 0 ? 1 : 0;
+    }
+
+    void SsaoInfo::createBuffers(unsigned int width, unsigned int height)
+    {
+        // Generate half sized framebuffers for low-resolution SSAO rendering
+        buffers.resize(2);
+        for (int i = 0; i < 2; i++) {
+            buffers[i] = new Framebuffer(width / 2, height / 2);
+            buffers[i]->bind();
+            buffers[i]->addColorTexture(0, TextureLoader::createEmpty(width / 2, height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false));
+            buffers[i]->validate();
+            buffers[i]->release();
+        }
+    }
+
     void SsaoInfo::generate(int samples, int noiseSamples)
     {
         // Generate a hemispherical kernel
