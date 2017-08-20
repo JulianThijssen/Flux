@@ -11,12 +11,18 @@ uniform vec2 direction;
 uniform int mipmap;
 
 vec3 blur(int lod, vec2 uv, ivec2 resolution, vec2 direction) {
-    vec3 color = vec3(0);
-    vec2 off = vec2(1.333333333333) * direction;
-    color += textureLod(tex, uv, lod).rgb * 0.29411764705882354;
-    color += textureLod(tex, uv + (off / resolution), lod).rgb * 0.35294117647058826;
-    color += textureLod(tex, uv - (off / resolution), lod).rgb * 0.35294117647058826;
-    return color;
+    vec4 color = vec4(0);
+    vec2 off1 = vec2(1.411764705882353) * direction;
+    vec2 off2 = vec2(3.2941176470588234) * direction;
+    vec2 off3 = vec2(5.176470588235294) * direction;
+    color += textureLod(tex, uv, lod) * 0.1964825501511404;
+    color += textureLod(tex, uv + (off1 / resolution), lod) * 0.2969069646728344;
+    color += textureLod(tex, uv - (off1 / resolution), lod) * 0.2969069646728344;
+    color += textureLod(tex, uv + (off2 / resolution), lod) * 0.09447039785044732;
+    color += textureLod(tex, uv - (off2 / resolution), lod) * 0.09447039785044732;
+    color += textureLod(tex, uv + (off3 / resolution), lod) * 0.010381362401148057;
+    color += textureLod(tex, uv - (off3 / resolution), lod) * 0.010381362401148057;
+    return color.rgb;
 }
 
 void main()

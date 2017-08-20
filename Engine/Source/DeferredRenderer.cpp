@@ -110,7 +110,7 @@ namespace Flux {
         for (int i = 0; i < 2; i++) {
             Framebuffer framebuffer(windowSize.width, windowSize.height);
             framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::createEmpty(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true));
+            framebuffer.addColorTexture(0, TextureLoader::createEmpty(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, true));
             framebuffer.validate();
             framebuffer.release();
             hdrBackBuffers.push_back(framebuffer);
@@ -463,34 +463,35 @@ namespace Flux {
             getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
             glGenerateMipmap(GL_TEXTURE_2D);
 
+            shader->uniform1i("tex", TextureUnit::TEXTURE);
+
+            shader->uniform2f("direction", 1, 0);
             for (unsigned int i = 0; i < blurBuffers.size(); i++) {
-                int width = (int)(windowSize.width / pow(2, i + 1));
-                int height = (int)(windowSize.height / pow(2, i + 1));
+                const Texture& texture = blurBuffers[i]->getColorTexture(0);
+                int width = texture.getWidth();
+                int height = texture.getHeight();
                 glViewport(0, 0, width, height);
                 shader->uniform2i("windowSize", width, height);
                 blurBuffers[i]->bind();
-                
-                shader->uniform1i("tex", TextureUnit::TEXTURE);
                 shader->uniform1i("mipmap", i + 1);
                 
-                shader->uniform2f("direction", 1, 0);
                 drawQuad();
             }
+            shader->uniform2f("direction", 0, 1);
             for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
-                blurBuffers[i]->getColorTexture(0).bind(TextureUnit::TEXTURE);
-                int width = (int)(windowSize.width / pow(2, i + 1));
-                int height = (int)(windowSize.height / pow(2, i + 1));
+                const Texture& texture = blurBuffers[i]->getColorTexture(0);
+                texture.bind(TextureUnit::TEXTURE);
+                int width = texture.getWidth();
+                int height = texture.getHeight();
                 glViewport(0, 0, width, height);
                 shader->uniform2i("windowSize", width, height);
                 blurBuffers2[i]->bind();
-
-                shader->uniform1i("tex", TextureUnit::TEXTURE);
                 shader->uniform1i("mipmap", 0);
 
-                shader->uniform2f("direction", 0, 1);
                 drawQuad();
             }
             nvtxRangePop();
+
 
             glViewport(0, 0, windowSize.width, windowSize.height);
             setShader(ADD);

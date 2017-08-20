@@ -10,7 +10,7 @@ in vec2 pass_texCoords;
 
 out vec4 fragColor;
 
-float weights[4] = float[4](0.1, 0.25, 0.25, 0.4);
+float weights[4] = float[4](0.25, 0.25, 0.25, 0.25);
 
 void main() {
     vec3 b1 = texture(texA, pass_texCoords).rgb * weights[0];
