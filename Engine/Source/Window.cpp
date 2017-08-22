@@ -35,6 +35,11 @@ namespace Flux {
         title(title), width(width), height(height) {
         glfwSetErrorCallback(onError);
         glfwInit();
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         glfwMakeContextCurrent(window);
         glfwSwapInterval(0);
@@ -43,7 +48,7 @@ namespace Flux {
         glfwSetCursorPosCallback(window, onMouseMove);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        if (!gladLoadGL())
         {
             Log::error("Failed to initialize OpenGL context");
         }
