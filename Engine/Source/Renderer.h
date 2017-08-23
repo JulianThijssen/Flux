@@ -30,7 +30,9 @@ namespace Flux {
             currentFramebuffer(0),
             currentHdrFramebuffer(0),
             windowSize(800, 600)
-        { }
+        {
+            glGenVertexArrays(1, &quadVao);
+        }
 
         virtual bool create(const Scene& scene, const Size windowSize) = 0;
         virtual void onResize(const Size windowSize) = 0;
@@ -56,6 +58,8 @@ namespace Flux {
         const Framebuffer& getOtherHdrFramebuffer();
         void switchBuffers();
         void switchHdrBuffers();
+
+        static GLuint quadVao;
     protected:
         Vector3f clearColor;
 
@@ -67,7 +71,6 @@ namespace Flux {
 
         Size windowSize;
 
-        
 
         Framebuffer* hdrBuffer;
         std::vector<Framebuffer> backBuffers;

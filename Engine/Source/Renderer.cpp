@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 
 namespace Flux {
+    GLuint Renderer::quadVao = 1;
+
     void Renderer::addShader(const ShaderName name, Shader* shader) {
         shaders[name] = shader;
     }
@@ -57,6 +59,7 @@ namespace Flux {
     }
 
     void Renderer::drawQuad() {
+        glBindVertexArray(quadVao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
