@@ -18,6 +18,13 @@ namespace Flux {
     enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR, SSAO, GBUFFER, DINDIRECT, DDIRECT, SHADOW, MULTIPLY, SSAOBLUR, ADD };
 
     enum RenderPhase { RP_INDIRECT, RP_DIRECT, RP_SKY, RP_BLOOM, RP_BLUR, RP_TONEMAP, RP_GAMMA, RP_ANTIALIAS, RP_SSAO };
+    enum Capability {
+        BLENDING = GL_BLEND,
+        FACE_CULLING = GL_CULL_FACE,
+        DEPTH_TEST = GL_DEPTH_TEST,
+        STENCIL_TEST = GL_STENCIL_TEST,
+        POLYGON_OFFSET = GL_POLYGON_OFFSET_FILL
+    };
 
     class Renderer {
     public:
@@ -47,6 +54,8 @@ namespace Flux {
         bool isEnabled(RenderPhase phase);
         void enableRenderPhase(RenderPhase phase);
         void disableRenderPhase(RenderPhase phase);
+        void enable(Capability capability);
+        void disable(Capability capability);
 
         void setClearColor(float r, float g, float b, float a);
         void setCamera(Entity& camera);

@@ -73,9 +73,8 @@ namespace Flux {
         enableRenderPhase(RP_ANTIALIAS);
         enableRenderPhase(RP_SSAO);
 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+        enable(DEPTH_TEST);
+        enable(FACE_CULLING);
 
         return true;
     }
@@ -300,7 +299,7 @@ namespace Flux {
         }
         LOG("Direct lighting");
         nvtxRangePushA("Direct");
-        glEnable(GL_BLEND);
+        enable(BLENDING);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
 
@@ -341,7 +340,7 @@ namespace Flux {
             drawQuad();
         }
 
-        glDisable(GL_BLEND);
+        disable(BLENDING);
         nvtxRangePop();
     }
 
@@ -560,7 +559,7 @@ namespace Flux {
         biasMatrix[13] = 0.5f;
         biasMatrix[14] = 0.5f;
         glPolygonOffset(2.5f, 10.0f);
-        glEnable(GL_POLYGON_OFFSET_FILL);
+        enable(POLYGON_OFFSET);
 
         for (Entity* entity : scene.lights) {
             Transform* t = entity->getComponent<Transform>();
@@ -580,7 +579,8 @@ namespace Flux {
 
             renderScene(scene);
         }
-        glDisable(GL_POLYGON_OFFSET_FILL);
+        disable(POLYGON_OFFSET);
+
         glColorMask(true, true, true, true);
     }
 
