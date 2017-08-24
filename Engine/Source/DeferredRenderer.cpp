@@ -61,7 +61,7 @@ namespace Flux {
             iblSceneInfo.PrecomputeEnvironmentData(*scene.skySphere);
         }
 
-        ssaoInfo.generate(13, 4);
+        ssaoInfo.generate();
 
         enableRenderPhase(RP_INDIRECT);
         enableRenderPhase(RP_DIRECT);

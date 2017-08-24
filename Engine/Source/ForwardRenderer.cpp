@@ -43,7 +43,7 @@ namespace Flux {
             iblSceneInfo.PrecomputeEnvironmentData(*scene.skySphere);
         }
 
-        ssaoInfo.generate(30, 16);
+        ssaoInfo.generate();
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);

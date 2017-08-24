@@ -25,7 +25,7 @@ namespace Flux
         Framebuffer* getCurrentBuffer();
         void switchBuffers();
         void createBuffers(unsigned int width, unsigned int height);
-        void generate(int samples, int noiseSamples);
+        void generate();
 
         std::vector<Vector3f> kernel;
         std::vector<Vector3f> noise;

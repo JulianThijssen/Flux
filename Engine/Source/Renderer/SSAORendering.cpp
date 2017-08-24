@@ -10,6 +10,10 @@
 #include <random>
 #include <iostream>
 
+const unsigned int NUM_SAMPLES = 13;
+const unsigned int NOISE_SIZE = 4;
+
+
 float random(float low, float high)
 {
     return low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
@@ -66,11 +70,11 @@ namespace Flux
         }
     }
 
-    void SsaoInfo::generate(int samples, int noiseSamples)
+    void SsaoInfo::generate()
     {
         // Generate a hemispherical kernel
         srand(0);
-        kernel.resize(samples);
+        kernel.resize(NUM_SAMPLES);
 
         kernel[0].set(0.0f, -0.92388f, 0.38268f);
         kernel[1].set(0.92388f, 0.0f, 0.38268f);
@@ -86,16 +90,16 @@ namespace Flux
         kernel[11].set(-0.38268f, 0.0f, 0.92388f);
         kernel[12].set(0.0f, 0.0f, 1.0f);
 
-        for (int i = 0; i < samples; i++) {
-            float scale = (float)i / samples;
+        for (int i = 0; i < NUM_SAMPLES; i++) {
+            float scale = (float)i / NUM_SAMPLES;
             scale = (1 - scale*scale) * 0.1f + scale*scale;
 
             kernel[i] *= scale;
         }
 
         // Generate a noise texture
-        noise.reserve(noiseSamples*noiseSamples);
-        for (int i = 0; i < noiseSamples*noiseSamples; i++) {
+        noise.reserve(NOISE_SIZE*NOISE_SIZE);
+        for (int i = 0; i < NOISE_SIZE*NOISE_SIZE; i++) {
             Vector3f v(random(-1, 1), random(-1, 1), 0.0f);
             v.normalise();
             v = v * 0.5 + Vector3f(0.5, 0.5, 0.5);
@@ -107,12 +111,7 @@ namespace Flux
         glBindTexture(GL_TEXTURE_2D, noiseHandle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, noiseSamples, noiseSamples, 0, GL_RGB, GL_FLOAT, noise.data());
-        noiseTexture = new Texture(noiseHandle, noiseSamples, noiseSamples);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, NOISE_SIZE, NOISE_SIZE, 0, GL_RGB, GL_FLOAT, noise.data());
+        noiseTexture = new Texture(noiseHandle, NOISE_SIZE, NOISE_SIZE);
     }
-
-    //void SsaoInfo::bindNoiseTexture()
-    //{
-    //    glBindTexture(GL_TEXTURE_2D, noiseTexture);
-    //}
 }
