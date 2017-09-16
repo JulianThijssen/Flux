@@ -213,11 +213,11 @@ namespace Flux {
 
         setCamera(*scene.getMainCamera());
 
-        gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
+        gBufferInfo.albedoTex->bind(TextureUnit::ALBEDO);
         shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
+        gBufferInfo.normalTex->bind(TextureUnit::NORMAL);
         shader->uniform1i("normalMap", TextureUnit::NORMAL);
-        gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
+        gBufferInfo.positionTex->bind(TextureUnit::POSITION);
         shader->uniform1i("positionMap", TextureUnit::POSITION);
         gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
         shader->uniform1i("depthMap", TextureUnit::DEPTH);
@@ -244,11 +244,11 @@ namespace Flux {
             glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
             setCamera(*scene.getMainCamera());
 
-            gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
+            gBufferInfo.albedoTex->bind(TextureUnit::ALBEDO);
             shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-            gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
+            gBufferInfo.normalTex->bind(TextureUnit::NORMAL);
             shader->uniform1i("normalMap", TextureUnit::NORMAL);
-            gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
+            gBufferInfo.positionTex->bind(TextureUnit::POSITION);
             shader->uniform1i("positionMap", TextureUnit::POSITION);
             gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
             shader->uniform1i("depthMap", TextureUnit::DEPTH);
@@ -306,11 +306,11 @@ namespace Flux {
         setShader(DDIRECT);
         setCamera(*scene.getMainCamera());
 
-        gBuffer->getColorTexture(0).bind(TextureUnit::ALBEDO);
+        gBufferInfo.albedoTex->bind(TextureUnit::ALBEDO);
         shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBuffer->getColorTexture(1).bind(TextureUnit::NORMAL);
+        gBufferInfo.normalTex->bind(TextureUnit::NORMAL);
         shader->uniform1i("normalMap", TextureUnit::NORMAL);
-        gBuffer->getColorTexture(2).bind(TextureUnit::POSITION);
+        gBufferInfo.positionTex->bind(TextureUnit::POSITION);
         shader->uniform1i("positionMap", TextureUnit::POSITION);
 
         for (Entity* light : scene.lights) {
