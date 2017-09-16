@@ -18,9 +18,25 @@
 #include <sstream>
 
 namespace Flux {
+    const Matrix4f Matrix4f::IDENTITY = Matrix4f();
+    const Matrix4f Matrix4f::BIAS = Matrix4f(0.5f, 0.0f, 0.0f, 0.0f,
+                                             0.0f, 0.5f, 0.0f, 0.0f,
+                                             0.0f, 0.0f, 0.5f, 0.0f,
+                                             0.5f, 0.5f, 0.5f, 1.0f);
+
     /* Core */
     Matrix4f::Matrix4f() {
         setIdentity();
+    }
+
+    Matrix4f::Matrix4f(float m0, float m1, float m2, float m3,
+                       float m4, float m5, float m6, float m7,
+                       float m8, float m9, float m10, float m11,
+                       float m12, float m13, float m14, float m15) {
+        a[0] = m0;   a[1] = m1;   a[2] = m2;   a[3] = m3;
+        a[4] = m4;   a[5] = m5;   a[6] = m6;   a[7] = m7;
+        a[8] = m8;   a[9] = m9;   a[10] = m10; a[11] = m11;
+        a[12] = m12; a[13] = m13; a[14] = m14; a[15] = m15;
     }
 
     void Matrix4f::setIdentity() {

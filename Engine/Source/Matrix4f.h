@@ -20,8 +20,12 @@ namespace Flux {
 
     class Matrix4f {
     public:
+        static const Matrix4f IDENTITY;
+        static const Matrix4f BIAS;
+
         /* Core */
         Matrix4f();
+
         void setIdentity();
         void translate(const Vector3f& v);
         void rotate(float angle, float x, float y, float z);
@@ -41,6 +45,11 @@ namespace Flux {
         Matrix4f operator*(const Matrix4f& m) const;
         Vector3f operator*(const Vector3f& m) const;
     private:
+        Matrix4f(float m0, float m1, float m2, float m3,
+                 float m4, float m5, float m6, float m7,
+                 float m8, float m9, float m10, float m11,
+                 float m12, float m13, float m14, float m15);
+
         float a[16];
     };
 
