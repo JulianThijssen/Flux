@@ -561,11 +561,7 @@ namespace Flux {
 
             setCamera(*entity);
 
-            Matrix4f shadowSpace;
-            shadowSpace = viewMatrix * shadowSpace;
-            shadowSpace = projMatrix * shadowSpace;
-            shadowSpace = Matrix4f::BIAS * shadowSpace;
-            light->shadowSpace = shadowSpace;
+            light->shadowSpace = Matrix4f::BIAS * projMatrix * viewMatrix;
 
             shadowBuffer->addDepthTexture(light->shadowMap);
             glViewport(0, 0, light->shadowMap->getWidth(), light->shadowMap->getHeight());
