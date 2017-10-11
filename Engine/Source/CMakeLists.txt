@@ -17,6 +17,7 @@ set(BASE
     ${DIR}/Material.cpp
     ${DIR}/Renderer.h
     ${DIR}/Renderer.cpp
+    ${DIR}/RenderPhase.h
     ${DIR}/Scene.h
     ${DIR}/Script.h
     ${DIR}/Shader.h
