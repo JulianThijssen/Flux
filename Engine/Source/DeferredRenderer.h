@@ -37,8 +37,15 @@ namespace Flux {
         void createShadowMaps(const Scene& scene);
         void globalIllumination(const Scene& scene);
         void directLighting(const Scene& scene);
+        void ssao(const Scene& scene);
+        void multiply(const Scene& scene);
         void renderSky(const Scene& scene);
         void applyPostprocess();
+        void bloom();
+        void blur();
+        void tonemap();
+        void gammaCorrection();
+        void antiAliasing();
         void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);
 

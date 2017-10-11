@@ -29,24 +29,24 @@
 
 namespace Flux {
     bool DeferredRenderer::create(const Scene& scene, const Size windowSize) {
-        addShader(IBL,       Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
-        addShader(DIRECT,    Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag"));
-        addShader(SKYBOX,    Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
-        addShader(TEXTURE,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
-        addShader(FXAA,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
-        addShader(GAMMA,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
-        addShader(TONEMAP,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
+        addShader(IBL, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
+        addShader(DIRECT, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Lighting.frag"));
+        addShader(SKYBOX, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
+        addShader(TEXTURE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
+        addShader(FXAA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
+        addShader(GAMMA, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
+        addShader(TONEMAP, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
         addShader(SKYSPHERE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag"));
-        addShader(BLOOM,     Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
-        addShader(BLUR,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/BlurFast.frag"));
-        addShader(SSAO,      Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag"));
-        addShader(MULTIPLY,  Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag"));
-        addShader(ADD,       Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Add.frag"));
-        addShader(GBUFFER,   Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
+        addShader(BLOOM, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
+        addShader(BLUR, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/BlurFast.frag"));
+        addShader(SSAO, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag"));
+        addShader(MULTIPLY, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag"));
+        addShader(ADD, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Add.frag"));
+        addShader(GBUFFER, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
         addShader(DINDIRECT, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag"));
-        addShader(DDIRECT,   Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag"));
-        addShader(SHADOW,    Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag"));
-        addShader(SSAOBLUR,  Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag"));
+        addShader(DDIRECT, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag"));
+        addShader(SHADOW, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag"));
+        addShader(SSAOBLUR, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag"));
 
         if (!validateShaders()) {
             return false;
@@ -63,15 +63,15 @@ namespace Flux {
 
         ssaoInfo.generate();
 
-        enableRenderPhase(RP_INDIRECT);
-        enableRenderPhase(RP_DIRECT);
-        enableRenderPhase(RP_SKY);
-        enableRenderPhase(RP_BLOOM);
-        enableRenderPhase(RP_BLUR);
-        enableRenderPhase(RP_TONEMAP);
-        enableRenderPhase(RP_GAMMA);
-        enableRenderPhase(RP_ANTIALIAS);
-        enableRenderPhase(RP_SSAO);
+        addRenderPhase(RenderPhase("Indirect"));
+        addRenderPhase(RenderPhase("Direct"));
+        addRenderPhase(RenderPhase("Sky"));
+        addRenderPhase(RenderPhase("Bloom"));
+        addRenderPhase(RenderPhase("Blur"));
+        addRenderPhase(RenderPhase("Tonemap"));
+        addRenderPhase(RenderPhase("Gamma"));
+        addRenderPhase(RenderPhase("Antialias"));
+        addRenderPhase(RenderPhase("SSAO"));
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -201,9 +201,6 @@ namespace Flux {
     }
 
     void DeferredRenderer::globalIllumination(const Scene& scene) {
-        if (!isEnabled(RP_INDIRECT)) {
-            return;
-        }
         switchHdrBuffers();
 
         glClear(GL_COLOR_BUFFER_BIT);
@@ -237,66 +234,69 @@ namespace Flux {
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        if (isEnabled(RP_SSAO)) {
-            nvtxRangePushA("SSAO");
-            setShader(SSAO);
+        ssao(scene);
+        multiply(scene);
 
-            glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
-            setCamera(*scene.getMainCamera());
+        nvtxRangePop();
+    }
 
-            gBufferInfo.albedoTex->bind(TextureUnit::ALBEDO);
-            shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-            gBufferInfo.normalTex->bind(TextureUnit::NORMAL);
-            shader->uniform1i("normalMap", TextureUnit::NORMAL);
-            gBufferInfo.positionTex->bind(TextureUnit::POSITION);
-            shader->uniform1i("positionMap", TextureUnit::POSITION);
-            gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
-            shader->uniform1i("depthMap", TextureUnit::DEPTH);
+    void DeferredRenderer::ssao(const Scene& scene) {
+        nvtxRangePushA("SSAO");
+        setShader(SSAO);
 
-            ssaoInfo.noiseTexture->bind(TextureUnit::NOISE);
-            shader->uniform1i("noiseMap", TextureUnit::NOISE);
-            shader->uniform3fv("kernel", (int) ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
-            shader->uniform1i("kernelSize", (int) ssaoInfo.kernel.size());
+        glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
+        setCamera(*scene.getMainCamera());
 
-            shader->uniform2i("windowSize", windowSize.width / 2, windowSize.height / 2);
+        gBufferInfo.albedoTex->bind(TextureUnit::ALBEDO);
+        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
+        gBufferInfo.normalTex->bind(TextureUnit::NORMAL);
+        shader->uniform1i("normalMap", TextureUnit::NORMAL);
+        gBufferInfo.positionTex->bind(TextureUnit::POSITION);
+        shader->uniform1i("positionMap", TextureUnit::POSITION);
+        gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
+        shader->uniform1i("depthMap", TextureUnit::DEPTH);
 
-            ssaoInfo.getCurrentBuffer()->bind();
-            drawQuad();
-            nvtxRangePop();
+        ssaoInfo.noiseTexture->bind(TextureUnit::NOISE);
+        shader->uniform1i("noiseMap", TextureUnit::NOISE);
+        shader->uniform3fv("kernel", (int)ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
+        shader->uniform1i("kernelSize", (int)ssaoInfo.kernel.size());
 
-            nvtxRangePushA("SSAO Blur");
-            setShader(SSAOBLUR);
-            shader->uniform2i("windowSize", windowSize.width, windowSize.height);
+        shader->uniform2i("windowSize", windowSize.width / 2, windowSize.height / 2);
 
-            ssaoInfo.getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::TEXTURE);
-            shader->uniform1i("tex", TextureUnit::TEXTURE);
-            
-            ssaoInfo.switchBuffers();
-            ssaoInfo.getCurrentBuffer()->bind();
-            drawQuad();
+        ssaoInfo.getCurrentBuffer()->bind();
+        drawQuad();
+        nvtxRangePop();
 
-            glViewport(0, 0, windowSize.width, windowSize.height);
-            nvtxRangePop();
-        }
+        nvtxRangePushA("SSAO Blur");
+        setShader(SSAOBLUR);
+        shader->uniform2i("windowSize", windowSize.width, windowSize.height);
 
+        ssaoInfo.getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
+
+        ssaoInfo.switchBuffers();
+        ssaoInfo.getCurrentBuffer()->bind();
+        drawQuad();
+
+        glViewport(0, 0, windowSize.width, windowSize.height);
+        nvtxRangePop();
+    }
+
+    void DeferredRenderer::multiply(const Scene& scene) {
         nvtxRangePushA("Multiply");
         hdrBuffer->bind();
 
         setShader(MULTIPLY);
         getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::ALBEDO);
         ssaoInfo.getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::NORMAL);
-        shader->uniform1i("texA", TextureUnit::ALBEDO);
-        shader->uniform1i("texB", TextureUnit::NORMAL);
+        shader->uniform1i("texA", TextureUnit::TEXTURE0);
+        shader->uniform1i("texB", TextureUnit::TEXTURE1);
 
         drawQuad();
-        nvtxRangePop();
         nvtxRangePop();
     }
 
     void DeferredRenderer::directLighting(const Scene& scene) {
-        if (!isEnabled(RP_DIRECT)) {
-            return;
-        }
         LOG("Direct lighting");
         nvtxRangePushA("Direct");
         enable(BLENDING);
@@ -398,149 +398,155 @@ namespace Flux {
         nvtxRangePop();
     }
 
-    void DeferredRenderer::renderSky(const Scene& scene) {
-        if (!isEnabled(RP_SKY)) {
-            return;
-        }
+    //void DeferredRenderer::renderSky(const Scene& scene) {
+    //    if (!isEnabled(RP_SKY)) {
+    //        return;
+    //    }
 
-        LOG("Sky rendering");
-        Transform* transform = scene.getMainCamera()->getComponent<Transform>();
+    //    LOG("Sky rendering");
+    //    Transform* transform = scene.getMainCamera()->getComponent<Transform>();
 
-        Matrix4f yawMatrix;
-        yawMatrix.rotate(transform->rotation.y, 0, 1, 0);
+    //    Matrix4f yawMatrix;
+    //    yawMatrix.rotate(transform->rotation.y, 0, 1, 0);
 
-        Matrix4f pitchMatrix;
-        pitchMatrix.rotate(transform->rotation.x, 1, 0, 0);
+    //    Matrix4f pitchMatrix;
+    //    pitchMatrix.rotate(transform->rotation.x, 1, 0, 0);
 
-        Matrix4f cameraBasis;
-        cameraBasis[10] = -1;
-        cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
+    //    Matrix4f cameraBasis;
+    //    cameraBasis[10] = -1;
+    //    cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
-        if (scene.skybox) {
-            setShader(SKYBOX);
-            scene.skybox->bind(TextureUnit::TEXTURE);
-            shader->uniform1i("skybox", TextureUnit::TEXTURE);
-        }
-        else if (scene.skySphere) {
-            setShader(SKYSPHERE);
-            scene.skySphere->bind(TextureUnit::TEXTURE);
-            shader->uniform1i("tex", TextureUnit::TEXTURE);
-            shader->uniform3f("sun", -0.471409702f, -0.5061866455f, 0.722182783f);
-        }
-        else {
-            return;
-        }
+    //    if (scene.skybox) {
+    //        setShader(SKYBOX);
+    //        scene.skybox->bind(TextureUnit::TEXTURE);
+    //        shader->uniform1i("skybox", TextureUnit::TEXTURE);
+    //    }
+    //    else if (scene.skySphere) {
+    //        setShader(SKYSPHERE);
+    //        scene.skySphere->bind(TextureUnit::TEXTURE);
+    //        shader->uniform1i("tex", TextureUnit::TEXTURE);
+    //        shader->uniform3f("sun", -0.471409702f, -0.5061866455f, 0.722182783f);
+    //    }
+    //    else {
+    //        return;
+    //    }
 
-        shader->uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
-        shader->uniformMatrix4f("cameraBasis", cameraBasis);
+    //    shader->uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
+    //    shader->uniformMatrix4f("cameraBasis", cameraBasis);
 
-        glDepthFunc(GL_LEQUAL);
-        drawQuad();
-        glDepthFunc(GL_LESS);
-    }
+    //    glDepthFunc(GL_LEQUAL);
+    //    drawQuad();
+    //    glDepthFunc(GL_LESS);
+    //}
 
     void DeferredRenderer::applyPostprocess() {
         LOG("Post-processing");
         nvtxRangePushA("Post-process");
 
-        if (isEnabled(RP_BLOOM)) {
-            nvtxRangePushA("Bloom");
-            setShader(BLOOM);
-            hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
-            glGenerateMipmap(GL_TEXTURE_2D);
-            shader->uniform1i("tex", TextureUnit::TEXTURE);
-            shader->uniform1f("threshold", 0);
-            switchHdrBuffers();
-            drawQuad();
-            nvtxRangePop();
-        }
+        bloom();
+        blur();
+        tonemap();
+        gammaCorrection();
+        antiAliasing();
 
-        if (isEnabled(RP_BLUR)) {
-            nvtxRangePushA("Blur");
-            setShader(BLUR);
-            
-            getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-            glGenerateMipmap(GL_TEXTURE_2D);
+        nvtxRangePop();
+    }
 
-            shader->uniform1i("tex", TextureUnit::TEXTURE);
+    void DeferredRenderer::bloom() {
+        nvtxRangePushA("Bloom");
+        setShader(BLOOM);
+        hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        shader->uniform1f("threshold", 2);
+        switchHdrBuffers();
+        drawQuad();
+        nvtxRangePop();
+    }
 
-            shader->uniform2f("direction", 1, 0);
-            for (unsigned int i = 0; i < blurBuffers.size(); i++) {
-                const Texture& texture = blurBuffers[i]->getColorTexture(0);
-                int width = texture.getWidth();
-                int height = texture.getHeight();
-                glViewport(0, 0, width, height);
-                shader->uniform2i("windowSize", width, height);
-                blurBuffers[i]->bind();
-                shader->uniform1i("mipmap", i + 1);
-                
-                drawQuad();
-            }
-            shader->uniform2f("direction", 0, 1);
-            for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
-                const Texture& texture = blurBuffers[i]->getColorTexture(0);
-                texture.bind(TextureUnit::TEXTURE);
-                int width = texture.getWidth();
-                int height = texture.getHeight();
-                glViewport(0, 0, width, height);
-                shader->uniform2i("windowSize", width, height);
-                blurBuffers2[i]->bind();
-                shader->uniform1i("mipmap", 0);
+    void DeferredRenderer::blur() {
+        nvtxRangePushA("Blur");
+        setShader(BLUR);
 
-                drawQuad();
-            }
-            nvtxRangePop();
+        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
 
-            glViewport(0, 0, windowSize.width, windowSize.height);
-            setShader(ADD);
-            switchHdrBuffers();
-            blurBuffers2[0]->getColorTexture(0).bind(TextureUnit::TEXTURE0);
-            blurBuffers2[1]->getColorTexture(0).bind(TextureUnit::TEXTURE1);
-            blurBuffers2[2]->getColorTexture(0).bind(TextureUnit::TEXTURE2);
-            blurBuffers2[3]->getColorTexture(0).bind(TextureUnit::TEXTURE3);
-            shader->uniform1i("texA", TextureUnit::TEXTURE0);
-            shader->uniform1i("texB", TextureUnit::TEXTURE1);
-            shader->uniform1i("texC", TextureUnit::TEXTURE2);
-            shader->uniform1i("texD", TextureUnit::TEXTURE3);
+        shader->uniform2f("direction", 1, 0);
+        for (unsigned int i = 0; i < blurBuffers.size(); i++) {
+            const Texture& texture = blurBuffers[i]->getColorTexture(0);
+            int width = texture.getWidth();
+            int height = texture.getHeight();
+            glViewport(0, 0, width, height);
+            shader->uniform2i("windowSize", width, height);
+            blurBuffers[i]->bind();
+            shader->uniform1i("mipmap", i + 1);
 
             drawQuad();
         }
+        shader->uniform2f("direction", 0, 1);
+        for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
+            const Texture& texture = blurBuffers[i]->getColorTexture(0);
+            texture.bind(TextureUnit::TEXTURE);
+            int width = texture.getWidth();
+            int height = texture.getHeight();
+            glViewport(0, 0, width, height);
+            shader->uniform2i("windowSize", width, height);
+            blurBuffers2[i]->bind();
+            shader->uniform1i("mipmap", 0);
 
-        if (isEnabled(RP_TONEMAP)) {
-            nvtxRangePushA("Tonemap");
-            setShader(TONEMAP);
-            hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
-            shader->uniform1i("tex", TextureUnit::TEXTURE);
-            getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::BLOOM);
-            shader->uniform1i("bloomTex", TextureUnit::BLOOM);
-            switchBuffers();
             drawQuad();
-            nvtxRangePop();
         }
+        nvtxRangePop();
 
-        if (isEnabled(RP_GAMMA)) {
-            nvtxRangePushA("Gamma");
-            setShader(GAMMA);
-            getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-            shader->uniform1i("tex", TextureUnit::TEXTURE);
-            switchBuffers();
-            drawQuad();
-            nvtxRangePop();
-        }
 
-        if (isEnabled(RP_ANTIALIAS)) {
-            nvtxRangePushA("FXAA");
-            setShader(FXAA);
-            getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-            shader->uniform1i("tex", TextureUnit::TEXTURE);
-            glGenerateMipmap(GL_TEXTURE_2D);
-            shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
-            switchBuffers();
-            drawQuad();
-            nvtxRangePop();
-        }
+        glViewport(0, 0, windowSize.width, windowSize.height);
+        setShader(ADD);
+        switchHdrBuffers();
+        blurBuffers2[0]->getColorTexture(0).bind(TextureUnit::TEXTURE0);
+        blurBuffers2[1]->getColorTexture(0).bind(TextureUnit::TEXTURE1);
+        blurBuffers2[2]->getColorTexture(0).bind(TextureUnit::TEXTURE2);
+        blurBuffers2[3]->getColorTexture(0).bind(TextureUnit::TEXTURE3);
+        shader->uniform1i("texA", TextureUnit::TEXTURE0);
+        shader->uniform1i("texB", TextureUnit::TEXTURE1);
+        shader->uniform1i("texC", TextureUnit::TEXTURE2);
+        shader->uniform1i("texD", TextureUnit::TEXTURE3);
 
+        drawQuad();
+    }
+
+    void DeferredRenderer::tonemap() {
+        nvtxRangePushA("Tonemap");
+        setShader(TONEMAP);
+        hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::BLOOM);
+        shader->uniform1i("bloomTex", TextureUnit::BLOOM);
+        switchBuffers();
+        drawQuad();
+        nvtxRangePop();
+    }
+
+    void DeferredRenderer::gammaCorrection() {
+        nvtxRangePushA("Gamma");
+        setShader(GAMMA);
+        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        switchBuffers();
+        drawQuad();
+        nvtxRangePop();
+    }
+
+    void DeferredRenderer::antiAliasing() {
+        nvtxRangePushA("FXAA");
+        setShader(FXAA);
+        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
+        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
+        switchBuffers();
+        drawQuad();
         nvtxRangePop();
     }
 
