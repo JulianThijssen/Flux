@@ -462,7 +462,7 @@ namespace Flux {
         hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
         glGenerateMipmap(GL_TEXTURE_2D);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
-        shader->uniform1f("threshold", 2);
+        shader->uniform1f("threshold", 0);
         switchHdrBuffers();
         drawQuad();
         nvtxRangePop();
