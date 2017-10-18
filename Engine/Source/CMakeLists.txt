@@ -83,8 +83,8 @@ set(INPUT
 )
 
 set(RENDERING
-    ${DIR}/AveragePass.h
-    ${DIR}/AveragePass.cpp
+    ${DIR}/Renderer/AveragePass.h
+    ${DIR}/Renderer/AveragePass.cpp
     ${DIR}/Renderer/ImageBasedRendering.h
     ${DIR}/Renderer/SSAORendering.h
     ${DIR}/Renderer/ImageBasedRendering.cpp
