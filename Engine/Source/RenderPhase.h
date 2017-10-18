@@ -16,6 +16,10 @@ namespace Flux {
 
         }
 
+        const String& getPassName() {
+            return name;
+        }
+
         void enable() {
             enabled = true;
         }

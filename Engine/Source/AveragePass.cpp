@@ -28,7 +28,7 @@ namespace Flux {
 
     void AveragePass::render()
     {
-        nvtxRangePushA(name.c_str());
+        nvtxRangePushA(getPassName().c_str());
 
         shader->bind();
 
