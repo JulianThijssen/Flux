@@ -19,6 +19,7 @@ namespace Flux {
         void release();
         
         void uniform1i(const char* name, int value);
+        void uniform1iv(const char* name, int count, int* values);
         void uniform2i(const char* name, int v0, int v1);
         void uniform1f(const char* name, float value);
         void uniform2f(const char* name, float v0, float v1);

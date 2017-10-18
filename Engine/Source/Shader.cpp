@@ -29,6 +29,10 @@ namespace Flux {
         glUniform1i(location(name), value);
     }
 
+    void Shader::uniform1iv(const char* name, int count, int* values) {
+        glUniform1iv(location(name), count, (GLint*)values);
+    }
+
     void Shader::uniform2i(const char* name, int v0, int v1) {
         glUniform2i(location(name), v0, v1);
     }
