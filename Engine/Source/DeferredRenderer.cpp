@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include "AveragePass.h"
+
 #include "Transform.h"
 #include "Camera.h"
 #include "AttachedTo.h"
@@ -72,6 +74,8 @@ namespace Flux {
         addRenderPhase(RenderPhase("Gamma"));
         addRenderPhase(RenderPhase("Antialias"));
         addRenderPhase(RenderPhase("SSAO"));
+
+        averagePass = new AveragePass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -502,18 +506,17 @@ namespace Flux {
 
 
         glViewport(0, 0, windowSize.width, windowSize.height);
-        setShader(ADD);
-        switchHdrBuffers();
-        blurBuffers2[0]->getColorTexture(0).bind(TextureUnit::TEXTURE0);
-        blurBuffers2[1]->getColorTexture(0).bind(TextureUnit::TEXTURE1);
-        blurBuffers2[2]->getColorTexture(0).bind(TextureUnit::TEXTURE2);
-        blurBuffers2[3]->getColorTexture(0).bind(TextureUnit::TEXTURE3);
-        shader->uniform1i("texA", TextureUnit::TEXTURE0);
-        shader->uniform1i("texB", TextureUnit::TEXTURE1);
-        shader->uniform1i("texC", TextureUnit::TEXTURE2);
-        shader->uniform1i("texD", TextureUnit::TEXTURE3);
 
-        drawQuad();
+        switchHdrBuffers();
+
+        std::vector<Texture> v = {
+            blurBuffers2[0]->getColorTexture(0),
+            blurBuffers2[1]->getColorTexture(0),
+            blurBuffers2[2]->getColorTexture(0),
+            blurBuffers2[3]->getColorTexture(0),
+        };
+        averagePass->SetTextures(v);
+        averagePass->render();
     }
 
     void DeferredRenderer::tonemap() {

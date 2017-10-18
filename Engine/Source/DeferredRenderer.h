@@ -21,9 +21,13 @@ namespace Flux {
 		Texture* depthTex;
     };
 
+    class AveragePass;
+
     class DeferredRenderer : public Renderer {
     public:
-        DeferredRenderer() { }
+        DeferredRenderer() :
+        averagePass()
+        { }
 
         virtual bool create(const Scene& scene, const Size windowSize);
         virtual void onResize(const Size windowSize);
@@ -53,6 +57,8 @@ namespace Flux {
         std::unique_ptr<Framebuffer> gBuffer;
         std::unique_ptr<Framebuffer> shadowBuffer;
         IblSceneInfo iblSceneInfo;
+
+        AveragePass* averagePass;
 
         SsaoInfo ssaoInfo;
 
