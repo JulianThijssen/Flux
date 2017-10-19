@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "AveragePass.h"
+#include "Renderer/AveragePass.h"
 #include "Renderer/SSAOPass.h"
 
 #include "Transform.h"
