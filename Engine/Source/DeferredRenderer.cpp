@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "AveragePass.h"
+#include "Renderer/SSAOPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -76,6 +77,7 @@ namespace Flux {
         addRenderPhase(RenderPhase("SSAO"));
 
         averagePass = new AveragePass();
+        ssaoPass = new SSAOPass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -236,8 +238,6 @@ namespace Flux {
 
         switchBuffers();
 
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
         ssao(scene);
         multiply(scene);
 
@@ -245,45 +245,12 @@ namespace Flux {
     }
 
     void DeferredRenderer::ssao(const Scene& scene) {
-        nvtxRangePushA("SSAO");
-        setShader(SSAO);
+        ssaoPass->SetGBuffer(&gBufferInfo);
+        ssaoPass->SetSsaoInfo(&ssaoInfo);
+        ssaoPass->SetWindowSize(&windowSize);
+        ssaoPass->SetCamera(scene.getMainCamera());
 
-        glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
-        setCamera(*scene.getMainCamera());
-
-        gBufferInfo.albedoTex->bind(TextureUnit::ALBEDO);
-        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBufferInfo.normalTex->bind(TextureUnit::NORMAL);
-        shader->uniform1i("normalMap", TextureUnit::NORMAL);
-        gBufferInfo.positionTex->bind(TextureUnit::POSITION);
-        shader->uniform1i("positionMap", TextureUnit::POSITION);
-        gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
-        shader->uniform1i("depthMap", TextureUnit::DEPTH);
-
-        ssaoInfo.noiseTexture->bind(TextureUnit::NOISE);
-        shader->uniform1i("noiseMap", TextureUnit::NOISE);
-        shader->uniform3fv("kernel", (int)ssaoInfo.kernel.size(), ssaoInfo.kernel.data());
-        shader->uniform1i("kernelSize", (int)ssaoInfo.kernel.size());
-
-        shader->uniform2i("windowSize", windowSize.width / 2, windowSize.height / 2);
-
-        ssaoInfo.getCurrentBuffer()->bind();
-        drawQuad();
-        nvtxRangePop();
-
-        nvtxRangePushA("SSAO Blur");
-        setShader(SSAOBLUR);
-        shader->uniform2i("windowSize", windowSize.width, windowSize.height);
-
-        ssaoInfo.getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-
-        ssaoInfo.switchBuffers();
-        ssaoInfo.getCurrentBuffer()->bind();
-        drawQuad();
-
-        glViewport(0, 0, windowSize.width, windowSize.height);
-        nvtxRangePop();
+        ssaoPass->render();
     }
 
     void DeferredRenderer::multiply(const Scene& scene) {

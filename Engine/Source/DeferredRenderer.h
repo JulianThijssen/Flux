@@ -22,6 +22,7 @@ namespace Flux {
     };
 
     class AveragePass;
+    class SSAOPass;
 
     class DeferredRenderer : public Renderer {
     public:
@@ -59,6 +60,7 @@ namespace Flux {
         IblSceneInfo iblSceneInfo;
 
         AveragePass* averagePass;
+        SSAOPass* ssaoPass;
 
         SsaoInfo ssaoInfo;
 
