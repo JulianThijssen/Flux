@@ -83,6 +83,7 @@ set(INPUT
 )
 
 set(RENDERING
+    ${DIR}/Renderer/GBuffer.h
     ${DIR}/Renderer/AveragePass.h
     ${DIR}/Renderer/AveragePass.cpp
     ${DIR}/Renderer/SSAOPass.h

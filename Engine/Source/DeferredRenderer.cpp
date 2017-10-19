@@ -85,25 +85,6 @@ namespace Flux {
         return true;
     }
 
-    void DeferredRenderer::createGBuffer(const unsigned int width, const unsigned int height) {
-        gBufferInfo.albedoTex = TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
-        gBufferInfo.normalTex = TextureLoader::createEmpty(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
-        gBufferInfo.positionTex = TextureLoader::createEmpty(width, height, GL_RGBA32F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, false);
-        gBufferInfo.depthTex = TextureLoader::createEmpty(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST, false);
-
-        gBuffer = std::make_unique<Framebuffer>(width, height);
-        gBuffer->bind();
-        gBuffer->addColorTexture(0, gBufferInfo.albedoTex);
-        gBuffer->addColorTexture(1, gBufferInfo.normalTex);
-        gBuffer->addColorTexture(2, gBufferInfo.positionTex);
-        gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT0);
-        gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT1);
-        gBuffer->addDrawBuffer(GL_COLOR_ATTACHMENT2);
-        gBuffer->addDepthTexture(gBufferInfo.depthTex);
-        gBuffer->validate();
-        gBuffer->release();
-    }
-
     void DeferredRenderer::createBackBuffers(const unsigned int width, const unsigned int height) {
         hdrBuffer = new Framebuffer(windowSize.width, windowSize.height);
         hdrBuffer->bind();
@@ -148,7 +129,7 @@ namespace Flux {
     void DeferredRenderer::onResize(const Size windowSize) {
         this->windowSize.setSize(windowSize.width, windowSize.height);
 
-        createGBuffer(windowSize.width, windowSize.height);
+        gBufferInfo.create(windowSize.width, windowSize.height);
         createBackBuffers(windowSize.width, windowSize.height);
 
         // Generate half sized framebuffers for low-resolution SSAO rendering

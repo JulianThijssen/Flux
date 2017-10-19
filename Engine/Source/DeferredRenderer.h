@@ -3,6 +3,7 @@
 #define DEFERRED_RENDERER_H
 
 #include "Renderer.h"
+#include "Renderer/GBuffer.h"
 
 #include "Cubemap.h"
 #include "Renderer/ImageBasedRendering.h"
@@ -13,14 +14,6 @@
 #include <memory>
 
 namespace Flux {
-    class GBuffer {
-    public:
-        Texture* albedoTex;
-        Texture* normalTex;
-		Texture* positionTex;
-		Texture* depthTex;
-    };
-
     class AveragePass;
     class SSAOPass;
 
@@ -37,7 +30,6 @@ namespace Flux {
         virtual void renderMesh(const Scene& scene, Entity* e);
 
     private:
-        void createGBuffer(const unsigned int width, const unsigned int height);
         void createBackBuffers(const unsigned int width, const unsigned int height);
         void createShadowMaps(const Scene& scene);
         void globalIllumination(const Scene& scene);
