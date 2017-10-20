@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 #ifndef BLOOM_PASS_H
 #define BLOOM_PASS_H
 

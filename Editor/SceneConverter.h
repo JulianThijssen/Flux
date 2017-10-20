@@ -1,3 +1,7 @@
+#pragma once
+#ifndef SCENE_CONVERTER_H
+#define SCENE_CONVERTER_H
+
 #include "MaterialDesc.h"
 
 namespace Flux {
@@ -25,3 +29,5 @@ namespace Flux {
         };
     }
 }
+
+#endif /* SCENE_CONVERTER_H */

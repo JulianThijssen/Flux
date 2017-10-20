@@ -1,3 +1,4 @@
+#pragma once
 #ifndef MODEL_IMPORTER_H
 #define MODEL_IMPORTER_H
 

@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 #ifndef SKY_PASS_H
 #define SKY_PASS_H
 

@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 #ifndef MULTIPLY_PASS_H
 #define MULTIPLY_PASS_H
 

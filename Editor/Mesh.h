@@ -1,3 +1,4 @@
+#pragma once
 #ifndef EDITOR_MESH_H
 #define EDITOR_MESH_H
 

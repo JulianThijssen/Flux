@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 #ifndef AVERAGE_PASS_H
 #define AVERAGE_PASS_H
 
