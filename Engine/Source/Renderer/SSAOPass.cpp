@@ -9,6 +9,7 @@
 #include <Engine/Source/Camera.h>
 
 #include <Engine/Source/Matrix4f.h>
+#include <Engine/Source/Size.h>
 
 #include <glad/glad.h>
 

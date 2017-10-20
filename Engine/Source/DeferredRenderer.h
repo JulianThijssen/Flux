@@ -20,6 +20,8 @@ namespace Flux {
     class SkyPass;
     class BloomPass;
 
+    class Size;
+
     class DeferredRenderer : public Renderer {
     public:
         DeferredRenderer() :

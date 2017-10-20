@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 #ifndef SSAO_PASS_H
 #define SSAO_PASS_H
 
@@ -13,6 +13,7 @@
 namespace Flux
 {
     class Texture;
+    class Size;
 
     class SSAOPass : public RenderPhase
     {

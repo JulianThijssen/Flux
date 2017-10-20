@@ -19,6 +19,7 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "Path.h"
+#include "Size.h"
 
 #include <iostream>
 
