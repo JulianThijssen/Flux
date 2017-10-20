@@ -35,7 +35,7 @@ namespace Flux {
         this->camera = camera;
     }
 
-    void SSAOPass::render()
+    void SSAOPass::render(const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 

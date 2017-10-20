@@ -66,16 +66,6 @@ namespace Flux {
 
         ssaoInfo.generate();
 
-        addRenderPhase(RenderPhase("Indirect"));
-        addRenderPhase(RenderPhase("Direct"));
-        addRenderPhase(RenderPhase("Sky"));
-        addRenderPhase(RenderPhase("Bloom"));
-        addRenderPhase(RenderPhase("Blur"));
-        addRenderPhase(RenderPhase("Tonemap"));
-        addRenderPhase(RenderPhase("Gamma"));
-        addRenderPhase(RenderPhase("Antialias"));
-        addRenderPhase(RenderPhase("SSAO"));
-
         averagePass = new AveragePass();
         ssaoPass = new SSAOPass();
 
@@ -231,7 +221,7 @@ namespace Flux {
         ssaoPass->SetWindowSize(&windowSize);
         ssaoPass->SetCamera(scene.getMainCamera());
 
-        ssaoPass->render();
+        ssaoPass->render(scene);
     }
 
     void DeferredRenderer::multiply(const Scene& scene) {
@@ -391,12 +381,12 @@ namespace Flux {
     //    glDepthFunc(GL_LESS);
     //}
 
-    void DeferredRenderer::applyPostprocess() {
+    void DeferredRenderer::applyPostprocess(const Scene& scene) {
         LOG("Post-processing");
         nvtxRangePushA("Post-process");
 
         bloom();
-        blur();
+        blur(scene);
         tonemap();
         gammaCorrection();
         antiAliasing();
@@ -416,7 +406,7 @@ namespace Flux {
         nvtxRangePop();
     }
 
-    void DeferredRenderer::blur() {
+    void DeferredRenderer::blur(const Scene& scene) {
         nvtxRangePushA("Blur");
         setShader(BLUR);
 
@@ -464,7 +454,7 @@ namespace Flux {
             blurBuffers2[3]->getColorTexture(0),
         };
         averagePass->SetTextures(v);
-        averagePass->render();
+        averagePass->render(scene);
     }
 
     void DeferredRenderer::tonemap() {

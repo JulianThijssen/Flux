@@ -26,7 +26,7 @@ namespace Flux {
         }
     }
 
-    void AveragePass::render()
+    void AveragePass::render(const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 

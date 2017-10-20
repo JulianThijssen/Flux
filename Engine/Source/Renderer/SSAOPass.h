@@ -24,7 +24,7 @@ namespace Flux
         void SetWindowSize(const Size* size);
         void SetCamera(Entity* camera);
 
-        void render();
+        void render(const Scene& scene) override;
 
     private:
         std::unique_ptr<Shader> ssaoShader;

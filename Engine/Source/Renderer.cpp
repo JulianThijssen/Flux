@@ -23,7 +23,7 @@ namespace Flux {
         return true;
     }
 
-    void Renderer::addRenderPhase(RenderPhase phase) {
+    void Renderer::addRenderPhase(RenderPhase* phase) {
         renderPhases.push(phase);
     }
 

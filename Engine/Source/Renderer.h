@@ -53,7 +53,7 @@ namespace Flux {
         void setShader(const ShaderName shader);
         bool validateShaders();
 
-        void addRenderPhase(RenderPhase phase);
+        void addRenderPhase(RenderPhase* phase);
         void enable(Capability capability);
         void disable(Capability capability);
 
@@ -88,7 +88,7 @@ namespace Flux {
         unsigned int currentHdrFramebuffer;
     private:
         std::unordered_map<ShaderName, Shader*> shaders;
-        std::queue<RenderPhase> renderPhases;
+        std::queue<RenderPhase*> renderPhases;
     };
 }
 

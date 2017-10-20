@@ -39,7 +39,7 @@ namespace Flux {
         //void renderSky(const Scene& scene);
         void applyPostprocess(const Scene& scene);
         void bloom();
-        void blur();
+        void blur(const Scene& scene);
         void tonemap();
         void gammaCorrection();
         void antiAliasing();

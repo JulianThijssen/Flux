@@ -18,7 +18,7 @@ namespace Flux
         AveragePass();
 
         void SetTextures(std::vector<Texture>);
-        void render();
+        void render(const Scene& scene) override;
 
     private:
         static const unsigned int MAX_SOURCES = 8;

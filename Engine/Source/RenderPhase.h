@@ -4,6 +4,8 @@
 
 #include "String.h"
 
+#include "Scene.h"
+
 namespace Flux {
     class RenderPhase {
     public:
@@ -31,6 +33,8 @@ namespace Flux {
         bool isEnabled() {
             return enabled;
         }
+
+        virtual void render(const Scene& scene) = 0;
 
     private:
         String name;
