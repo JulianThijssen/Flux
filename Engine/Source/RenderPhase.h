@@ -2,7 +2,7 @@
 #ifndef RENDER_PHASE_H
 #define RENDER_PHASE_H
 
-#include "String.h"
+#include "Util/String.h"
 
 #include "Scene.h"
 

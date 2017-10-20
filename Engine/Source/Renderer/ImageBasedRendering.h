@@ -2,9 +2,9 @@
 #ifndef IMAGE_BASED_RENDERING_H
 #define IMAGE_BASED_RENDERING_H
 
-#include <Engine/Source/Skybox.h>
-#include <Engine/Source/Cubemap.h>
-#include <Engine/Source/Texture.h>
+#include "Skybox.h"
+#include "Cubemap.h"
+#include "Texture.h"
 
 namespace Flux
 {

@@ -1,10 +1,10 @@
-#include "BloomPass.h"
+#include "Renderer/BloomPass.h"
 
-#include <Engine/Source/Renderer.h>
+#include "Renderer.h"
 
-#include <Engine/Source/TextureUnit.h>
-#include <Engine/Source/Texture.h>
-#include <Engine/Source/Framebuffer.h>
+#include "TextureUnit.h"
+#include "Texture.h"
+#include "Framebuffer.h"
 
 namespace Flux {
     BloomPass::BloomPass() : RenderPhase("Bloom")

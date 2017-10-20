@@ -2,11 +2,11 @@
 #ifndef SSAO_PASS_H
 #define SSAO_PASS_H
 
-#include <Engine/Source/RenderPhase.h>
+#include "RenderPhase.h"
 
-#include <Engine/Source/Shader.h>
-#include <Engine/Source/Renderer/GBuffer.h>
-#include <Engine/Source/Renderer/SSAORendering.h>
+#include "Shader.h"
+#include "Renderer/GBuffer.h"
+#include "Renderer/SSAORendering.h"
 
 #include <memory>
 

@@ -6,15 +6,15 @@
 #include "Skybox.h"
 #include "Skysphere.h"
 
-#include <Editor/Entity.h>
-#include <Engine/Source/AttachedTo.h>
-#include <Engine/Source/DirectionalLight.h>
-#include <Engine/Source/PointLight.h>
-#include <Engine/Source/MeshRenderer.h>
-#include <Engine/Source/Path.h>
-#include <Engine/Source/File.h>
+#include "Entity.h"
+#include "AttachedTo.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "MeshRenderer.h"
+#include "Path.h"
+#include "File.h"
 
-#include <Engine/Source/TextureLoader.h>
+#include "TextureLoader.h"
 
 #include "json.hpp"
 #include <fstream>

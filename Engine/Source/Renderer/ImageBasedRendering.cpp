@@ -1,12 +1,12 @@
-#include "ImageBasedRendering.h"
+#include "Renderer/ImageBasedRendering.h"
 
-#include <Engine/Source/Framebuffer.h>
-#include <Engine/Source/Shader.h>
-#include <Engine/Source/ShaderLoader.h>
-#include <Engine/Source/Renderer.h>
+#include "Framebuffer.h"
+#include "Shader.h"
+#include "ShaderLoader.h"
+#include "Renderer.h"
 
-#include <Engine/Source/Exceptions/ShaderCompilationException.h>
-#include <Engine/Source/Exceptions/ShaderLinkException.h>
+#include "Exceptions/ShaderCompilationException.h"
+#include "Exceptions/ShaderLinkException.h"
 
 #include <glad/glad.h>
 #include <iostream>

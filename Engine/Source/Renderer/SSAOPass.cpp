@@ -1,15 +1,15 @@
-#include "SSAOPass.h"
+#include "Renderer/SSAOPass.h"
 
-#include <Engine/Source/Renderer.h>
-#include <Engine/Source/Texture.h>
-#include <Engine/Source/TextureUnit.h>
+#include "Renderer.h"
+#include "Texture.h"
+#include "TextureUnit.h"
 
-#include <Engine/Source/Entity.h>
-#include <Engine/Source/Transform.h>
-#include <Engine/Source/Camera.h>
+#include "Entity.h"
+#include "Transform.h"
+#include "Camera.h"
 
-#include <Engine/Source/Matrix4f.h>
-#include <Engine/Source/Size.h>
+#include "Matrix4f.h"
+#include "Size.h"
 
 #include <glad/glad.h>
 

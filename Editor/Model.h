@@ -3,7 +3,7 @@
 #define MODEL_H
 
 #include "Mesh.h"
-#include <Engine/Source/Material.h>
+#include "Material.h"
 
 #include <vector>
 

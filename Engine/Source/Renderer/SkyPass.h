@@ -2,9 +2,9 @@
 #ifndef SKY_PASS_H
 #define SKY_PASS_H
 
-#include <Engine/Source/RenderPhase.h>
+#include "RenderPhase.h"
 
-#include <Engine/Source/Shader.h>
+#include "Shader.h"
 
 #include <memory>
 

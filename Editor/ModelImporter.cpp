@@ -6,9 +6,9 @@
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 
-#include <Engine/Source/Log.h>
-#include <Engine/Source/Path.h>
-#include <Editor/Mesh.h>
+#include "Log.h"
+#include "Path.h"
+#include "Mesh.h"
 
 #include <vector>
 #include <cstdio>

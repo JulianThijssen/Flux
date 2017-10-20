@@ -3,12 +3,12 @@
 #define EDITOR_ENTITY_H
 
 #include "Mesh.h"
-#include <Engine/Source/Transform.h>
-#include <Engine/Source/Camera.h>
-#include <Engine/Source/AttachedTo.h>
-#include <Engine/Source/MeshRenderer.h>
-#include <Engine/Source/PointLight.h>
-#include <Engine/Source/DirectionalLight.h>
+#include "Transform.h"
+#include "Camera.h"
+#include "AttachedTo.h"
+#include "MeshRenderer.h"
+#include "PointLight.h"
+#include "DirectionalLight.h"
 
 #include <vector>
 

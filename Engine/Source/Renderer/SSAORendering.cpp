@@ -1,9 +1,9 @@
-#include "SSAORendering.h"
+#include "Renderer/SSAORendering.h"
 
-#include <Engine/Source/Vector3f.h>
-#include <Engine/Source/TextureLoader.h>
+#include "Vector3f.h"
+#include "TextureLoader.h"
 
-#include <Engine/Source/Framebuffer.h>
+#include "Framebuffer.h"
 
 #include <glad/glad.h>
 #include <cstdlib>

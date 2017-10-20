@@ -1,11 +1,11 @@
-#include "SkyPass.h"
+#include "Renderer/SkyPass.h"
 
-#include <Engine/Source/Renderer.h>
+#include "Renderer.h"
 
-#include <Engine/Source/TextureUnit.h>
+#include "TextureUnit.h"
 
-#include <Engine/Source/Transform.h>
-#include <Engine/Source/Camera.h>
+#include "Transform.h"
+#include "Camera.h"
 
 namespace Flux {
     SkyPass::SkyPass() : RenderPhase("Sky")

@@ -2,9 +2,9 @@
 #ifndef AVERAGE_PASS_H
 #define AVERAGE_PASS_H
 
-#include <Engine/Source/RenderPhase.h>
+#include "RenderPhase.h"
 
-#include <Engine/Source/Shader.h>
+#include "Shader.h"
 
 #include <memory>
 

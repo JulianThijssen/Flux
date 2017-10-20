@@ -4,16 +4,16 @@
 #include "Skybox.h"
 #include "Skysphere.h"
 
-#include "../Engine/Source/Path.h"
+#include "Path.h"
 
-#include <Engine/Source/AssetManager.h>
-#include <Engine/Source/Transform.h>
-#include <Engine/Source/Mesh.h>
-#include <Engine/Source/MeshRenderer.h>
-#include <Engine/Source/AttachedTo.h>
+#include "AssetManager.h"
+#include "Transform.h"
+#include "Mesh.h"
+#include "MeshRenderer.h"
+#include "AttachedTo.h"
 
-#include <Engine/Source/PointLight.h>
-#include <Engine/Source/DirectionalLight.h>
+#include "PointLight.h"
+#include "DirectionalLight.h"
 
 #include <fstream>
 #include <iostream> // Temp

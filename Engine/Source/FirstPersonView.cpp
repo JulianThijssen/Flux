@@ -1,9 +1,9 @@
 #include "FirstPersonView.h"
 
-#include <Engine/Source/Input/Input.h>
-#include <Engine/Source/Matrix4f.h>
-#include <Engine/Source/Vector3f.h>
-#include <Engine/Source/Vector2f.h>
+#include "Input/Input.h"
+#include "Matrix4f.h"
+#include "Vector3f.h"
+#include "Vector2f.h"
 
 namespace Flux {
     void FirstPersonView::start(Scene& scene) {

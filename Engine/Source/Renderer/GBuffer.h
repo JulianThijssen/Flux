@@ -2,8 +2,8 @@
 #ifndef GBUFFER_H
 #define GBUFFER_H
 
-#include <Engine/Source/Framebuffer.h>
-#include <Engine/Source/Texture.h>
+#include "Framebuffer.h"
+#include "Texture.h"
 
 #include <memory>
 

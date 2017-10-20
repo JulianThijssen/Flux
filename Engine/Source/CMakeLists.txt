@@ -54,14 +54,14 @@ set(UTIL
     ${DIR}/File.h
     ${DIR}/Log.h
     ${DIR}/Log.cpp
-    ${DIR}/Math.h
-    ${DIR}/Math.cpp
+    ${DIR}/Util/Math.h
+    ${DIR}/Util/Math.cpp
     ${DIR}/Matrix4f.h
     ${DIR}/Matrix4f.cpp
     ${DIR}/Path.h
     ${DIR}/Path.cpp
     ${DIR}/Size.h
-    ${DIR}/String.h
+    ${DIR}/Util/String.h
     ${DIR}/Vector2f.h
     ${DIR}/Vector3f.h
     ${DIR}/Vector2f.cpp

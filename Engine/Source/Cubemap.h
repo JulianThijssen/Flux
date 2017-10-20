@@ -2,7 +2,7 @@
 #ifndef CUBEMAP_H
 #define CUBEMAP_H
 
-#include "String.h"
+#include "Util/String.h"
 
 #include "stb_image.h"
 

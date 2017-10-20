@@ -1,7 +1,7 @@
 #include "MaterialLoader.h"
 
 #include "Material.h"
-#include "String.h"
+#include "Util/String.h"
 #include "File.h"
 
 #include "TextureLoader.h"

@@ -2,9 +2,9 @@
 #ifndef EDITOR_MESH_H
 #define EDITOR_MESH_H
 
-#include <Engine/Source/Component.h>
-#include <Engine/Source/Vector3f.h>
-#include <Engine/Source/Vector2f.h>
+#include "Component.h"
+#include "Vector3f.h"
+#include "Vector2f.h"
 
 #include <vector>
 #include <string>

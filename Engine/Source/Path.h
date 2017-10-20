@@ -13,7 +13,7 @@
 #ifndef PATH_H
 #define PATH_H
 
-#include "String.h"
+#include "Util/String.h"
 #include <string>
 
 namespace Flux {

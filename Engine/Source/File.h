@@ -4,7 +4,7 @@
 
 #include "Log.h"
 
-#include "String.h"
+#include "Util/String.h"
 
 #include <string>
 #include <vector>

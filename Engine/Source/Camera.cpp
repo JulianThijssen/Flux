@@ -13,8 +13,8 @@
 #include "Camera.h"
 
 #include "Matrix4f.h"
-#include "Math.h"
-#include <math.h>
+#include "Util/Math.h"
+#include <cmath>
 
 namespace Flux {
     Camera::Camera() {

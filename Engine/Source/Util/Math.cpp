@@ -9,7 +9,7 @@
 ** Author: Julian Thijssen
 ** -------------------------------------------------------------------------*/
 
-#include "Math.h"
+#include "Util/Math.h"
 
 namespace Flux {
     const float Math::PI = 3.14159265359f;

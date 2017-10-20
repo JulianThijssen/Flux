@@ -1,9 +1,9 @@
-#include "MultiplyPass.h"
+#include "Renderer/MultiplyPass.h"
 
-#include <Engine/Source/Texture.h>
-#include <Engine/Source/TextureUnit.h>
+#include "Texture.h"
+#include "TextureUnit.h"
 
-#include <Engine/Source/Renderer.h>
+#include "Renderer.h"
 
 #include <glad/glad.h>
 

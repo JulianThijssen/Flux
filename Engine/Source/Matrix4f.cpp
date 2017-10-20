@@ -12,9 +12,9 @@
 #include "Matrix4f.h"
 
 #include "Vector3f.h"
-#include "Math.h"
+#include "Util/Math.h"
 
-#include <math.h>
+#include <cmath>
 #include <sstream>
 
 namespace Flux {

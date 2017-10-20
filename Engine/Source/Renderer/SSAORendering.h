@@ -2,7 +2,7 @@
 #ifndef SSAO_RENDERING_H
 #define SSAO_RENDERING_H
 
-#include <Engine/Source/Texture.h>
+#include "Texture.h"
 
 #include <vector>
 

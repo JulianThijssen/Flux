@@ -2,9 +2,9 @@
 #ifndef MULTIPLY_PASS_H
 #define MULTIPLY_PASS_H
 
-#include <Engine/Source/RenderPhase.h>
+#include "RenderPhase.h"
 
-#include <Engine/Source/Shader.h>
+#include "Shader.h"
 
 #include <memory>
 
