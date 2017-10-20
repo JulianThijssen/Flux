@@ -342,47 +342,6 @@ namespace Flux {
         nvtxRangePop();
     }
 
-    //void DeferredRenderer::renderSky(const Scene& scene) {
-    //    if (!isEnabled(RP_SKY)) {
-    //        return;
-    //    }
-
-    //    LOG("Sky rendering");
-    //    Transform* transform = scene.getMainCamera()->getComponent<Transform>();
-
-    //    Matrix4f yawMatrix;
-    //    yawMatrix.rotate(transform->rotation.y, 0, 1, 0);
-
-    //    Matrix4f pitchMatrix;
-    //    pitchMatrix.rotate(transform->rotation.x, 1, 0, 0);
-
-    //    Matrix4f cameraBasis;
-    //    cameraBasis[10] = -1;
-    //    cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
-
-    //    if (scene.skybox) {
-    //        setShader(SKYBOX);
-    //        scene.skybox->bind(TextureUnit::TEXTURE);
-    //        shader->uniform1i("skybox", TextureUnit::TEXTURE);
-    //    }
-    //    else if (scene.skySphere) {
-    //        setShader(SKYSPHERE);
-    //        scene.skySphere->bind(TextureUnit::TEXTURE);
-    //        shader->uniform1i("tex", TextureUnit::TEXTURE);
-    //        shader->uniform3f("sun", -0.471409702f, -0.5061866455f, 0.722182783f);
-    //    }
-    //    else {
-    //        return;
-    //    }
-
-    //    shader->uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
-    //    shader->uniformMatrix4f("cameraBasis", cameraBasis);
-
-    //    glDepthFunc(GL_LEQUAL);
-    //    drawQuad();
-    //    glDepthFunc(GL_LESS);
-    //}
-
     void DeferredRenderer::applyPostprocess(const Scene& scene) {
         LOG("Post-processing");
         nvtxRangePushA("Post-process");

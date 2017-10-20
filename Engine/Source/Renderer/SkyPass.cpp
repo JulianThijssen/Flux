@@ -36,11 +36,13 @@ namespace Flux {
         Shader* shader;
         if (scene.skybox) {
             shader = skyboxShader.get();
+            shader->bind();
             scene.skybox->bind(TextureUnit::TEXTURE);
             shader->uniform1i("skybox", TextureUnit::TEXTURE);
         }
         else if (scene.skySphere) {
             shader = skysphereShader.get();
+            shader->bind();
             scene.skySphere->bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
             shader->uniform3f("sun", -0.471409702f, -0.5061866455f, 0.722182783f);
