@@ -6,6 +6,8 @@
 
 #include "Scene.h"
 
+#include "nvToolsExt.h"
+
 namespace Flux {
     class RenderPhase {
     public:

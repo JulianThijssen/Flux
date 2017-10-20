@@ -16,6 +16,8 @@ namespace Flux {
 
     void SkyPass::render(const Scene& scene)
     {
+        nvtxRangePushA(getPassName().c_str());
+
         Transform* transform = scene.mainCamera->getComponent<Transform>();
         Camera* cam = scene.mainCamera->getComponent<Camera>();
 
@@ -58,5 +60,7 @@ namespace Flux {
         glBindVertexArray(Renderer::quadVao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glDepthFunc(GL_LESS);
+
+        nvtxRangePop();
     }
 }

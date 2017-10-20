@@ -7,9 +7,6 @@
 
 #include <glad/glad.h>
 
-
-#include "nvToolsExt.h"
-
 namespace Flux {
     AveragePass::AveragePass() : RenderPhase("Average")
     {
