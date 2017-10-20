@@ -36,8 +36,8 @@ namespace Flux {
         void directLighting(const Scene& scene);
         void ssao(const Scene& scene);
         void multiply(const Scene& scene);
-        void renderSky(const Scene& scene);
-        void applyPostprocess();
+        //void renderSky(const Scene& scene);
+        void applyPostprocess(const Scene& scene);
         void bloom();
         void blur();
         void tonemap();

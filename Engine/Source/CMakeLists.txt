@@ -92,6 +92,8 @@ set(RENDERING
     ${DIR}/Renderer/SSAORendering.h
     ${DIR}/Renderer/ImageBasedRendering.cpp
     ${DIR}/Renderer/SSAORendering.cpp
+    ${DIR}/Renderer/SkyPass.h
+    ${DIR}/Renderer/SkyPass.cpp
     PARENT_SCOPE
 )
 

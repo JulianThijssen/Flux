@@ -179,8 +179,8 @@ namespace Flux {
         globalIllumination(scene);
         directLighting(scene);
         glDepthMask(true);
-        renderSky(scene);
-        applyPostprocess();
+        //renderSky(scene);
+        applyPostprocess(scene);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_DEPTH_BUFFER_BIT);
         renderFramebuffer(getCurrentFramebuffer());
