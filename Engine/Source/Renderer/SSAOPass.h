@@ -5,7 +5,7 @@
 #include <Engine/Source/RenderPhase.h>
 
 #include <Engine/Source/Shader.h>
-#include <Engine/Source/DeferredRenderer.h>
+#include <Engine/Source/Renderer/GBuffer.h>
 #include <Engine/Source/Renderer/SSAORendering.h>
 
 #include <memory>
@@ -22,7 +22,6 @@ namespace Flux
         void SetGBuffer(const GBuffer* gBuffer);
         void SetSsaoInfo(SsaoInfo* ssaoInfo);
         void SetWindowSize(const Size* size);
-        void SetCamera(Entity* camera);
 
         void render(const Scene& scene) override;
 
@@ -33,7 +32,6 @@ namespace Flux
         const GBuffer* gBuffer;
         SsaoInfo* ssaoInfo;
         const Size* windowSize;
-        Entity* camera;
     };
 }
 

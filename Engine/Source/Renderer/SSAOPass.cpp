@@ -1,7 +1,14 @@
 #include "SSAOPass.h"
 
+#include <Engine/Source/Renderer.h>
 #include <Engine/Source/Texture.h>
 #include <Engine/Source/TextureUnit.h>
+
+#include <Engine/Source/Entity.h>
+#include <Engine/Source/Transform.h>
+#include <Engine/Source/Camera.h>
+
+#include <Engine/Source/Matrix4f.h>
 
 #include <glad/glad.h>
 
@@ -30,11 +37,6 @@ namespace Flux {
         this->windowSize = windowSize;
     }
 
-    void SSAOPass::SetCamera(Entity* camera)
-    {
-        this->camera = camera;
-    }
-
     void SSAOPass::render(const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
@@ -42,6 +44,7 @@ namespace Flux {
         ssaoShader->bind();
 
         ///
+        Entity* camera = scene.getMainCamera();
         Transform* ct = camera->getComponent<Transform>();
         Camera* cam = camera->getComponent<Camera>();
 
