@@ -79,7 +79,7 @@ namespace Flux {
         hdrBuffer = new Framebuffer(windowSize.width, windowSize.height);
         hdrBuffer->bind();
         hdrBuffer->addColorTexture(0, TextureLoader::createEmpty(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true));
-        hdrBuffer->addDepthTexture(gBufferInfo.depthTex);
+        hdrBuffer->addDepthTexture(gBuffer.depthTex);
         hdrBuffer->validate();
         hdrBuffer->release();
 
@@ -119,7 +119,7 @@ namespace Flux {
     void DeferredRenderer::onResize(const Size windowSize) {
         this->windowSize.setSize(windowSize.width, windowSize.height);
 
-        gBufferInfo.create(windowSize.width, windowSize.height);
+        gBuffer.create(windowSize.width, windowSize.height);
         createBackBuffers(windowSize.width, windowSize.height);
 
         // Generate half sized framebuffers for low-resolution SSAO rendering
@@ -155,7 +155,7 @@ namespace Flux {
 
         glViewport(0, 0, windowSize.width, windowSize.height);
         LOG("Rendering GBuffer");
-        gBuffer->bind();
+        gBuffer.bind();
         setShader(GBUFFER);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         setCamera(*scene.getMainCamera());
@@ -187,13 +187,13 @@ namespace Flux {
 
         setCamera(*scene.getMainCamera());
 
-        gBufferInfo.albedoTex->bind(TextureUnit::ALBEDO);
+        gBuffer.albedoTex->bind(TextureUnit::ALBEDO);
         shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBufferInfo.normalTex->bind(TextureUnit::NORMAL);
+        gBuffer.normalTex->bind(TextureUnit::NORMAL);
         shader->uniform1i("normalMap", TextureUnit::NORMAL);
-        gBufferInfo.positionTex->bind(TextureUnit::POSITION);
+        gBuffer.positionTex->bind(TextureUnit::POSITION);
         shader->uniform1i("positionMap", TextureUnit::POSITION);
-        gBufferInfo.depthTex->bind(TextureUnit::DEPTH);
+        gBuffer.depthTex->bind(TextureUnit::DEPTH);
         shader->uniform1i("depthMap", TextureUnit::DEPTH);
 
         iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);
@@ -216,7 +216,7 @@ namespace Flux {
     }
 
     void DeferredRenderer::ssao(const Scene& scene) {
-        ssaoPass->SetGBuffer(&gBufferInfo);
+        ssaoPass->SetGBuffer(&gBuffer);
         ssaoPass->SetSsaoInfo(&ssaoInfo);
         ssaoPass->SetWindowSize(&windowSize);
         ssaoPass->SetCamera(scene.getMainCamera());
@@ -248,11 +248,11 @@ namespace Flux {
         setShader(DDIRECT);
         setCamera(*scene.getMainCamera());
 
-        gBufferInfo.albedoTex->bind(TextureUnit::ALBEDO);
+        gBuffer.albedoTex->bind(TextureUnit::ALBEDO);
         shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBufferInfo.normalTex->bind(TextureUnit::NORMAL);
+        gBuffer.normalTex->bind(TextureUnit::NORMAL);
         shader->uniform1i("normalMap", TextureUnit::NORMAL);
-        gBufferInfo.positionTex->bind(TextureUnit::POSITION);
+        gBuffer.positionTex->bind(TextureUnit::POSITION);
         shader->uniform1i("positionMap", TextureUnit::POSITION);
 
         for (Entity* light : scene.lights) {

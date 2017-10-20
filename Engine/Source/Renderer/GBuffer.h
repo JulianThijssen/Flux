@@ -28,6 +28,10 @@ namespace Flux {
             buffer->release();
         }
 
+        void bind() {
+            buffer->bind();
+        }
+
         Texture* albedoTex;
         Texture* normalTex;
         Texture* positionTex;
