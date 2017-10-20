@@ -4,6 +4,7 @@
 
 #include "Renderer/AveragePass.h"
 #include "Renderer/SSAOPass.h"
+#include "Renderer/SkyPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -68,6 +69,7 @@ namespace Flux {
 
         averagePass = new AveragePass();
         ssaoPass = new SSAOPass();
+        skyPass = new SkyPass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -169,7 +171,7 @@ namespace Flux {
         globalIllumination(scene);
         directLighting(scene);
         glDepthMask(true);
-        //renderSky(scene);
+        skyPass->render(scene);
         applyPostprocess(scene);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_DEPTH_BUFFER_BIT);
