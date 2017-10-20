@@ -15,6 +15,7 @@
 
 namespace Flux {
     class AveragePass;
+    class MultiplyPass;
     class SSAOPass;
     class SkyPass;
 
@@ -51,6 +52,7 @@ namespace Flux {
         IblSceneInfo iblSceneInfo;
 
         AveragePass* averagePass;
+        MultiplyPass* multiplyPass;
         SSAOPass* ssaoPass;
         SkyPass* skyPass;
 

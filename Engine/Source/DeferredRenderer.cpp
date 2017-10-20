@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "Renderer/AveragePass.h"
+#include "Renderer/MultiplyPass.h"
 #include "Renderer/SSAOPass.h"
 #include "Renderer/SkyPass.h"
 
@@ -68,6 +69,7 @@ namespace Flux {
         ssaoInfo.generate();
 
         averagePass = new AveragePass();
+        multiplyPass = new MultiplyPass();
         ssaoPass = new SSAOPass();
         skyPass = new SkyPass();
 
@@ -227,17 +229,14 @@ namespace Flux {
     }
 
     void DeferredRenderer::multiply(const Scene& scene) {
-        nvtxRangePushA("Multiply");
         hdrBuffer->bind();
 
-        setShader(MULTIPLY);
-        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::ALBEDO);
-        ssaoInfo.getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::NORMAL);
-        shader->uniform1i("texA", TextureUnit::TEXTURE0);
-        shader->uniform1i("texB", TextureUnit::TEXTURE1);
-
-        drawQuad();
-        nvtxRangePop();
+        std::vector<Texture> v = {
+            getCurrentHdrFramebuffer().getColorTexture(0),
+            ssaoInfo.getCurrentBuffer()->getColorTexture(0)
+        };
+        multiplyPass->SetTextures(v);
+        multiplyPass->render(scene);
     }
 
     void DeferredRenderer::directLighting(const Scene& scene) {
