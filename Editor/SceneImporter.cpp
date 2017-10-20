@@ -181,7 +181,7 @@ namespace Flux {
 
             Entity* light = new Entity();
             DirectionalLight* dirLight = new DirectionalLight();
-            dirLight->color.set(10, 5, 2.5f);
+            dirLight->color.set(10, 4, 1.5f);
             dirLight->direction.set(-0.471409702f, -0.5061866455f, 0.722182783f);
             dirLight->direction.normalise();
             light->addComponent(dirLight);
