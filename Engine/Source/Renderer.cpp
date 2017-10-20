@@ -58,7 +58,7 @@ namespace Flux {
         shader->uniform1f("zFar", cam->getZFar());
     }
 
-    void Renderer::drawQuad() {
+    void Renderer::drawQuad() const {
         glBindVertexArray(quadVao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
