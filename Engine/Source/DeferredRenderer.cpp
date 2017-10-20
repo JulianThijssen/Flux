@@ -6,6 +6,7 @@
 #include "Renderer/MultiplyPass.h"
 #include "Renderer/SSAOPass.h"
 #include "Renderer/SkyPass.h"
+#include "Renderer/BloomPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -66,6 +67,7 @@ namespace Flux {
         multiplyPass = new MultiplyPass();
         ssaoPass = new SSAOPass();
         skyPass = new SkyPass();
+        bloomPass = new BloomPass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -339,7 +341,7 @@ namespace Flux {
         LOG("Post-processing");
         nvtxRangePushA("Post-process");
 
-        bloom();
+        bloom(scene);
         blur(scene);
         tonemap();
         gammaCorrection();
@@ -348,16 +350,11 @@ namespace Flux {
         nvtxRangePop();
     }
 
-    void DeferredRenderer::bloom() {
-        nvtxRangePushA("Bloom");
-        setShader(BLOOM);
-        hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        shader->uniform1f("threshold", 0);
-        switchHdrBuffers();
-        drawQuad();
-        nvtxRangePop();
+    void DeferredRenderer::bloom(const Scene& scene) {
+        bloomPass->SetSource(&hdrBuffer->getColorTexture(0));
+        bloomPass->SetTarget(&getCurrentHdrFramebuffer());
+
+        bloomPass->render(scene);
     }
 
     void DeferredRenderer::blur(const Scene& scene) {

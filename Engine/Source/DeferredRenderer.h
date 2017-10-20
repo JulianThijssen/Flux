@@ -18,6 +18,7 @@ namespace Flux {
     class MultiplyPass;
     class SSAOPass;
     class SkyPass;
+    class BloomPass;
 
     class DeferredRenderer : public Renderer {
     public:
@@ -39,7 +40,7 @@ namespace Flux {
         void ssao(const Scene& scene);
         void multiply(const Scene& scene);
         void applyPostprocess(const Scene& scene);
-        void bloom();
+        void bloom(const Scene& scene);
         void blur(const Scene& scene);
         void tonemap();
         void gammaCorrection();
@@ -55,6 +56,8 @@ namespace Flux {
         MultiplyPass* multiplyPass;
         SSAOPass* ssaoPass;
         SkyPass* skyPass;
+        BloomPass* bloomPass;
+
 
         SsaoInfo ssaoInfo;
 

@@ -96,6 +96,8 @@ set(RENDERING
     ${DIR}/Renderer/SSAORendering.cpp
     ${DIR}/Renderer/SkyPass.h
     ${DIR}/Renderer/SkyPass.cpp
+    ${DIR}/Renderer/BloomPass.h
+    ${DIR}/Renderer/BloomPass.cpp
     PARENT_SCOPE
 )
 
