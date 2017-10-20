@@ -219,7 +219,6 @@ namespace Flux {
         ssaoPass->SetGBuffer(&gBuffer);
         ssaoPass->SetSsaoInfo(&ssaoInfo);
         ssaoPass->SetWindowSize(&windowSize);
-        ssaoPass->SetCamera(scene.getMainCamera());
 
         ssaoPass->render(scene);
     }
