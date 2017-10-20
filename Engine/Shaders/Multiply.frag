@@ -1,7 +1,7 @@
 #version 150 core
 
-uniform sampler2D texA;
-uniform sampler2D texB;
+uniform sampler2D sources[8];
+uniform int sourceCount;
 
 in vec3 pass_position;
 in vec2 pass_texCoords;
@@ -9,5 +9,11 @@ in vec2 pass_texCoords;
 out vec4 fragColor;
 
 void main() {
-    fragColor = texture(texA, pass_texCoords) * texture(texB, pass_texCoords);
+    vec3 color = vec3(1, 1, 1);
+
+    for (int i = 0; i < sourceCount; i++) {
+        color *= texture(sources[i], pass_texCoords).rgb;
+    }
+    
+    fragColor = vec4(color, 1);
 }
