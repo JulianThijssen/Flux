@@ -47,7 +47,7 @@ Flux::Vector3f ssaoKernel(int i, int numSamples)
 
 namespace Flux
 {
-    Framebuffer* SsaoInfo::getCurrentBuffer()
+    Framebuffer* SsaoInfo::getCurrentBuffer() const
     {
         return buffers[bufferIndex];
     }

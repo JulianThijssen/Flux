@@ -11,18 +11,12 @@ namespace Flux
     class Framebuffer;
     class Vector3f;
 
-    class SsaoRendering
-    {
-    public:
-        
-    };
-
     class SsaoInfo
     {
     public:
         SsaoInfo() : noiseTexture(0) {}
 
-        Framebuffer* getCurrentBuffer();
+        Framebuffer* getCurrentBuffer() const;
         void switchBuffers();
         void createBuffers(unsigned int width, unsigned int height);
         void generate();
