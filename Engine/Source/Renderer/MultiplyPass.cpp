@@ -31,7 +31,7 @@ namespace Flux {
 
         const unsigned int sourceCount = textures.size();
 
-        for (int i = 0; i < sourceCount; i++) {
+        for (unsigned int i = 0; i < sourceCount; i++) {
             textures[i].bind(TextureUnit::TEXTURE0 + i);
         }
         shader->uniform1i("sourceCount", sourceCount);
