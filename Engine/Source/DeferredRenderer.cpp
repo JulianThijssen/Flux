@@ -8,6 +8,7 @@
 #include "Renderer/SkyPass.h"
 #include "Renderer/BloomPass.h"
 #include "Renderer/GaussianBlurPass.h"
+#include "Renderer/TonemapPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -71,6 +72,7 @@ namespace Flux {
         skyPass = new SkyPass();
         bloomPass = new BloomPass();
         gaussianBlurPass = new GaussianBlurPass();
+        tonemapPass = new TonemapPass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -329,7 +331,7 @@ namespace Flux {
 
         bloom(scene);
         blur(scene);
-        tonemap();
+        tonemap(scene);
         gammaCorrection();
         antiAliasing();
 
@@ -350,16 +352,12 @@ namespace Flux {
         gaussianBlurPass->render(scene);
     }
 
-    void DeferredRenderer::tonemap() {
-        nvtxRangePushA("Tonemap");
-        setShader(TONEMAP);
-        hdrBuffer->getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        getCurrentHdrFramebuffer().getColorTexture(0).bind(TextureUnit::BLOOM);
-        shader->uniform1i("bloomTex", TextureUnit::BLOOM);
-        switchBuffers();
-        drawQuad();
-        nvtxRangePop();
+    void DeferredRenderer::tonemap(const Scene& scene) {
+        tonemapPass->SetSource(&hdrBuffer->getColorTexture(0));
+        tonemapPass->SetBloom(&getCurrentHdrFramebuffer().getColorTexture(0));
+        tonemapPass->SetTarget(&getCurrentFramebuffer());
+
+        tonemapPass->render(scene);
     }
 
     void DeferredRenderer::gammaCorrection() {

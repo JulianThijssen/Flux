@@ -20,6 +20,7 @@ namespace Flux {
     class SkyPass;
     class BloomPass;
     class GaussianBlurPass;
+    class TonemapPass;
 
     class Size;
 
@@ -45,7 +46,7 @@ namespace Flux {
         void applyPostprocess(const Scene& scene);
         void bloom(const Scene& scene);
         void blur(const Scene& scene);
-        void tonemap();
+        void tonemap(const Scene& scene);
         void gammaCorrection();
         void antiAliasing();
         void renderShadowMaps(const Scene& scene);
@@ -61,6 +62,7 @@ namespace Flux {
         SkyPass* skyPass;
         BloomPass* bloomPass;
         GaussianBlurPass* gaussianBlurPass;
+        TonemapPass* tonemapPass;
 
 
         SsaoInfo ssaoInfo;

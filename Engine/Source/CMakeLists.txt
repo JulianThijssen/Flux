@@ -100,6 +100,8 @@ set(RENDERING
     ${DIR}/Renderer/BloomPass.cpp
     ${DIR}/Renderer/GaussianBlurPass.h
     ${DIR}/Renderer/GaussianBlurPass.cpp
+    ${DIR}/Renderer/TonemapPass.h
+    ${DIR}/Renderer/TonemapPass.cpp
     PARENT_SCOPE
 )
 
