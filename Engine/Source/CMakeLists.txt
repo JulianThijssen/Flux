@@ -98,6 +98,8 @@ set(RENDERING
     ${DIR}/Renderer/SkyPass.cpp
     ${DIR}/Renderer/BloomPass.h
     ${DIR}/Renderer/BloomPass.cpp
+    ${DIR}/Renderer/GaussianBlurPass.h
+    ${DIR}/Renderer/GaussianBlurPass.cpp
     PARENT_SCOPE
 )
 

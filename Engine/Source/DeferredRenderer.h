@@ -19,6 +19,7 @@ namespace Flux {
     class SSAOPass;
     class SkyPass;
     class BloomPass;
+    class GaussianBlurPass;
 
     class Size;
 
@@ -59,12 +60,10 @@ namespace Flux {
         SSAOPass* ssaoPass;
         SkyPass* skyPass;
         BloomPass* bloomPass;
+        GaussianBlurPass* gaussianBlurPass;
 
 
         SsaoInfo ssaoInfo;
-
-        std::vector<Framebuffer*> blurBuffers;
-        std::vector<Framebuffer*> blurBuffers2;
     };
 }
 
