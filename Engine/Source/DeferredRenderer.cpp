@@ -11,6 +11,7 @@
 #include "Renderer/TonemapPass.h"
 #include "Renderer/DirectLightPass.h"
 #include "Renderer/GammaCorrectionPass.h"
+#include "Renderer/FxaaPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -77,6 +78,7 @@ namespace Flux {
         tonemapPass = new TonemapPass();
         directLightPass = new DirectLightPass();
         gammaCorrectionPass = new GammaCorrectionPass();
+        fxaaPass = new FxaaPass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -135,6 +137,7 @@ namespace Flux {
         ssaoInfo.createBuffers(windowSize.width, windowSize.height);
 
         gaussianBlurPass->Resize(windowSize);
+        fxaaPass->Resize(windowSize);
 
         setClearColor(1.0, 0.0, 1.0, 1.0);
     }
@@ -295,7 +298,7 @@ namespace Flux {
         blur(scene);
         tonemap(scene);
         gammaCorrection(scene);
-        antiAliasing();
+        antiAliasing(scene);
 
         nvtxRangePop();
     }
@@ -330,16 +333,12 @@ namespace Flux {
         gammaCorrectionPass->render(scene);
     }
 
-    void DeferredRenderer::antiAliasing() {
-        nvtxRangePushA("FXAA");
-        setShader(FXAA);
-        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
+    void DeferredRenderer::antiAliasing(const Scene& scene) {
+        fxaaPass->SetSource(&getCurrentFramebuffer().getColorTexture(0));
         switchBuffers();
-        drawQuad();
-        nvtxRangePop();
+        fxaaPass->SetTarget(&getCurrentFramebuffer());
+
+        fxaaPass->render(scene);
     }
 
     void DeferredRenderer::renderShadowMaps(const Scene& scene) {

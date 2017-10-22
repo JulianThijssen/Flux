@@ -108,6 +108,8 @@ set(RENDERING
     ${DIR}/Renderer/DirectLightPass.cpp
     ${DIR}/Renderer/GammaCorrectionPass.h
     ${DIR}/Renderer/GammaCorrectionPass.cpp
+    ${DIR}/Renderer/FxaaPass.h
+    ${DIR}/Renderer/FxaaPass.cpp
     PARENT_SCOPE
 )
 
