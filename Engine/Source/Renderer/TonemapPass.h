@@ -25,8 +25,6 @@ namespace Flux
         void render(const Scene& scene) override;
 
     private:
-        static const unsigned int MAX_SOURCES = 8;
-
         std::unique_ptr<Shader> shader;
 
         const Texture* source;

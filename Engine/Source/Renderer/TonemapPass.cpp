@@ -33,9 +33,9 @@ namespace Flux {
 
         shader->bind();
 
-        source->bind(TextureUnit::TEXTURE); // hdrBuffer
+        source->bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
-        bloom->bind(TextureUnit::BLOOM); // getCurrentHdrFramebuffer().getColorTexture(0)
+        bloom->bind(TextureUnit::BLOOM);
         shader->uniform1i("bloomTex", TextureUnit::BLOOM);
 
         target->bind();
