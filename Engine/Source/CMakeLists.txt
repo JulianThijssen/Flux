@@ -104,6 +104,8 @@ set(RENDERING
     ${DIR}/Renderer/GaussianBlurPass.cpp
     ${DIR}/Renderer/TonemapPass.h
     ${DIR}/Renderer/TonemapPass.cpp
+    ${DIR}/Renderer/DirectLightPass.h
+    ${DIR}/Renderer/DirectLightPass.cpp
     PARENT_SCOPE
 )
 

@@ -9,6 +9,7 @@
 #include "Renderer/BloomPass.h"
 #include "Renderer/GaussianBlurPass.h"
 #include "Renderer/TonemapPass.h"
+#include "Renderer/DirectLightPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -73,6 +74,7 @@ namespace Flux {
         bloomPass = new BloomPass();
         gaussianBlurPass = new GaussianBlurPass();
         tonemapPass = new TonemapPass();
+        directLightPass = new DirectLightPass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -224,51 +226,9 @@ namespace Flux {
     }
 
     void DeferredRenderer::directLighting(const Scene& scene) {
-        LOG("Direct lighting");
-        nvtxRangePushA("Direct");
-        enable(BLENDING);
-        glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
-        glDepthFunc(GL_LEQUAL);
+        directLightPass->SetGBuffer(&gBuffer);
 
-        setShader(DDIRECT);
-        setCamera(*scene.getMainCamera());
-
-        gBuffer.albedoTex->bind(TextureUnit::ALBEDO);
-        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBuffer.normalTex->bind(TextureUnit::NORMAL);
-        shader->uniform1i("normalMap", TextureUnit::NORMAL);
-        gBuffer.positionTex->bind(TextureUnit::POSITION);
-        shader->uniform1i("positionMap", TextureUnit::POSITION);
-
-        for (Entity* light : scene.lights) {
-            DirectionalLight* directionalLight = light->getComponent<DirectionalLight>();
-            PointLight* pointLight = light->getComponent<PointLight>();
-            Transform* transform = light->getComponent<Transform>();
-
-            if (directionalLight) {
-                shader->uniform3f("dirLight.direction", directionalLight->direction);
-                shader->uniform3f("dirLight.color", directionalLight->color);
-                shader->uniform1i("isDirLight", true);
-                shader->uniform1i("isPointLight", false);
-                directionalLight->shadowMap->bind(TextureUnit::SHADOW);
-                shader->uniform1i("dirLight.shadowMap", TextureUnit::SHADOW);
-                shader->uniformMatrix4f("dirLight.shadowMatrix", directionalLight->shadowSpace);
-            }
-            else if (pointLight) {
-                shader->uniform3f("pointLight.position", transform->position);
-                shader->uniform3f("pointLight.color", pointLight->color);
-                shader->uniform1i("isPointLight", true);
-                shader->uniform1i("isDirLight", false);
-            }
-            else {
-                continue;
-            }
-
-            drawQuad();
-        }
-
-        disable(BLENDING);
-        nvtxRangePop();
+        directLightPass->render(scene);
     }
 
     void DeferredRenderer::renderScene(const Scene& scene) {

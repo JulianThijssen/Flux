@@ -21,6 +21,7 @@ namespace Flux {
     class BloomPass;
     class GaussianBlurPass;
     class TonemapPass;
+    class DirectLightPass;
 
     class Size;
 
@@ -63,7 +64,7 @@ namespace Flux {
         BloomPass* bloomPass;
         GaussianBlurPass* gaussianBlurPass;
         TonemapPass* tonemapPass;
-
+        DirectLightPass* directLightPass;
 
         SsaoInfo ssaoInfo;
     };
