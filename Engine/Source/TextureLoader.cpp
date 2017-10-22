@@ -17,6 +17,7 @@ namespace Flux {
         
         if (!data) {
             Log::error("Failed to load image at: " + path.str());
+            return nullptr;
         }
         else {
             Log::debug("Loaded texture: " + path.str() + " " + std::to_string(width) + " " + std::to_string(height) + " " + std::to_string(bpp));
@@ -36,6 +37,7 @@ namespace Flux {
 
         if (!data) {
             Log::error("Failed to load image at: " + path.str());
+            return nullptr;
         }
         else {
             Log::debug("Loaded texture: " + path.str() + " " + std::to_string(width) + " " + std::to_string(height) + " " + std::to_string(bpp));
