@@ -10,6 +10,7 @@
 #include "Renderer/GaussianBlurPass.h"
 #include "Renderer/TonemapPass.h"
 #include "Renderer/DirectLightPass.h"
+#include "Renderer/GammaCorrectionPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -75,6 +76,7 @@ namespace Flux {
         gaussianBlurPass = new GaussianBlurPass();
         tonemapPass = new TonemapPass();
         directLightPass = new DirectLightPass();
+        gammaCorrectionPass = new GammaCorrectionPass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -292,7 +294,7 @@ namespace Flux {
         bloom(scene);
         blur(scene);
         tonemap(scene);
-        gammaCorrection();
+        gammaCorrection(scene);
         antiAliasing();
 
         nvtxRangePop();
@@ -320,14 +322,12 @@ namespace Flux {
         tonemapPass->render(scene);
     }
 
-    void DeferredRenderer::gammaCorrection() {
-        nvtxRangePushA("Gamma");
-        setShader(GAMMA);
-        getCurrentFramebuffer().getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
+    void DeferredRenderer::gammaCorrection(const Scene& scene) {
+        gammaCorrectionPass->SetSource(&getCurrentFramebuffer().getColorTexture(0));
         switchBuffers();
-        drawQuad();
-        nvtxRangePop();
+        gammaCorrectionPass->SetTarget(&getCurrentFramebuffer());
+
+        gammaCorrectionPass->render(scene);
     }
 
     void DeferredRenderer::antiAliasing() {

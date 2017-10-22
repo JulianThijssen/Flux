@@ -106,6 +106,8 @@ set(RENDERING
     ${DIR}/Renderer/TonemapPass.cpp
     ${DIR}/Renderer/DirectLightPass.h
     ${DIR}/Renderer/DirectLightPass.cpp
+    ${DIR}/Renderer/GammaCorrectionPass.h
+    ${DIR}/Renderer/GammaCorrectionPass.cpp
     PARENT_SCOPE
 )
 

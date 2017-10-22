@@ -22,6 +22,7 @@ namespace Flux {
     class GaussianBlurPass;
     class TonemapPass;
     class DirectLightPass;
+    class GammaCorrectionPass;
 
     class Size;
 
@@ -48,7 +49,7 @@ namespace Flux {
         void bloom(const Scene& scene);
         void blur(const Scene& scene);
         void tonemap(const Scene& scene);
-        void gammaCorrection();
+        void gammaCorrection(const Scene& scene);
         void antiAliasing();
         void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);
@@ -65,6 +66,7 @@ namespace Flux {
         GaussianBlurPass* gaussianBlurPass;
         TonemapPass* tonemapPass;
         DirectLightPass* directLightPass;
+        GammaCorrectionPass* gammaCorrectionPass;
 
         SsaoInfo ssaoInfo;
     };
