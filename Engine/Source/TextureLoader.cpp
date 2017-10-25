@@ -92,6 +92,22 @@ namespace Flux {
         return texture;
     }
 
+    Texture3D* TextureLoader::loadTexture3D(Path path) {
+        int width, height, bpp;
+
+        unsigned char* data = stbi_load(path.str().c_str(), &width, &height, &bpp, STBI_rgb_alpha);
+
+        if (!data) {
+            Log::error("Failed to load image at: " + path.str());
+        }
+
+        Texture3D* texture = create3DTexture(height, height, height, 4, data, Sampling::LINEAR);
+
+        stbi_image_free(data);
+
+        return texture;
+    }
+
     Texture* TextureLoader::create(const int width, const int height, const int bpp, const unsigned char* data, Sampling sampling) {
         GLuint handle;
         glGenTextures(1, &handle);
@@ -211,5 +227,51 @@ namespace Flux {
         glBindTexture(GL_TEXTURE_2D, 0);
 
         return new Texture(handle, width, height);
+    }
+
+    Texture3D* TextureLoader::create3DTexture(const int width, const int height, const int depth, const int bpp, const unsigned char* data, Sampling sampling) {
+        GLuint handle;
+        glGenTextures(1, &handle);
+
+        glBindTexture(GL_TEXTURE_3D, handle);
+
+        if (sampling == Sampling::NEAREST) {
+            glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        }
+        else {
+            glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        }
+
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
+        //const unsigned char* organisedData = new unsigned char[width * height * depth];
+        //for (int z = 0; z < depth; z++) {
+        //    for (int y = 0; y < height; y++) {
+        //        for (int x = 0; x < width; x++) {
+        //            organisedData[z * width * height + y * width + x] = data[y * width + x]
+        //        }
+        //    }
+        //}
+
+        if (bpp == 1) {
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            glTexImage3D(GL_TEXTURE_3D, 0, GL_R8, width, height, depth, 0, GL_RED, GL_UNSIGNED_BYTE, data);
+        }
+        else {
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+            glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, width, height, depth, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        }
+
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_BASE_LEVEL, 0);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_LEVEL, 0);
+
+        glBindTexture(GL_TEXTURE_3D, 0);
+
+        return new Texture3D(handle, width, height, depth);
     }
 }
