@@ -24,6 +24,7 @@ namespace Flux {
     class DirectLightPass;
     class GammaCorrectionPass;
     class FxaaPass;
+    class ColorGradingPass;
 
     class Size;
 
@@ -52,6 +53,7 @@ namespace Flux {
         void tonemap(const Scene& scene);
         void gammaCorrection(const Scene& scene);
         void antiAliasing(const Scene& scene);
+        void colorGrading(const Scene& scene);
         void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);
 
@@ -69,6 +71,7 @@ namespace Flux {
         DirectLightPass* directLightPass;
         GammaCorrectionPass* gammaCorrectionPass;
         FxaaPass* fxaaPass;
+        ColorGradingPass* colorGradingPass;
 
         SsaoInfo ssaoInfo;
     };

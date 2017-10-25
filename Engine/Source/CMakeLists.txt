@@ -25,6 +25,7 @@ set(BASE
     ${DIR}/Skybox.h
     ${DIR}/Skybox.cpp
     ${DIR}/Texture.h
+    ${DIR}/Texture3D.h
     ${DIR}/TextureUnit.h
     ${DIR}/Window.h
     ${DIR}/Window.cpp
@@ -110,6 +111,8 @@ set(RENDERING
     ${DIR}/Renderer/GammaCorrectionPass.cpp
     ${DIR}/Renderer/FxaaPass.h
     ${DIR}/Renderer/FxaaPass.cpp
+    ${DIR}/Renderer/ColorGradingPass.h
+    ${DIR}/Renderer/ColorGradingPass.cpp
     PARENT_SCOPE
 )
 

@@ -12,6 +12,7 @@
 #include "Renderer/DirectLightPass.h"
 #include "Renderer/GammaCorrectionPass.h"
 #include "Renderer/FxaaPass.h"
+#include "Renderer/ColorGradingPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -72,6 +73,7 @@ namespace Flux {
         directLightPass = new DirectLightPass();
         gammaCorrectionPass = new GammaCorrectionPass();
         fxaaPass = new FxaaPass();
+        colorGradingPass = new ColorGradingPass();
 
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
@@ -292,6 +294,7 @@ namespace Flux {
         tonemap(scene);
         gammaCorrection(scene);
         antiAliasing(scene);
+        colorGrading(scene);
 
         nvtxRangePop();
     }
@@ -332,6 +335,14 @@ namespace Flux {
         fxaaPass->SetTarget(&getCurrentFramebuffer());
 
         fxaaPass->render(scene);
+    }
+
+    void DeferredRenderer::colorGrading(const Scene& scene) {
+        colorGradingPass->SetSource(&getCurrentFramebuffer().getColorTexture(0));
+        switchBuffers();
+        colorGradingPass->SetTarget(&getCurrentFramebuffer());
+
+        colorGradingPass->render(scene);
     }
 
     void DeferredRenderer::renderShadowMaps(const Scene& scene) {
