@@ -18,8 +18,8 @@ out vec4 fragColor;
 const float ONE_OVER_PI = 1.0 / PI;
 const float ONE_OVER_TWO_PI = 1.0 / TWO_PI;
 
-const vec3 skyColor = vec3(135.0/255, 206.0/255, 250.0/255);
-const vec3 horizonColor = vec3(1, 4.0/10, 1.5/10);
+const vec3 skyColor = vec3(68.0/255, 103.0/255, 125.0/255);
+const vec3 horizonColor = vec3(0.5, 2.0/10, 0.75/10);
 
 vec3 toLinear(vec3 gammaColor) {
     return pow(gammaColor, vec3(2.2));
