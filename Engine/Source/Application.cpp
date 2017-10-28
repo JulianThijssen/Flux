@@ -43,27 +43,19 @@ namespace Flux {
 
         currentScene.addScript(new FirstPersonView());
 
+        fpsCounter.addListener(*this);
+
         update();
     }
 
     void Application::update() {
-        int frames = 0;
-
         clock_t nextUpdate = clock();
-        clock_t lastFpsCount = clock();
+        fpsCounter.init();
 
         while (!window.isClosed()) {
             int skipped = 0;
 
-            double elapsed = double(clock() - lastFpsCount) / CLOCKS_PER_SEC;
-
-            if (elapsed > 1) {
-                lastFpsCount = clock();
-                framesPerSecond = frames;
-                std::cout << frames << std::endl;
-                std::cout << 1000.0f / frames << std::endl;
-                frames = 0;
-            }
+            fpsCounter.update();
 
             while (clock() > nextUpdate && skipped < maxSkip) {
                 currentScene.update();
@@ -73,9 +65,12 @@ namespace Flux {
 
             renderer->update(currentScene);
             window.update();
-
-            frames++;
         }
+    }
+
+    void Application::onFpsUpdated(int framesPerSecond) {
+        std::cout << framesPerSecond << std::endl;
+        std::cout << 1000.0f / framesPerSecond << std::endl;
     }
 }
 

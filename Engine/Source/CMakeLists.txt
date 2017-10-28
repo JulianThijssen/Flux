@@ -10,6 +10,9 @@ set(BASE
     ${DIR}/DeferredRenderer.cpp
     ${DIR}/Entity.h
     ${DIR}/FirstPersonView.h
+    ${DIR}/FpsCounter.h
+    ${DIR}/FpsCounter.cpp
+    ${DIR}/FpsListener.h
     ${DIR}/ForwardRenderer.h
     ${DIR}/ForwardRenderer.cpp
     ${DIR}/Framebuffer.h
