@@ -69,8 +69,11 @@ namespace Flux {
     }
 
     void Application::onFpsUpdated(int framesPerSecond) {
-        std::cout << framesPerSecond << std::endl;
-        std::cout << 1000.0f / framesPerSecond << std::endl;
+        float ms = 1000.0f / framesPerSecond;
+
+        std::stringstream ss;
+        ss << "Flux      Fps: " << framesPerSecond << "   ms: " << ms;
+        window.setTitle(ss.str().c_str());
     }
 }
 
