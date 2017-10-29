@@ -68,6 +68,7 @@ namespace Flux {
 
     void Window::setTitle(std::string title) {
         this->title = title;
+        glfwSetWindowTitle(window, title.c_str());
     }
 
     void Window::setSize(int width, int height) {
