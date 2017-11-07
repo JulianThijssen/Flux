@@ -346,6 +346,8 @@ namespace Flux {
     }
 
     void DeferredRenderer::renderShadowMaps(const Scene& scene) {
+        nvtxRangePushA("Shadow");
+
         setShader(SHADOW);
 
         shadowBuffer->bind();
@@ -372,6 +374,8 @@ namespace Flux {
         disable(POLYGON_OFFSET);
 
         glColorMask(true, true, true, true);
+
+        nvtxRangePop();
     }
 
     void DeferredRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
