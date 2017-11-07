@@ -18,6 +18,7 @@ Welcome to the Flux Rendering Engine repository. This application is meant to be
  - SSAO
  - Shadow mapping
  - Deferred Rendering
+ - Color Grading
 
 ### Planned
  - Automatic exposure adjustment
