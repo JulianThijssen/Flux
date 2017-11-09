@@ -6,6 +6,7 @@
 
 #include "Transform.h"
 #include "Camera.h"
+#include "DirectionalLight.h"
 
 namespace Flux {
     SkyPass::SkyPass() : RenderPhase("Sky")
@@ -47,7 +48,14 @@ namespace Flux {
             shader->bind();
             scene.skySphere->bind(TextureUnit::TEXTURE);
             shader->uniform1i("tex", TextureUnit::TEXTURE);
-            shader->uniform3f("sun", -0.471409702f, -0.5061866455f, 0.722182783f);
+
+            for (Entity* entity : scene.lights) {
+                DirectionalLight* sun = entity->getComponent<DirectionalLight>();
+                if (sun) {
+                    sun->direction.normalise();
+                    shader->uniform3f("sun", sun->direction);
+                }
+            }
         }
         else {
             return;
