@@ -345,6 +345,22 @@ namespace Flux {
         colorGradingPass->render(scene);
     }
 
+    void DeferredRenderer::renderDepth(const Scene& scene) {
+        nvtxRangePushA("Depth");
+
+        setShader(SHADOW);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glColorMask(false, false, false, false);
+
+        setCamera(*scene.getMainCamera());
+        renderScene(scene);
+
+        glColorMask(true, true, true, true);
+
+        nvtxRangePop();
+    }
+
     void DeferredRenderer::renderShadowMaps(const Scene& scene) {
         nvtxRangePushA("Shadow");
 

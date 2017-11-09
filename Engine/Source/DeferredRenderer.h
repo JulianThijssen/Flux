@@ -54,6 +54,7 @@ namespace Flux {
         void gammaCorrection(const Scene& scene);
         void antiAliasing(const Scene& scene);
         void colorGrading(const Scene& scene);
+        void renderDepth(const Scene& scene);
         void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);
 
