@@ -14,6 +14,7 @@
 #include "Renderer/FxaaPass.h"
 #include "Renderer/ColorGradingPass.h"
 #include "Renderer/FogPass.h"
+#include "Renderer/LtcLightPass.h"
 
 #include "Transform.h"
 #include "Camera.h"
@@ -76,7 +77,8 @@ namespace Flux {
         fxaaPass = new FxaaPass();
         colorGradingPass = new ColorGradingPass();
         fogPass = new FogPass();
-
+        areaLightPass = new LtcLightPass();
+        
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
 
@@ -161,6 +163,8 @@ namespace Flux {
 
         globalIllumination(scene);
         directLighting(scene);
+        areaLightPass->SetGBuffer(&gBuffer);
+        areaLightPass->render(scene);
         glDepthMask(true);
         skyPass->render(scene);
         applyPostprocess(scene);

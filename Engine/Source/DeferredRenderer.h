@@ -26,6 +26,7 @@ namespace Flux {
     class FxaaPass;
     class ColorGradingPass;
     class FogPass;
+    class LtcLightPass;
 
     class Size;
 
@@ -76,6 +77,7 @@ namespace Flux {
         FxaaPass* fxaaPass;
         ColorGradingPass* colorGradingPass;
         FogPass* fogPass;
+        LtcLightPass* areaLightPass;
 
         SsaoInfo ssaoInfo;
     };
