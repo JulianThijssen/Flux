@@ -27,6 +27,11 @@ namespace Flux {
         static const int TEXTURE1 = 1;
         static const int TEXTURE2 = 2;
         static const int TEXTURE3 = 3;
+        static const int TEXTURE4 = 4;
+        static const int TEXTURE5 = 5;
+        static const int TEXTURE6 = 6;
+        static const int TEXTURE7 = 7;
+        static const int TEXTURE8 = 8;
     };
 }
 
