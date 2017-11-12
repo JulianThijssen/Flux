@@ -18,8 +18,8 @@ out vec4 fragColor;
 const float ONE_OVER_PI = 1.0 / PI;
 const float ONE_OVER_TWO_PI = 1.0 / TWO_PI;
 
-const vec3 skyColor = vec3(68.0/255, 103.0/255, 125.0/255);
-const vec3 horizonColor = vec3(0.5, 2.0/10, 0.75/10);
+const vec3 skyColor = vec3(0.2684, 0.05688, 0.03778);
+const vec3 horizonColor = vec3(1.3599, 0.83077, 0.2247);
 
 vec3 toLinear(vec3 gammaColor) {
     return pow(gammaColor, vec3(2.2));
@@ -50,6 +50,6 @@ void main()
     float sunPower = pow(max(0, -dot(direction, sun)), 1000) * 10;
 
     gl_FragDepth = 1;
-    vec3 color = mix(skyColor, horizonColor, sigmoid(uv.y, 10, 0)) + vec3(10, 4, 1.5) * sunPower;
+    vec3 color = mix(skyColor, horizonColor, sigmoid(uv.y, 5, 0)) + vec3(10, 2, 1.0) * sunPower;
     fragColor = vec4(color, 1);
 }
