@@ -45,7 +45,7 @@ namespace Flux {
             clock_t startTime = clock();
 
             Buffer buffer;
-            buffer.buf = new char[300000000];
+            buffer.buf = new char[1000000000];
 
             if (scene.skybox) {
                 writeSkybox(scene.skybox, buffer);
@@ -71,6 +71,8 @@ namespace Flux {
             outFile = fopen(outputPath.c_str(), "wb");
             fwrite(buffer.buf, 1, buffer.pos * sizeof(char), outFile);
             fclose(outFile);
+
+            delete buffer.buf;
 
             std::cout << "Final buffer position: " << buffer.pos << std::endl;
             clock_t endTime = clock();
