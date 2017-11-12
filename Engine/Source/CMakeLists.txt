@@ -116,6 +116,8 @@ set(RENDERING
     ${DIR}/Renderer/FxaaPass.cpp
     ${DIR}/Renderer/ColorGradingPass.h
     ${DIR}/Renderer/ColorGradingPass.cpp
+    ${DIR}/Renderer/FogPass.h
+    ${DIR}/Renderer/FogPass.cpp
     PARENT_SCOPE
 )
 

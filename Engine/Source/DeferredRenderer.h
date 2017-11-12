@@ -25,6 +25,7 @@ namespace Flux {
     class GammaCorrectionPass;
     class FxaaPass;
     class ColorGradingPass;
+    class FogPass;
 
     class Size;
 
@@ -48,6 +49,7 @@ namespace Flux {
         void ssao(const Scene& scene);
         void multiply(const Scene& scene);
         void applyPostprocess(const Scene& scene);
+        void fog(const Scene& scene);
         void bloom(const Scene& scene);
         void blur(const Scene& scene);
         void tonemap(const Scene& scene);
@@ -73,6 +75,7 @@ namespace Flux {
         GammaCorrectionPass* gammaCorrectionPass;
         FxaaPass* fxaaPass;
         ColorGradingPass* colorGradingPass;
+        FogPass* fogPass;
 
         SsaoInfo ssaoInfo;
     };
