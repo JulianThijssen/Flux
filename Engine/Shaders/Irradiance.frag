@@ -28,6 +28,15 @@ vec2 toUV(vec3 dir) {
     return vec2(phi * ONE_OVER_TWO_PI, theta * ONE_OVER_PI);
 }
 
+vec3 sampleSkybox(vec3 dir) {
+    return texture(EnvMap, dir).rgb;
+}
+
+vec3 sampleSkysphere(vec3 dir) {
+    vec2 uv = toUV(dir);
+    return textureLod(EnvTex, uv, 0).rgb;
+}
+
 void main() {
     mat3 rots[6] = mat3[](
         mat3(vec3(0, 0, -1), vec3(0, -1, 0), vec3(-1, 0, 0)), // Right
@@ -37,49 +46,36 @@ void main() {
         mat3(vec3(1, 0, 0), vec3(0, -1, 0), vec3(0, 0, -1)), // Front
         mat3(vec3(-1, 0, 0), vec3(0, -1, 0), vec3(0, 0, 1))  // Back
     );
-
-    float halfRes = textureSize / 2.0;
     
     vec3 N = normalize(vec3(pass_texCoords * 2 - 1, -1));
     N = rots[Face] * N;
     vec3 Color = vec3(0, 0, 0);
     float TotalWeight = 0;
     
-    if (Skybox) {
-        for (int i = 0; i < 6; i++) {
-            mat3 rot = rots[i];
-            for (int x = 0; x < textureSize; x++) {
-                for (int y = 0; y < textureSize; y++) {
-                    vec2 envCoords = vec2(float(x) / textureSize, float(y) / textureSize);
-                    vec3 dir = normalize(vec3(envCoords * 2 - 1, -1));
-                    dir = rot * dir;
-                    Color += texture(EnvMap, dir).rgb * max(dot(N, dir), 0);
-                    TotalWeight += max(dot(N, dir), 0);
+    for (int i = 0; i < 6; i++) {
+        mat3 rot = rots[i];
+        for (int x = 0; x < textureSize; x++) {
+            for (int y = 0; y < textureSize; y++) {
+                vec2 envCoords = vec2(x, y) / textureSize;
+                vec3 dir = normalize(vec3(envCoords * 2 - 1, -1));
+                dir = rot * dir;
+
+                float weight = max(dot(N, dir), 0);
+                if (Skybox) {
+                    Color += sampleSkybox(dir) * weight;
+                } else {
+                    Color += sampleSkysphere(dir) * weight;
                 }
+                TotalWeight += weight;
             }
         }
-        
-        Color /= TotalWeight;
-    
-        fragColor = vec4(toLinear(Color), 1);
     }
-    else {
-        for (int i = 0; i < 6; i++) {
-            mat3 rot = rots[i];
-            for (int x = 0; x < textureSize; x++) {
-                for (int y = 0; y < textureSize; y++) {
-                    vec2 envCoords = vec2(float(x) / textureSize, float(y) / textureSize);
-                    vec3 dir = normalize(vec3(envCoords * 2 - 1, -1));
-                    dir = rot * dir;
-                    vec2 uv = toUV(dir);
-                    Color += textureLod(EnvTex, uv, 0).rgb * max(dot(N, dir), 0);
-                    TotalWeight += max(dot(N, dir), 0);
-                }
-            }
-        }
-        
-        Color /= TotalWeight;
     
-        fragColor = vec4(Color, 1);
+    Color /= TotalWeight;
+    
+    if (!Skybox) {
+        Color = toLinear(Color);
     }
+
+    fragColor = vec4(Color, 1);
 }
