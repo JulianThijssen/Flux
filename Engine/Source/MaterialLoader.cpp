@@ -48,6 +48,9 @@ namespace Flux {
                 String path = value;
                 material->stencilTex = TextureLoader::loadTextureGreyscale(Path(path));
             }
+            if (key == "Emission") {
+                material->emission = Vector3f(std::stof(tokens[1].c_str()), std::stof(tokens[2].c_str()), std::stof(tokens[3].c_str()));
+            }
             if (key == "Tiling") {
                 material->tilingX = std::stof(tokens[1].c_str());
                 material->tilingY = std::stof(tokens[2].c_str());

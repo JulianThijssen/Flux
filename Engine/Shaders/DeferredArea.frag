@@ -7,6 +7,7 @@
 
 uniform int numVertices;
 uniform vec3 vertices[10];
+uniform vec3 emission;
 
 uniform sampler2D albedoMap;
 uniform sampler2D normalMap;
@@ -124,7 +125,7 @@ void main() {
     
     // vec4 S = dirLight.shadowMatrix * vec4(P, 1);
     
-    vec3 Li = vec3(1.5, 0.5, 0);
+    vec3 Li = emission;
 
     float theta = clamp(acos(dot(N, V)) / (PI * 0.5), 0.0, 1.0);
        

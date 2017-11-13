@@ -124,6 +124,7 @@ namespace Flux {
 
                     shader->uniform1i("numVertices", vertices.size());
                     shader->uniform3fv("vertices", vertices.size(), vertices.data());
+                    shader->uniform3f("emission", material->emission);
 
                     RenderState::drawQuad();
                 }
