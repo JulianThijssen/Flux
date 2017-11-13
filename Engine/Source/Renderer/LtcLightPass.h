@@ -31,10 +31,7 @@ namespace Flux
         const Framebuffer* target;
 
         const Texture* ampTex;
-        const Texture* aTex;
-        const Texture* bTex;
-        const Texture* cTex;
-        const Texture* dTex;
+        const Texture* matTex;
     };
 }
 

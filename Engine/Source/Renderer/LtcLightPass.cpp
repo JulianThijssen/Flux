@@ -21,10 +21,16 @@ namespace Flux {
         shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredArea.frag"));
 
         ampTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, Sampling::LINEAR, false, amp.data());
-        aTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, Sampling::LINEAR, false, a.data());
-        bTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, Sampling::LINEAR, false, b.data());
-        cTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, Sampling::LINEAR, false, c.data());
-        dTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, Sampling::LINEAR, false, d.data());
+        std::vector<float> data;
+        data.reserve(a.size() + b.size() + c.size() + d.size());
+        for (int i = 0; i < 64 * 64; i++) {
+            data.push_back(a[i]);
+            data.push_back(b[i]);
+            data.push_back(c[i]);
+            data.push_back(d[i]);
+        }
+
+        matTex = TextureLoader::create(64, 64, GL_RGBA32F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, false, data.data());
     }
 
     void LtcLightPass::SetGBuffer(const GBuffer* gBuffer)
@@ -77,15 +83,9 @@ namespace Flux {
         shader->uniform1i("positionMap", TextureUnit::POSITION);
 
         ampTex->bind(TextureUnit::TEXTURE3);
-        aTex->bind(TextureUnit::TEXTURE4);
-        bTex->bind(TextureUnit::TEXTURE5);
-        cTex->bind(TextureUnit::TEXTURE6);
-        dTex->bind(TextureUnit::TEXTURE7);
+        matTex->bind(TextureUnit::TEXTURE4);
         shader->uniform1i("ampTex", TextureUnit::TEXTURE3);
-        shader->uniform1i("aTex", TextureUnit::TEXTURE4);
-        shader->uniform1i("bTex", TextureUnit::TEXTURE5);
-        shader->uniform1i("cTex", TextureUnit::TEXTURE6);
-        shader->uniform1i("dTex", TextureUnit::TEXTURE7);
+        shader->uniform1i("matTex", TextureUnit::TEXTURE4);
 
         for (Entity* e : scene.entities) {
             if (!e->hasComponent<Mesh>())

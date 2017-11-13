@@ -14,10 +14,7 @@ uniform sampler2D normalMap;
 uniform sampler2D positionMap;
 
 uniform sampler2D ampTex;
-uniform sampler2D aTex;
-uniform sampler2D bTex;
-uniform sampler2D cTex;
-uniform sampler2D dTex;
+uniform sampler2D matTex;
 
 uniform mat4 modelMatrix;
 
@@ -131,12 +128,9 @@ void main() {
        
     vec2 coords = vec2(Roughness, theta);
 
-    float a = texture(aTex, coords).r;
-    float b = texture(bTex, coords).r;
-    float c = texture(cTex, coords).r;
-    float d = texture(dTex, coords).r;
+    vec4 param = texture(matTex, coords);
 
-    mat3 M = mat3(vec3(a, 0, d), vec3(0, c, 0), vec3(b, 0, 1));
+    mat3 M = mat3(vec3(param.x, 0, param.w), vec3(0, param.z, 0), vec3(param.y, 0, 1));
     mat3 invMat = inverse(M);
     //mat3 invMat = mat3(vec3(1, 0, b), vec3(0, c, 0), vec3(d, 0, a));
     
