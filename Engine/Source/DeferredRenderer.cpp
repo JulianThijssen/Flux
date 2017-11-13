@@ -311,6 +311,7 @@ namespace Flux {
         fogPass->SetDepthMap(gBuffer.depthTex);
         switchBuffers();
         fogPass->SetTarget(&getCurrentFramebuffer());
+        fogPass->SetFogColor(Vector3f(165.0f / 255, 96.0f / 255, 81.0f / 255));
 
         fogPass->render(scene);
     }

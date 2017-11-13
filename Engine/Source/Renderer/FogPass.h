@@ -22,6 +22,7 @@ namespace Flux
         void SetSource(const Texture* source);
         void SetDepthMap(const Texture* depthMap);
         void SetTarget(const Framebuffer* target);
+        void SetFogColor(const Vector3f fogColor);
 
         void render(const Scene& scene) override;
 
@@ -31,6 +32,8 @@ namespace Flux
         const Texture* source;
         const Texture* depthMap;
         const Framebuffer* target;
+
+        Vector3f fogColor;
     };
 }
 

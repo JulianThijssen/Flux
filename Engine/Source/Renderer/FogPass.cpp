@@ -27,6 +27,11 @@ namespace Flux {
         this->target = target;
     }
 
+    void FogPass::SetFogColor(const Vector3f fogColor)
+    {
+        this->fogColor = fogColor;
+    }
+
     void FogPass::render(const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
@@ -37,7 +42,11 @@ namespace Flux {
         shader->uniform1i("tex", TextureUnit::TEXTURE0);
         depthMap->bind(TextureUnit::TEXTURE1);
         shader->uniform1i("depthMap", TextureUnit::TEXTURE1);
-//        shader->uniform3f("cameraPos", scene.getMainCamera()->getComponent<Transform>()->position);
+
+        Camera* camera = scene.getMainCamera()->getComponent<Camera>();
+        shader->uniform1f("zNear", camera->getZNear());
+        shader->uniform1f("zFar", camera->getZFar());
+        shader->uniform3f("fogColor", fogColor);
         target->bind();
         RenderState::drawQuad();
 
