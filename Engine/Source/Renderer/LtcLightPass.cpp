@@ -93,23 +93,33 @@ namespace Flux {
 
             if (e->hasComponent<MeshRenderer>()) {
                 MeshRenderer* mr = e->getComponent<MeshRenderer>();
+                Transform* transform = e->getComponent<Transform>();
                 Material* material = scene.materials[mr->materialID];
 
-                if (material && material->emission > 0.01) {
-                    Vector3f lightPosition;
-                    if (e->hasComponent<AttachedTo>()) {
-                        AttachedTo* attachedTo = e->getComponent<AttachedTo>();
+                if (material && material->emission.length() > 0.01) {
+                    Matrix4f modelMatrix;
+                    modelMatrix.setIdentity();
 
-                        Entity* parent = scene.getEntityById(attachedTo->parentId);
-                        Transform* transform = parent->getComponent<Transform>();
-                        lightPosition.set(transform->position);
+                    if (e->hasComponent<AttachedTo>()) {
+                        Entity* parent = scene.getEntityById(e->getComponent<AttachedTo>()->parentId);
+
+                        if (parent != nullptr) {
+                            Transform* parentT = parent->getComponent<Transform>();
+                            modelMatrix.translate(parentT->position);
+                            modelMatrix.rotate(parentT->rotation);
+                            modelMatrix.scale(parentT->scale);
+                        }
                     }
-                    Transform* transform = e->getComponent<Transform>();
+
+                    modelMatrix.translate(transform->position);
+                    modelMatrix.rotate(transform->rotation);
+                    modelMatrix.scale(transform->scale);
+
                     Mesh* mesh = e->getComponent<Mesh>();
 
                     std::vector<Vector3f> vertices;
                     for (int i = 0; i < mesh->vertices.size(); i++) {
-                        vertices.push_back(lightPosition + transform->position + mesh->vertices[i]);
+                        vertices.push_back(modelMatrix.transform(mesh->vertices[i], 1));
                     }
 
                     shader->uniform1i("numVertices", vertices.size());
