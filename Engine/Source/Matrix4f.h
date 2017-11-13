@@ -32,7 +32,7 @@ namespace Flux {
         void rotate(const Vector3f& euler);
         void scale(float scale);
         void scale(const Vector3f& scale);
-        Vector3f transform(const Vector3f& v) const;
+        Vector3f transform(const Vector3f& v, int w) const;
         
         float* toArray();
         std::string str() const;

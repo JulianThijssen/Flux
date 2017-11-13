@@ -117,12 +117,13 @@ namespace Flux {
         a[11] *= scale.z;
     }
 
-    Vector3f Matrix4f::transform(const Vector3f& v) const {
+    Vector3f Matrix4f::transform(const Vector3f& v, int w) const {
         Vector3f dest;
-        dest.x = a[0] * v.x + a[4] * v.y + a[8] * v.z;
-        dest.y = a[1] * v.x + a[5] * v.y + a[9] * v.z;
-        dest.z = a[2] * v.x + a[6] * v.y + a[10] * v.z;
-        return dest;
+        dest.x = a[0] * v.x + a[4] * v.y + a[8] * v.z + a[12] * w;
+        dest.y = a[1] * v.x + a[5] * v.y + a[9] * v.z + a[13] * w;
+        dest.z = a[2] * v.x + a[6] * v.y + a[10] * v.z + a[14] * w;
+        float dest_w = a[3] * v.x + a[7] * v.y + a[11] * v.z + a[15] * w;
+        return w == 0 ? dest : dest / dest_w;
     }
 
     float* Matrix4f::toArray() {
