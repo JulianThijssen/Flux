@@ -35,7 +35,7 @@ namespace Flux {
 #else
         renderer = std::make_unique<ForwardRenderer>();
 #endif
-        bool created = renderer->create(currentScene, Size(window.getWidth(), window.getHeight()));
+        created = renderer->create(currentScene, Size(window.getWidth(), window.getHeight()));
         if (!created)
             return;
 

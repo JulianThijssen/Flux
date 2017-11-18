@@ -33,15 +33,22 @@ namespace Flux {
 
     Window::Window(const char* title, int width, int height) :
         title(title), width(width), height(height) {
+    }
+
+    bool Window::create() {
+        bool error = false;
+        Log::info("Creating window");
         glfwSetErrorCallback(onError);
-        glfwInit();
+        error |= glfwInit() == GLFW_FALSE;
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-        window = glfwCreateWindow(width, height, title, NULL, NULL);
+        window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+        error |= window == nullptr;
+
         glfwMakeContextCurrent(window);
         glfwSwapInterval(0);
 
@@ -49,10 +56,12 @@ namespace Flux {
         glfwSetCursorPosCallback(window, onMouseMove);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        if (!gladLoadGL())
+        if (!gladLoadGL() || error)
         {
             Log::error("Failed to initialize OpenGL context");
+            return false;
         }
+        return true;
     }
 
     std::string Window::getTitle() {

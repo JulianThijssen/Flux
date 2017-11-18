@@ -26,6 +26,7 @@ namespace Flux {
         Window(const char* title);
         Window(const char* title, int width, int height);
 
+        bool create();
         std::string getTitle();
         const unsigned int getWidth();
         const unsigned int getHeight();
