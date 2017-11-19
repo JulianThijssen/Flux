@@ -72,8 +72,9 @@ void main() {
         E += ft * normalize(cross(pi, pj)).z;
     }
     E *= 1.0 / (2.0 * PI);
-    E = max(0, -E);
 
+    E = Emission > EPSILON ? abs(E) : max(0, -E);
+    
     // Lambert Diffuse BRDF
     vec3 LambertBRDF = (BaseColor / PI) * (1 - Metalness);
 
