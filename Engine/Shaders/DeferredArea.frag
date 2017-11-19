@@ -1,6 +1,7 @@
 #version 150 core
 
 #define PI 3.14159265359
+#define EPSILON 0.0001
 
 uniform int numVertices;
 uniform vec3 vertices[10];
@@ -32,11 +33,16 @@ float CosTheta(vec3 N, vec3 L) {
 }
 
 void main() {
-    vec3 BaseColor = toLinear(texture(albedoMap, pass_texCoords).rgb);
-    float Roughness = texture(albedoMap, pass_texCoords).w;
-    vec3 N = texture(normalMap, pass_texCoords).rgb * 2 - 1;
-    float Metalness = texture(normalMap, pass_texCoords).w;
-    vec3 P = texture(positionMap, pass_texCoords).rgb;
+    vec4 arMap = texture(albedoMap, pass_texCoords);
+    vec4 nmMap = texture(normalMap, pass_texCoords);
+    vec4 peMap = texture(positionMap, pass_texCoords);
+    
+    vec3 BaseColor = toLinear(arMap.rgb);
+    float Roughness = arMap.w;
+    vec3 N = nmMap.rgb * 2 - 1;
+    float Metalness = nmMap.w;
+    vec3 P = peMap.rgb;
+    float Emission = peMap.w;
     
     vec3 V = normalize(camPos - P);
     vec3 R = normalize(reflect(-V, N));
