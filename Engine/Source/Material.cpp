@@ -30,6 +30,7 @@ namespace Flux {
             shader.uniform1i("material.stencilMap", TextureUnit::STENCIL);
             shader.uniform1i("material.hasStencilMap", 1);
         }
+        shader.uniform3f("material.emission", emission);
         shader.uniform2f("material.tiling", tilingX, tilingY);
     }
 
