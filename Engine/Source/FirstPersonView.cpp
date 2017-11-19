@@ -62,8 +62,8 @@ namespace Flux {
         Matrix4f pitchMatrix;
         pitchMatrix.rotate(pitch, 1, 0, 0);
 
-        direction = pitchMatrix.transform(direction);
-        direction = yawMatrix.transform(direction);
+        direction = pitchMatrix.transform(direction, 0);
+        direction = yawMatrix.transform(direction, 0);
 
         transform->position += direction * 0.2f;
     }
