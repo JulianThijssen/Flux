@@ -7,8 +7,6 @@
 typedef unsigned int uint;
 
 namespace Flux {
-    enum Sampling { NEAREST, LINEAR };
-
     class Texture {
     public:
         Texture(GLuint handle, uint width, uint height)

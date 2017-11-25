@@ -10,40 +10,19 @@
 #include <vector>
 
 namespace Flux {
-    Texture* TextureLoader::loadTexture(Path path) {
+    Texture* TextureLoader::loadTexture(Path path, TextureType type, Wrapping wrapping, SamplingConfig sampling) {
         int width, height, bpp;
 
-        unsigned char* data = stbi_load(path.str().c_str(), &width, &height, &bpp, STBI_rgb_alpha);
-        
-        if (!data) {
-            Log::error("Failed to load image at: " + path.str());
-            return nullptr;
+        void* data;
+
+        bool success = loadTextureFromFile(path, width, height, type, &data);
+
+        Texture* texture = nullptr;
+        switch (type) {
+        case COLOR: texture = create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, wrapping, sampling, data); break;
+        case GREYSCALE: texture = create(width, height, GL_R8, GL_RED, GL_UNSIGNED_BYTE, wrapping, sampling, data); break;
+        case HDR: texture = create(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, wrapping, sampling, data); break;
         }
-        else {
-            Log::debug("Loaded texture: " + path.str() + " " + std::to_string(width) + " " + std::to_string(height) + " " + std::to_string(bpp));
-        }
-
-        Texture* texture = create(width, height, STBI_rgb_alpha, data, Sampling::LINEAR);
-
-        stbi_image_free(data);
-
-        return texture;
-    }
-
-    Texture* TextureLoader::loadTextureGreyscale(Path path) {
-        int width, height, bpp;
-
-        unsigned char* data = stbi_load(path.str().c_str(), &width, &height, &bpp, STBI_grey);
-
-        if (!data) {
-            Log::error("Failed to load image at: " + path.str());
-            return nullptr;
-        }
-        else {
-            Log::debug("Loaded texture: " + path.str() + " " + std::to_string(width) + " " + std::to_string(height) + " " + std::to_string(bpp));
-        }
-
-        Texture* texture = create(width, height, STBI_grey, data, Sampling::LINEAR);
 
         stbi_image_free(data);
 
@@ -56,7 +35,7 @@ namespace Flux {
 
         unsigned char* colorData = stbi_load(color.str().c_str(), &colorWidth, &colorHeight, &colorBPP, STBI_rgb_alpha);
         Log::debug("Loaded texture: " + color.str() + " " + std::to_string(colorWidth) + " " + std::to_string(colorHeight) + " " + std::to_string(colorBPP));
-        unsigned char* alphaData = stbi_load(color.str().c_str(), &alphaWidth, &alphaHeight, &alphaBPP, STBI_grey);
+        unsigned char* alphaData = stbi_load(alpha.str().c_str(), &alphaWidth, &alphaHeight, &alphaBPP, STBI_grey);
         Log::debug("Loaded texture: " + alpha.str() + " " + std::to_string(alphaWidth) + " " + std::to_string(alphaHeight) + " " + std::to_string(alphaBPP));
 
         assert(colorWidth == alphaWidth);
@@ -72,22 +51,6 @@ namespace Flux {
         }
 
         Texture* texture = create(colorWidth, colorHeight, 4, data.data(), sampling);
-
-        return texture;
-    }
-
-    Texture* TextureLoader::loadTextureHDR(Path path) {
-        int width, height, bpp;
-
-        float *data = stbi_loadf(path.str().c_str(), &width, &height, &bpp, STBI_rgb_alpha);
-
-        if (!data) {
-            Log::error("Failed to load image at: " + path.str());
-        }
-
-        Texture* texture = createHDR(width, height, data, Sampling::NEAREST);
-
-        stbi_image_free(data);
 
         return texture;
     }
@@ -142,63 +105,60 @@ namespace Flux {
         return new Texture(handle, width, height);
     }
 
-    Texture* TextureLoader::createHDR(const int width, const int height, const float* data, Sampling sampling) {
+    Texture* TextureLoader::create(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Wrapping wrapping, SamplingConfig sampling, const void* data, Isotropy isotropy) {
         GLuint handle;
         glGenTextures(1, &handle);
 
         glBindTexture(GL_TEXTURE_2D, handle);
 
-        if (sampling == Sampling::NEAREST) {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        switch (sampling.magFilter) {
+        case NEAREST: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); break;
+        case LINEAR: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); break;
+        }
+
+        if (sampling.minFilter == NEAREST) {
+            switch (sampling.mipFilter) {
+            case NEAREST: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST); break;
+            case LINEAR: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR); break;
+            default: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            }
+        }
+        if (sampling.minFilter == LINEAR) {
+            switch (sampling.mipFilter) {
+            case NEAREST: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST); break;
+            case LINEAR: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); break;
+            default: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            }
+        }
+
+        if (isotropy == ANISOTROPIC) {
+            GLfloat maxAnisotropy;
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy > 5.0f ? 5.0f : maxAnisotropy);
+        }
+
+        switch (wrapping) {
+        case CLAMP:
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            break;
+        case REPEAT:
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            break;
+        }
+
+        if (format == GL_RED) {
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         }
         else {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
         }
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, data);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        return new Texture(handle, width, height);
-    }
-
-    Texture* TextureLoader::create(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Sampling sampling, bool mipmaps, const void* data) {
-        GLuint handle;
-        glGenTextures(1, &handle);
-
-        glBindTexture(GL_TEXTURE_2D, handle);
-
-        if (mipmaps) {
-            if (sampling == Sampling::NEAREST) {
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            }
-            else {
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            }
-        }
-        else {
-            if (sampling == Sampling::NEAREST) {
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            }
-            else {
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            }
-        }
-
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
-        if (mipmaps) glGenerateMipmap(GL_TEXTURE_2D);
+
+        if (sampling.mipFilter != NONE) glGenerateMipmap(GL_TEXTURE_2D);
+
         glBindTexture(GL_TEXTURE_2D, 0);
 
         return new Texture(handle, width, height);
@@ -273,5 +233,23 @@ namespace Flux {
         glBindTexture(GL_TEXTURE_3D, 0);
 
         return new Texture3D(handle, width, height, depth);
+    }
+
+    bool TextureLoader::loadTextureFromFile(Path path, int& width, int& height, TextureType type, void** data) {
+        int bpp;
+        switch (type) {
+        case COLOR: *data = stbi_load(path.str().c_str(), &width, &height, &bpp, STBI_rgb_alpha); break;
+        case GREYSCALE: *data = stbi_load(path.str().c_str(), &width, &height, &bpp, STBI_grey); break;
+        case HDR: *data = stbi_loadf(path.str().c_str(), &width, &height, &bpp, STBI_rgb_alpha); break;
+        }
+
+        if (!*data) {
+            Log::error("Failed to load image at: " + path.str());
+            return false;
+        }
+        else {
+            Log::debug("Loaded texture: " + path.str() + " " + std::to_string(width) + " " + std::to_string(height) + " " + std::to_string(bpp));
+        }
+        return true;
     }
 }

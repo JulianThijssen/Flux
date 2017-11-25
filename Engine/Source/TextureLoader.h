@@ -5,21 +5,46 @@
 #include "Texture.h"
 #include "Texture3D.h"
 
+enum TextureType {
+    COLOR, GREYSCALE, HDR
+};
+
+enum Isotropy {
+    ANISOTROPIC, ISOTROPIC
+};
+
+enum Sampling {
+    NONE, NEAREST, LINEAR
+};
+
+enum Wrapping {
+    CLAMP, REPEAT
+};
+
 namespace Flux {
     class Path;
 
+    struct SamplingConfig {
+        Sampling minFilter;
+        Sampling magFilter;
+        Sampling mipFilter;
+
+        SamplingConfig(Sampling minFilter, Sampling magFilter, Sampling mipFilter)
+            : minFilter(minFilter), magFilter(magFilter), mipFilter(mipFilter) { }
+    };
+
     class TextureLoader {
     public:
-        static Texture* loadTexture(Path path);
-        static Texture* loadTextureGreyscale(Path path);
+        static Texture* loadTexture(Path path, TextureType type, Wrapping wrapping, SamplingConfig sampling);
         static Texture* loadColorAndAlpha(Path color, Path alpha, Sampling sampling);
-        static Texture* loadTextureHDR(Path path);
         static Texture3D* loadTexture3D(Path path);
         static Texture* create(const int width, const int height, const int bpp, const unsigned char* data, Sampling sampling);
-        static Texture* createHDR(const int width, const int height, const float* data, Sampling sampling);
-        static Texture* create(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Sampling sampling, bool mipmaps, const void* data);
+        static Texture* create(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Wrapping wrapping, SamplingConfig sampling = SamplingConfig(NEAREST, NEAREST, NONE), const void* data = nullptr, Isotropy isotropy = ISOTROPIC);
         static Texture* createShadowMap(const int width, const int height);
         static Texture3D* create3DTexture(const int width, const int height, const int depth, const int bpp, const unsigned char* data, Sampling sampling);
+
+    private:
+        static bool loadTextureFromFile(Path path, int& width, int& height, TextureType type, void** data);
     };
 }
 
