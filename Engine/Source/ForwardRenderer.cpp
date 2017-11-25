@@ -55,7 +55,7 @@ namespace Flux {
     void ForwardRenderer::onResize(unsigned int width, unsigned int height) {
         hdrBuffer = new Framebuffer(width, height);
         hdrBuffer->bind();
-        hdrBuffer->addColorTexture(0, TextureLoader::create(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true, 0));
+        hdrBuffer->addColorTexture(0, TextureLoader::create(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP));
         hdrBuffer->addDepthTexture();
         hdrBuffer->validate();
         hdrBuffer->release();
@@ -63,7 +63,7 @@ namespace Flux {
         for (int i = 0; i < 2; i++) {
             Framebuffer framebuffer(width, height);
             framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::create(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true, 0));
+            framebuffer.addColorTexture(0, TextureLoader::create(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP));
             framebuffer.validate();
             framebuffer.release();
             hdrBackBuffers.push_back(framebuffer);
@@ -71,7 +71,7 @@ namespace Flux {
         for (int i = 0; i < 2; i++) {
             Framebuffer framebuffer(width, height);
             framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::LINEAR, true, 0));
+            framebuffer.addColorTexture(0, TextureLoader::create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
             framebuffer.validate();
             framebuffer.release();
             backBuffers.push_back(framebuffer);

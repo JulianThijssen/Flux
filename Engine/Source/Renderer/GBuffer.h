@@ -10,10 +10,10 @@
 namespace Flux {
     struct GBuffer {
         void create(const unsigned int width, const unsigned int height) {
-            albedoTex = TextureLoader::create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false, 0);
-            normalTex = TextureLoader::create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false, 0);
-            positionTex = TextureLoader::create(width, height, GL_RGBA32F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, false, 0);
-            depthTex = TextureLoader::create(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, Sampling::NEAREST, false, 0);
+            albedoTex = TextureLoader::create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP);
+            normalTex = TextureLoader::create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP);
+            positionTex = TextureLoader::create(width, height, GL_RGBA32F, GL_RGBA, GL_FLOAT, CLAMP);
+            depthTex = TextureLoader::create(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, CLAMP);
 
             buffer = std::make_unique<Framebuffer>(width, height);
             buffer->bind();

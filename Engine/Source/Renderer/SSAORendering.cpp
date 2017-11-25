@@ -64,7 +64,7 @@ namespace Flux
         for (int i = 0; i < 2; i++) {
             buffers[i] = new Framebuffer(width / 2, height / 2);
             buffers[i]->bind();
-            buffers[i]->addColorTexture(0, TextureLoader::create(width / 2, height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::NEAREST, false, 0));
+            buffers[i]->addColorTexture(0, TextureLoader::create(width / 2, height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
             buffers[i]->validate();
             buffers[i]->release();
         }

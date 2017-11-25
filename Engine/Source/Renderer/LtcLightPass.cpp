@@ -20,7 +20,7 @@ namespace Flux {
     {
         shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredArea.frag"));
 
-        ampTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, Sampling::LINEAR, false, amp.data());
+        ampTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE), amp.data());
         std::vector<float> data;
         data.reserve(a.size() + b.size() + c.size() + d.size());
         for (int i = 0; i < 64 * 64; i++) {
@@ -30,7 +30,7 @@ namespace Flux {
             data.push_back(d[i]);
         }
 
-        matTex = TextureLoader::create(64, 64, GL_RGBA32F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, false, data.data());
+        matTex = TextureLoader::create(64, 64, GL_RGBA32F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE), data.data());
     }
 
     void LtcLightPass::SetGBuffer(const GBuffer* gBuffer)

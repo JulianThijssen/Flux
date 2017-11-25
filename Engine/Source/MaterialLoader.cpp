@@ -26,27 +26,27 @@ namespace Flux {
             if (key == "DiffuseTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->diffuseTex = TextureLoader::loadTexture(Path(path));
+                material->diffuseTex = TextureLoader::loadTexture(Path(path), COLOR, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
             }
             if (key == "NormalTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->normalTex = TextureLoader::loadTexture(Path(path));
+                material->normalTex = TextureLoader::loadTexture(Path(path), COLOR, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
             }
             if (key == "MetalTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->metalTex = TextureLoader::loadTextureGreyscale(Path(path));
+                material->metalTex = TextureLoader::loadTexture(Path(path), GREYSCALE, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
             }
             if (key == "RoughnessTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->roughnessTex = TextureLoader::loadTextureGreyscale(Path(path));
+                material->roughnessTex = TextureLoader::loadTexture(Path(path), GREYSCALE, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
             }
             if (key == "StencilTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->stencilTex = TextureLoader::loadTextureGreyscale(Path(path));
+                material->stencilTex = TextureLoader::loadTexture(Path(path), GREYSCALE, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
             }
             if (key == "Emission") {
                 material->emission = Vector3f(std::stof(tokens[1].c_str()), std::stof(tokens[2].c_str()), std::stof(tokens[3].c_str()));

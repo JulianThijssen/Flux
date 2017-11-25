@@ -88,7 +88,7 @@ namespace Flux {
     void DeferredRenderer::createBackBuffers(const unsigned int width, const unsigned int height) {
         hdrBuffer = new Framebuffer(windowSize.width, windowSize.height);
         hdrBuffer->bind();
-        hdrBuffer->addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::NEAREST, true, 0));
+        hdrBuffer->addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP));
         hdrBuffer->addDepthTexture(gBuffer.depthTex);
         hdrBuffer->validate();
         hdrBuffer->release();
@@ -96,7 +96,8 @@ namespace Flux {
         for (int i = 0; i < 2; i++) {
             Framebuffer framebuffer(windowSize.width, windowSize.height);
             framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, Sampling::LINEAR, true, 0));
+            // Textures are linearly sampled for first step of gaussian bloom blur
+            framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
             framebuffer.validate();
             framebuffer.release();
             hdrBackBuffers.push_back(framebuffer);
@@ -104,7 +105,7 @@ namespace Flux {
         for (int i = 0; i < 2; i++) {
             Framebuffer framebuffer(windowSize.width, windowSize.height);
             framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, Sampling::LINEAR, true, 0));
+            framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
             framebuffer.validate();
             framebuffer.release();
             backBuffers.push_back(framebuffer);
