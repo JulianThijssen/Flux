@@ -17,6 +17,8 @@ namespace Flux {
 
         bool success = loadTextureFromFile(path, width, height, type, &data);
 
+        if (!success) return nullptr;
+
         Texture* texture = nullptr;
         switch (type) {
         case COLOR: texture = create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, wrapping, sampling, data); break;
