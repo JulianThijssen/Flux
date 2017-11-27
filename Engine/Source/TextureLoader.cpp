@@ -29,7 +29,7 @@ namespace Flux {
         return texture;
     }
 
-    Texture* TextureLoader::loadColorAndAlpha(Path color, Path alpha, Sampling sampling) {
+    Texture* TextureLoader::loadColorAndAlpha(Path color, Path alpha, Wrapping wrapping, SamplingConfig sampling) {
         int colorWidth, colorHeight, colorBPP;
         int alphaWidth, alphaHeight, alphaBPP;
 
@@ -50,7 +50,7 @@ namespace Flux {
             data[i * 4 + 3] = alphaData[i * alphaBPP + 0];
         }
 
-        Texture* texture = create(colorWidth, colorHeight, 4, data.data(), sampling);
+        Texture* texture = create(colorWidth, colorHeight, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, wrapping, sampling);
 
         return texture;
     }
@@ -69,40 +69,6 @@ namespace Flux {
         stbi_image_free(data);
 
         return texture;
-    }
-
-    Texture* TextureLoader::create(const int width, const int height, const int bpp, const unsigned char* data, Sampling sampling) {
-        GLuint handle;
-        glGenTextures(1, &handle);
-
-        glBindTexture(GL_TEXTURE_2D, handle);
-
-        if (sampling == Sampling::NEAREST) {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-        }
-        else {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        }
-        GLfloat maxAnisotropy;
-        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy > 5.0f ? 5.0f : maxAnisotropy);
-
-        if (bpp == 1) {
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data);
-        }
-        else {
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        }
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        return new Texture(handle, width, height);
     }
 
     Texture* TextureLoader::create(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Wrapping wrapping, SamplingConfig sampling, const void* data, Isotropy isotropy) {

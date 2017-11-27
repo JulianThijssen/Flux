@@ -36,9 +36,8 @@ namespace Flux {
     class TextureLoader {
     public:
         static Texture* loadTexture(Path path, TextureType type, Wrapping wrapping, SamplingConfig sampling);
-        static Texture* loadColorAndAlpha(Path color, Path alpha, Sampling sampling);
+        static Texture* loadColorAndAlpha(Path color, Path alpha, Wrapping wrapping, SamplingConfig sampling);
         static Texture3D* loadTexture3D(Path path);
-        static Texture* create(const int width, const int height, const int bpp, const unsigned char* data, Sampling sampling);
         static Texture* create(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Wrapping wrapping, SamplingConfig sampling = SamplingConfig(NEAREST, NEAREST, NONE), const void* data = nullptr, Isotropy isotropy = ISOTROPIC);
         static Texture* createShadowMap(const int width, const int height);
         static Texture3D* create3DTexture(const int width, const int height, const int depth, const int bpp, const unsigned char* data, Sampling sampling);
