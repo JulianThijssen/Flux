@@ -3,8 +3,6 @@
 #include <glad/glad.h>
 
 namespace Flux {
-    GLuint Renderer::quadVao = 1;
-
     void Renderer::addRenderPhase(RenderPhase* phase) {
         renderPhases.push(phase);
     }
@@ -15,34 +13,6 @@ namespace Flux {
 
     void Renderer::disable(Capability capability) {
         glDisable(capability);
-    }
-
-    void Renderer::setClearColor(float r, float g, float b, float a) {
-        glClearColor(r, g, b, a);
-    }
-
-    void Renderer::setCamera(Shader& shader, Entity& camera) {
-        Transform* ct = camera.getComponent<Transform>();
-        Camera* cam = camera.getComponent<Camera>();
-
-        // Set the projection matrix from the camera parameters
-        camera.getComponent<Camera>()->loadProjectionMatrix(projMatrix);
-
-        // Set the view matrix to the camera view
-        viewMatrix.setIdentity();
-        viewMatrix.rotate(-ct->rotation);
-        viewMatrix.translate(-ct->position);
-
-        shader.uniform3f("camPos", ct->position);
-        shader.uniformMatrix4f("projMatrix", projMatrix);
-        shader.uniformMatrix4f("viewMatrix", viewMatrix);
-        shader.uniform1f("zNear", cam->getZNear());
-        shader.uniform1f("zFar", cam->getZFar());
-    }
-
-    void Renderer::drawQuad() const {
-        glBindVertexArray(quadVao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     const Framebuffer& Renderer::getCurrentFramebuffer() {

@@ -67,7 +67,7 @@ namespace Flux {
         colorGradingPass = new ColorGradingPass();
         fogPass = new FogPass();
         areaLightPass = new LtcLightPass();
-        
+
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
 
@@ -128,7 +128,7 @@ namespace Flux {
         gaussianBlurPass->Resize(windowSize);
         fxaaPass->Resize(windowSize);
 
-        setClearColor(1.0, 0.0, 1.0, 1.0);
+        renderState.setClearColor(1.0, 0.0, 1.0, 1.0);
     }
 
     void DeferredRenderer::update(const Scene& scene) {

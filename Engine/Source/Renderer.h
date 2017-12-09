@@ -11,32 +11,21 @@
 #include "Framebuffer.h"
 #include "Texture.h"
 #include "Size.h"
+#include "Renderer/RenderState.h"
 
 #include <vector>
 #include <unordered_map>
 #include <queue>
 
 namespace Flux {
-    enum Capability {
-        BLENDING = GL_BLEND,
-        FACE_CULLING = GL_CULL_FACE,
-        DEPTH_TEST = GL_DEPTH_TEST,
-        STENCIL_TEST = GL_STENCIL_TEST,
-        POLYGON_OFFSET = GL_POLYGON_OFFSET_FILL
-    };
-
     class Renderer {
     public:
         Renderer() :
-            clearColor(1, 0, 1),
-            projMatrix(),
-            viewMatrix(),
-            modelMatrix(),
             currentFramebuffer(0),
             currentHdrFramebuffer(0),
             windowSize(800, 600)
         {
-            glGenVertexArrays(1, &quadVao);
+            
         }
 
         virtual bool create(const Scene& scene, const Size windowSize) = 0;
@@ -49,25 +38,14 @@ namespace Flux {
         void enable(Capability capability);
         void disable(Capability capability);
 
-        void setClearColor(float r, float g, float b, float a);
-        void setCamera(Shader& shader, Entity& camera);
-        void drawQuad() const;
-
         const Framebuffer& getCurrentFramebuffer();
         const Framebuffer& getCurrentHdrFramebuffer();
         const Framebuffer& getOtherFramebuffer();
         const Framebuffer& getOtherHdrFramebuffer();
         void switchBuffers();
         void switchHdrBuffers();
-
-        static GLuint quadVao;
     protected:
         RenderState renderState;
-        Vector3f clearColor;
-
-        Matrix4f projMatrix;
-        Matrix4f viewMatrix;
-        Matrix4f modelMatrix;
 
         Size windowSize;
 
