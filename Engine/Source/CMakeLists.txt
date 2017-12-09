@@ -13,8 +13,6 @@ set(BASE
     ${DIR}/FpsCounter.h
     ${DIR}/FpsCounter.cpp
     ${DIR}/FpsListener.h
-    ${DIR}/ForwardRenderer.h
-    ${DIR}/ForwardRenderer.cpp
     ${DIR}/Framebuffer.h
     ${DIR}/Material.h
     ${DIR}/Material.cpp
