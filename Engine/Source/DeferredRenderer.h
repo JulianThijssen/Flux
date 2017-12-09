@@ -39,8 +39,8 @@ namespace Flux {
         virtual bool create(const Scene& scene, const Size windowSize);
         virtual void onResize(const Size windowSize);
         virtual void update(const Scene& scene);
-        virtual void renderScene(const Scene& scene);
-        virtual void renderMesh(const Scene& scene, Entity* e);
+        virtual void renderScene(const Scene& scene, Shader& shader);
+        virtual void renderMesh(const Scene& scene, Shader& shader, Entity* e);
 
     private:
         void createBackBuffers(const unsigned int width, const unsigned int height);
@@ -62,6 +62,8 @@ namespace Flux {
         void renderFramebuffer(const Framebuffer& framebuffer);
 
         std::unique_ptr<Shader> gBufferShader;
+        std::unique_ptr<Shader> shadowShader;
+        std::unique_ptr<Shader> textureShader;
 
         GBuffer gBuffer;
         std::unique_ptr<Framebuffer> shadowBuffer;

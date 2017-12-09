@@ -44,15 +44,9 @@
 
 namespace Flux {
     bool DeferredRenderer::create(const Scene& scene, const Size windowSize) {
-        addShader(IBL, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/IBL.frag"));
-        addShader(TEXTURE, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
-        addShader(GBUFFER, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
-        addShader(DINDIRECT, Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag"));
-        addShader(SHADOW, Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag"));
-
-        if (!validateShaders()) {
-            return false;
-        }
+        gBufferShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
+        shadowShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag"));
+        textureShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
 
         createShadowMaps(scene);
 
@@ -154,9 +148,9 @@ namespace Flux {
         gBuffer.bind();
         gBufferShader->bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        setCamera(*scene.getMainCamera());
+        setCamera(*gBufferShader, *scene.getMainCamera());
         nvtxRangePushA("GBuffer");
-        renderScene(scene);
+        renderScene(scene, *gBufferShader);
         nvtxRangePop();
         LOG("Finished GBuffer");
 
@@ -238,7 +232,7 @@ namespace Flux {
         directLightPass->render(scene);
     }
 
-    void DeferredRenderer::renderScene(const Scene& scene) {
+    void DeferredRenderer::renderScene(const Scene& scene, Shader& shader) {
         for (Entity* e : scene.entities) {
             if (!e->hasComponent<Mesh>())
                 continue;
@@ -248,11 +242,11 @@ namespace Flux {
                 Material* material = scene.materials[mr->materialID];
 
                 if (material) {
-                    material->bind(*shader);
+                    material->bind(shader);
 
-                    renderMesh(scene, e);
+                    renderMesh(scene, shader, e);
 
-                    material->release(*shader);
+                    material->release(shader);
                 }
             }
 
@@ -260,7 +254,7 @@ namespace Flux {
         }
     }
 
-    void DeferredRenderer::renderMesh(const Scene& scene, Entity* e) {
+    void DeferredRenderer::renderMesh(const Scene& scene, Shader& shader, Entity* e) {
         nvtxRangePushA("Mesh");
         Transform* transform = e->getComponent<Transform>();
         Mesh* mesh = e->getComponent<Mesh>();
@@ -283,8 +277,8 @@ namespace Flux {
         modelMatrix.scale(transform->scale);
 
         Matrix4f PVM = projMatrix * viewMatrix * modelMatrix;
-        shader->uniformMatrix4f("modelMatrix", modelMatrix);
-        shader->uniformMatrix4f("PVM", PVM);
+        shader.uniformMatrix4f("modelMatrix", modelMatrix);
+        shader.uniformMatrix4f("PVM", PVM);
 
         glBindVertexArray(mesh->handle);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
@@ -365,13 +359,13 @@ namespace Flux {
     void DeferredRenderer::renderDepth(const Scene& scene) {
         nvtxRangePushA("Depth");
 
-        setShader(SHADOW);
+        shadowShader->bind();
 
         glClear(GL_DEPTH_BUFFER_BIT);
         glColorMask(false, false, false, false);
 
-        setCamera(*scene.getMainCamera());
-        renderScene(scene);
+        setCamera(*shadowShader, *scene.getMainCamera());
+        renderScene(scene, *shadowShader);
 
         glColorMask(true, true, true, true);
 
@@ -381,7 +375,7 @@ namespace Flux {
     void DeferredRenderer::renderShadowMaps(const Scene& scene) {
         nvtxRangePushA("Shadow");
 
-        setShader(SHADOW);
+        shadowShader->bind();
 
         shadowBuffer->bind();
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -395,14 +389,14 @@ namespace Flux {
             Camera* camera = entity->getComponent<Camera>();
             DirectionalLight* light = entity->getComponent<DirectionalLight>();
 
-            setCamera(*entity);
+            setCamera(*shadowShader, *entity);
 
             light->shadowSpace = Matrix4f::BIAS * projMatrix * viewMatrix;
 
             shadowBuffer->addDepthTexture(light->shadowMap);
             glViewport(0, 0, light->shadowMap->getWidth(), light->shadowMap->getHeight());
 
-            renderScene(scene);
+            renderScene(scene, *shadowShader);
         }
         disable(POLYGON_OFFSET);
 
@@ -413,9 +407,9 @@ namespace Flux {
 
     void DeferredRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
         LOG("Rendering framebuffer");
-        setShader(TEXTURE);
+        textureShader->bind();
         framebuffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        textureShader->uniform1i("tex", TextureUnit::TEXTURE);
         drawQuad();
     }
 }

@@ -21,7 +21,7 @@ namespace Flux {
         glClearColor(r, g, b, a);
     }
 
-    void Renderer::setCamera(Entity& camera) {
+    void Renderer::setCamera(Shader& shader, Entity& camera) {
         Transform* ct = camera.getComponent<Transform>();
         Camera* cam = camera.getComponent<Camera>();
 
@@ -33,11 +33,11 @@ namespace Flux {
         viewMatrix.rotate(-ct->rotation);
         viewMatrix.translate(-ct->position);
 
-        shader->uniform3f("camPos", ct->position);
-        shader->uniformMatrix4f("projMatrix", projMatrix);
-        shader->uniformMatrix4f("viewMatrix", viewMatrix);
-        shader->uniform1f("zNear", cam->getZNear());
-        shader->uniform1f("zFar", cam->getZFar());
+        shader.uniform3f("camPos", ct->position);
+        shader.uniformMatrix4f("projMatrix", projMatrix);
+        shader.uniformMatrix4f("viewMatrix", viewMatrix);
+        shader.uniform1f("zNear", cam->getZNear());
+        shader.uniform1f("zFar", cam->getZFar());
     }
 
     void Renderer::drawQuad() const {

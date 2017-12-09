@@ -32,7 +32,6 @@ namespace Flux {
             projMatrix(),
             viewMatrix(),
             modelMatrix(),
-            shader(0),
             currentFramebuffer(0),
             currentHdrFramebuffer(0),
             windowSize(800, 600)
@@ -43,15 +42,15 @@ namespace Flux {
         virtual bool create(const Scene& scene, const Size windowSize) = 0;
         virtual void onResize(const Size windowSize) = 0;
         virtual void update(const Scene& scene) = 0;
-        virtual void renderScene(const Scene& scene) = 0;
-        virtual void renderMesh(const Scene& scene, Entity* entity) = 0;
+        virtual void renderScene(const Scene& scene, Shader& shader) = 0;
+        virtual void renderMesh(const Scene& scene, Shader& shader, Entity* entity) = 0;
 
         void addRenderPhase(RenderPhase* phase);
         void enable(Capability capability);
         void disable(Capability capability);
 
         void setClearColor(float r, float g, float b, float a);
-        void setCamera(Entity& camera);
+        void setCamera(Shader& shader, Entity& camera);
         void drawQuad() const;
 
         const Framebuffer& getCurrentFramebuffer();
@@ -69,10 +68,7 @@ namespace Flux {
         Matrix4f viewMatrix;
         Matrix4f modelMatrix;
 
-        Shader* shader;
-
         Size windowSize;
-
 
         Framebuffer* hdrBuffer;
         std::vector<Framebuffer> backBuffers;
