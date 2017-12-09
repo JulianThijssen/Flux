@@ -17,9 +17,6 @@
 #include <queue>
 
 namespace Flux {
-    enum ShaderName { IBL, DIRECT, SKYBOX, TEXTURE, FXAA, GAMMA, TONEMAP, SKYSPHERE, BLOOM, BLUR, SSAO, GBUFFER, DINDIRECT, DDIRECT, SHADOW, MULTIPLY, SSAOBLUR, ADD };
-
-    enum RenderPhaseName { RP_INDIRECT, RP_DIRECT, RP_SKY, RP_BLOOM, RP_BLUR, RP_TONEMAP, RP_GAMMA, RP_ANTIALIAS, RP_SSAO };
     enum Capability {
         BLENDING = GL_BLEND,
         FACE_CULLING = GL_CULL_FACE,
@@ -48,10 +45,6 @@ namespace Flux {
         virtual void update(const Scene& scene) = 0;
         virtual void renderScene(const Scene& scene) = 0;
         virtual void renderMesh(const Scene& scene, Entity* entity) = 0;
-
-        void addShader(const ShaderName name, Shader* shader);
-        void setShader(const ShaderName shader);
-        bool validateShaders();
 
         void addRenderPhase(RenderPhase* phase);
         void enable(Capability capability);
@@ -87,7 +80,6 @@ namespace Flux {
         unsigned int currentFramebuffer;
         unsigned int currentHdrFramebuffer;
     private:
-        std::unordered_map<ShaderName, Shader*> shaders;
         std::queue<RenderPhase*> renderPhases;
     };
 }

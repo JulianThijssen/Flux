@@ -5,24 +5,6 @@
 namespace Flux {
     GLuint Renderer::quadVao = 1;
 
-    void Renderer::addShader(const ShaderName name, Shader* shader) {
-        shaders[name] = shader;
-    }
-
-    void Renderer::setShader(const ShaderName shaderName) {
-        shader = shaders[shaderName];
-        shader->bind();
-    }
-
-    bool Renderer::validateShaders() {
-        for (auto kv : shaders) {
-            if (kv.second == nullptr) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     void Renderer::addRenderPhase(RenderPhase* phase) {
         renderPhases.push(phase);
     }
