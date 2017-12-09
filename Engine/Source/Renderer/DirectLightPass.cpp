@@ -35,27 +35,10 @@ namespace Flux {
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
 
-        ///
         Entity* camera = scene.getMainCamera();
         Transform* ct = camera->getComponent<Transform>();
-        Camera* cam = camera->getComponent<Camera>();
-
-        // Set the projection matrix from the camera parameters
-        Matrix4f projMatrix;
-        camera->getComponent<Camera>()->loadProjectionMatrix(projMatrix);
-
-        // Set the view matrix to the camera view
-        Matrix4f viewMatrix;
-        viewMatrix.setIdentity();
-        viewMatrix.rotate(-ct->rotation);
-        viewMatrix.translate(-ct->position);
 
         shader->uniform3f("camPos", ct->position);
-        shader->uniformMatrix4f("projMatrix", projMatrix);
-        shader->uniformMatrix4f("viewMatrix", viewMatrix);
-        shader->uniform1f("zNear", cam->getZNear());
-        shader->uniform1f("zFar", cam->getZFar());
-        ///
 
         gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
         shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
