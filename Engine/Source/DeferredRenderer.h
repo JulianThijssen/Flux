@@ -6,7 +6,6 @@
 #include "Renderer/GBuffer.h"
 
 #include "Cubemap.h"
-#include "Renderer/ImageBasedRendering.h"
 #include "Renderer/SSAORendering.h"
 
 #include "Texture.h"
@@ -21,6 +20,7 @@ namespace Flux {
     class BloomPass;
     class GaussianBlurPass;
     class TonemapPass;
+    class IndirectLightPass;
     class DirectLightPass;
     class GammaCorrectionPass;
     class FxaaPass;
@@ -67,7 +67,6 @@ namespace Flux {
 
         GBuffer gBuffer;
         std::unique_ptr<Framebuffer> shadowBuffer;
-        IblSceneInfo iblSceneInfo;
 
         AveragePass* averagePass;
         MultiplyPass* multiplyPass;
@@ -76,6 +75,7 @@ namespace Flux {
         BloomPass* bloomPass;
         GaussianBlurPass* gaussianBlurPass;
         TonemapPass* tonemapPass;
+        IndirectLightPass* indirectLightPass;
         DirectLightPass* directLightPass;
         GammaCorrectionPass* gammaCorrectionPass;
         FxaaPass* fxaaPass;

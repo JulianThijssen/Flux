@@ -9,6 +9,7 @@
 #include "Renderer/BloomPass.h"
 #include "Renderer/GaussianBlurPass.h"
 #include "Renderer/TonemapPass.h"
+#include "Renderer/IndirectLightPass.h"
 #include "Renderer/DirectLightPass.h"
 #include "Renderer/GammaCorrectionPass.h"
 #include "Renderer/FxaaPass.h"
@@ -50,13 +51,6 @@ namespace Flux {
 
         createShadowMaps(scene);
 
-        if (scene.skybox) {
-            iblSceneInfo.PrecomputeEnvironmentData(*scene.skybox);
-        }
-        else if (scene.skySphere) {
-            iblSceneInfo.PrecomputeEnvironmentData(*scene.skySphere);
-        }
-
         ssaoInfo.generate();
 
         averagePass = new AveragePass();
@@ -66,6 +60,7 @@ namespace Flux {
         bloomPass = new BloomPass();
         gaussianBlurPass = new GaussianBlurPass();
         tonemapPass = new TonemapPass();
+        indirectLightPass = new IndirectLightPass(scene);
         directLightPass = new DirectLightPass();
         gammaCorrectionPass = new GammaCorrectionPass();
         fxaaPass = new FxaaPass();
@@ -172,39 +167,14 @@ namespace Flux {
     void DeferredRenderer::globalIllumination(const Scene& scene) {
         switchHdrBuffers();
 
-        glClear(GL_COLOR_BUFFER_BIT);
-        LOG("Indirect lighting");
-        nvtxRangePushA("Indirect");
-        setShader(DINDIRECT);
+        indirectLightPass->SetGBuffer(&gBuffer);
 
-        setCamera(*scene.getMainCamera());
-
-        gBuffer.albedoTex->bind(TextureUnit::ALBEDO);
-        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBuffer.normalTex->bind(TextureUnit::NORMAL);
-        shader->uniform1i("normalMap", TextureUnit::NORMAL);
-        gBuffer.positionTex->bind(TextureUnit::POSITION);
-        shader->uniform1i("positionMap", TextureUnit::POSITION);
-        gBuffer.depthTex->bind(TextureUnit::DEPTH);
-        shader->uniform1i("depthMap", TextureUnit::DEPTH);
-
-        iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);
-        shader->uniform1i("irradianceMap", TextureUnit::IRRADIANCE);
-
-        iblSceneInfo.prefilterEnvmap->bind(TextureUnit::PREFILTER);
-        shader->uniform1i("prefilterEnvmap", TextureUnit::PREFILTER);
-
-        iblSceneInfo.scaleBiasTexture->bind(TextureUnit::SCALEBIAS);
-        shader->uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
-
-        drawQuad();
+        indirectLightPass->render(scene);
 
         switchBuffers();
 
         ssao(scene);
         multiply(scene);
-
-        nvtxRangePop();
     }
 
     void DeferredRenderer::ssao(const Scene& scene) {

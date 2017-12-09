@@ -110,6 +110,8 @@ set(RENDERING
     ${DIR}/Renderer/TonemapPass.cpp
     ${DIR}/Renderer/DirectLightPass.h
     ${DIR}/Renderer/DirectLightPass.cpp
+    ${DIR}/Renderer/IndirectLightPass.h
+    ${DIR}/Renderer/IndirectLightPass.cpp
     ${DIR}/Renderer/GammaCorrectionPass.h
     ${DIR}/Renderer/GammaCorrectionPass.cpp
     ${DIR}/Renderer/FxaaPass.h
