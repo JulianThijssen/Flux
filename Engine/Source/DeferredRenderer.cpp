@@ -152,7 +152,7 @@ namespace Flux {
         glViewport(0, 0, windowSize.width, windowSize.height);
         LOG("Rendering GBuffer");
         gBuffer.bind();
-        setShader(GBUFFER);
+        gBufferShader->bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         setCamera(*scene.getMainCamera());
         nvtxRangePushA("GBuffer");

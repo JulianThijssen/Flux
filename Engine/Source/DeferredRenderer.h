@@ -61,6 +61,8 @@ namespace Flux {
         void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);
 
+        std::unique_ptr<Shader> gBufferShader;
+
         GBuffer gBuffer;
         std::unique_ptr<Framebuffer> shadowBuffer;
         IblSceneInfo iblSceneInfo;
