@@ -37,6 +37,27 @@ namespace Flux {
 
             json j3 = json::parse(cont);
 
+            if (j3.find("sun") != j3.end()) {
+                json& element = j3["sun"];
+                std::cout << element << std::endl;
+                json& rad = element["radiance"];
+                Vector3f radiance(rad[0], rad[1], rad[2]);
+                json& dir = element["direction"];
+                Vector3f direction(dir[0], dir[1], dir[2]);
+                
+                Entity* light = new Entity();
+                DirectionalLight* dirLight = new DirectionalLight();
+                dirLight->color.set(radiance);
+                dirLight->direction.set(direction);
+                dirLight->direction.normalise();
+                light->addComponent(dirLight);
+                light->addComponent(new Camera(-20, 20, -20, 20, -50, 50));
+                Transform* t1 = new Transform();
+                t1->position.set(-4, 0, 16);
+                t1->rotation.set(-30, 160, 0);
+                light->addComponent(t1);
+                scene.entities.push_back(light);
+            }
             if (j3.find("skysphere") != j3.end()) {
                 std::string path = j3["skysphere"].get<std::string>();
                 scene.skysphere = new Skysphere(path);
@@ -178,19 +199,6 @@ namespace Flux {
             mainCamera->addComponent(camT);
             mainCamera->addComponent(new Camera(60, 1920.0f / 1080, 0.1f, 400.f));
             scene.entities.push_back(mainCamera);
-
-            Entity* light = new Entity();
-            DirectionalLight* dirLight = new DirectionalLight();
-            dirLight->color.set(10, 4, 1.5f);
-            dirLight->direction.set(-0.471409702f, -0.5061866455f, 0.722182783f);
-            dirLight->direction.normalise();
-            light->addComponent(dirLight);
-            light->addComponent(new Camera(-20, 20, -20, 20, -50, 50));
-            Transform* t1 = new Transform();
-            t1->position.set(-4, 0, 16);
-            t1->rotation.set(-30, 160, 0);
-            light->addComponent(t1);
-            scene.entities.push_back(light);
 
             //Entity* light2 = new Entity();
             //PointLight* pointLight = new PointLight();
