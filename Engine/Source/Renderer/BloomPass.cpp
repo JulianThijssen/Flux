@@ -22,7 +22,7 @@ namespace Flux {
         this->target = target;
     }
 
-    void BloomPass::render(const Scene& scene)
+    void BloomPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -34,8 +34,7 @@ namespace Flux {
         shader->uniform1f("threshold", 0);
 
         target->bind();
-        glBindVertexArray(Renderer::quadVao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        renderState.drawQuad();
 
         nvtxRangePop();
     }

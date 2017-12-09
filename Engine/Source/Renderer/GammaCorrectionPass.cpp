@@ -22,7 +22,7 @@ namespace Flux {
         this->target = target;
     }
 
-    void GammaCorrectionPass::render(const Scene& scene)
+    void GammaCorrectionPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -31,7 +31,7 @@ namespace Flux {
         source->bind(TextureUnit::TEXTURE);
         shader->uniform1i("tex", TextureUnit::TEXTURE);
         target->bind();
-        RenderState::drawQuad();
+        renderState.drawQuad();
 
         nvtxRangePop();
     }

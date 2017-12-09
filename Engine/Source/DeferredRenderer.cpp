@@ -143,7 +143,7 @@ namespace Flux {
         gBuffer.bind();
         gBufferShader->bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        setCamera(*gBufferShader, *scene.getMainCamera());
+        renderState.setCamera(*gBufferShader, *scene.getMainCamera());
         nvtxRangePushA("GBuffer");
         renderScene(scene, *gBufferShader);
         nvtxRangePop();
@@ -153,10 +153,9 @@ namespace Flux {
 
         globalIllumination(scene);
         directLighting(scene);
-        areaLightPass->SetGBuffer(&gBuffer);
-        areaLightPass->render(scene);
+
         glDepthMask(true);
-        skyPass->render(scene);
+        skyPass->render(renderState, scene);
         applyPostprocess(scene);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -169,7 +168,7 @@ namespace Flux {
 
         indirectLightPass->SetGBuffer(&gBuffer);
 
-        indirectLightPass->render(scene);
+        indirectLightPass->render(renderState, scene);
 
         switchBuffers();
 
@@ -182,7 +181,7 @@ namespace Flux {
         ssaoPass->SetSsaoInfo(&ssaoInfo);
         ssaoPass->SetWindowSize(&windowSize);
 
-        ssaoPass->render(scene);
+        ssaoPass->render(renderState, scene);
     }
 
     void DeferredRenderer::multiply(const Scene& scene) {
@@ -193,13 +192,17 @@ namespace Flux {
             ssaoInfo.getCurrentBuffer()->getColorTexture(0)
         };
         multiplyPass->SetTextures(v);
-        multiplyPass->render(scene);
+        multiplyPass->render(renderState, scene);
     }
 
     void DeferredRenderer::directLighting(const Scene& scene) {
         directLightPass->SetGBuffer(&gBuffer);
 
-        directLightPass->render(scene);
+        directLightPass->render(renderState, scene);
+
+        areaLightPass->SetGBuffer(&gBuffer);
+
+        //areaLightPass->render(scene);
     }
 
     void DeferredRenderer::renderScene(const Scene& scene, Shader& shader) {
@@ -229,25 +232,25 @@ namespace Flux {
         Transform* transform = e->getComponent<Transform>();
         Mesh* mesh = e->getComponent<Mesh>();
 
-        modelMatrix.setIdentity();
+        renderState.modelMatrix.setIdentity();
 
         if (e->hasComponent<AttachedTo>()) {
             Entity* parent = scene.getEntityById(e->getComponent<AttachedTo>()->parentId);
 
             if (parent != nullptr) {
                 Transform* parentT = parent->getComponent<Transform>();
-                modelMatrix.translate(parentT->position);
-                modelMatrix.rotate(parentT->rotation);
-                modelMatrix.scale(parentT->scale);
+                renderState.modelMatrix.translate(parentT->position);
+                renderState.modelMatrix.rotate(parentT->rotation);
+                renderState.modelMatrix.scale(parentT->scale);
             }
         }
 
-        modelMatrix.translate(transform->position);
-        modelMatrix.rotate(transform->rotation);
-        modelMatrix.scale(transform->scale);
+        renderState.modelMatrix.translate(transform->position);
+        renderState.modelMatrix.rotate(transform->rotation);
+        renderState.modelMatrix.scale(transform->scale);
 
-        Matrix4f PVM = projMatrix * viewMatrix * modelMatrix;
-        shader.uniformMatrix4f("modelMatrix", modelMatrix);
+        Matrix4f PVM = renderState.projMatrix * renderState.viewMatrix * renderState.modelMatrix;
+        shader.uniformMatrix4f("modelMatrix", renderState.modelMatrix);
         shader.uniformMatrix4f("PVM", PVM);
 
         glBindVertexArray(mesh->handle);
@@ -278,20 +281,21 @@ namespace Flux {
         fogPass->SetTarget(&getCurrentFramebuffer());
         fogPass->SetFogColor(Vector3f(165.0f / 255, 96.0f / 255, 81.0f / 255));
 
-        fogPass->render(scene);
+        fogPass->render(renderState, scene);
     }
+
     void DeferredRenderer::bloom(const Scene& scene) {
         bloomPass->SetSource(&hdrBuffer->getColorTexture(0));
         bloomPass->SetTarget(&getCurrentHdrFramebuffer());
 
-        bloomPass->render(scene);
+        bloomPass->render(renderState, scene);
     }
 
     void DeferredRenderer::blur(const Scene& scene) {
         gaussianBlurPass->SetSource(&getCurrentHdrFramebuffer().getColorTexture(0));
         gaussianBlurPass->SetTarget(&getCurrentHdrFramebuffer());
 
-        gaussianBlurPass->render(scene);
+        gaussianBlurPass->render(renderState, scene);
     }
 
     void DeferredRenderer::tonemap(const Scene& scene) {
@@ -299,7 +303,7 @@ namespace Flux {
         tonemapPass->SetBloom(&getCurrentHdrFramebuffer().getColorTexture(0));
         tonemapPass->SetTarget(&getCurrentFramebuffer());
 
-        tonemapPass->render(scene);
+        tonemapPass->render(renderState, scene);
     }
 
     void DeferredRenderer::gammaCorrection(const Scene& scene) {
@@ -307,7 +311,7 @@ namespace Flux {
         switchBuffers();
         gammaCorrectionPass->SetTarget(&getCurrentFramebuffer());
 
-        gammaCorrectionPass->render(scene);
+        gammaCorrectionPass->render(renderState, scene);
     }
 
     void DeferredRenderer::antiAliasing(const Scene& scene) {
@@ -315,7 +319,7 @@ namespace Flux {
         switchBuffers();
         fxaaPass->SetTarget(&getCurrentFramebuffer());
 
-        fxaaPass->render(scene);
+        fxaaPass->render(renderState, scene);
     }
 
     void DeferredRenderer::colorGrading(const Scene& scene) {
@@ -323,7 +327,7 @@ namespace Flux {
         switchBuffers();
         colorGradingPass->SetTarget(&getCurrentFramebuffer());
 
-        colorGradingPass->render(scene);
+        colorGradingPass->render(renderState, scene);
     }
 
     void DeferredRenderer::renderDepth(const Scene& scene) {
@@ -334,7 +338,7 @@ namespace Flux {
         glClear(GL_DEPTH_BUFFER_BIT);
         glColorMask(false, false, false, false);
 
-        setCamera(*shadowShader, *scene.getMainCamera());
+        renderState.setCamera(*shadowShader, *scene.getMainCamera());
         renderScene(scene, *shadowShader);
 
         glColorMask(true, true, true, true);
@@ -359,9 +363,9 @@ namespace Flux {
             Camera* camera = entity->getComponent<Camera>();
             DirectionalLight* light = entity->getComponent<DirectionalLight>();
 
-            setCamera(*shadowShader, *entity);
+            renderState.setCamera(*shadowShader, *entity);
 
-            light->shadowSpace = Matrix4f::BIAS * projMatrix * viewMatrix;
+            light->shadowSpace = Matrix4f::BIAS * renderState.projMatrix * renderState.viewMatrix;
 
             shadowBuffer->addDepthTexture(light->shadowMap);
             glViewport(0, 0, light->shadowMap->getWidth(), light->shadowMap->getHeight());
@@ -380,6 +384,6 @@ namespace Flux {
         textureShader->bind();
         framebuffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
         textureShader->uniform1i("tex", TextureUnit::TEXTURE);
-        drawQuad();
+        renderState.drawQuad();
     }
 }

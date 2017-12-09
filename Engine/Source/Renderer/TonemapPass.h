@@ -22,7 +22,7 @@ namespace Flux
         void SetBloom(const Texture* bloom);
         void SetTarget(const Framebuffer* target);
 
-        void render(const Scene& scene) override;
+        void render(RenderState& renderState, const Scene& scene) override;
 
     private:
         std::unique_ptr<Shader> shader;

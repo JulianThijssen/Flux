@@ -27,7 +27,7 @@ namespace Flux {
         this->target = target;
     }
 
-    void ColorGradingPass::render(const Scene& scene)
+    void ColorGradingPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -38,7 +38,7 @@ namespace Flux {
         lut->bind(TextureUnit::TEXTURE1);
         shader->uniform1i("lut", TextureUnit::TEXTURE1);
         target->bind();
-        RenderState::drawQuad();
+        renderState.drawQuad();
 
         nvtxRangePop();
     }

@@ -27,7 +27,7 @@ namespace Flux {
         this->windowSize = windowSize;
     }
 
-    void FxaaPass::render(const Scene& scene)
+    void FxaaPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -38,7 +38,7 @@ namespace Flux {
         glGenerateMipmap(GL_TEXTURE_2D);
         shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
         target->bind();
-        RenderState::drawQuad();
+        renderState.drawQuad();
 
         nvtxRangePop();
     }

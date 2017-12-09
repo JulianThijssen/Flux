@@ -48,7 +48,7 @@ namespace Flux {
         this->target = target;
     }
 
-    void GaussianBlurPass::render(const Scene& scene)
+    void GaussianBlurPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
         
@@ -69,8 +69,7 @@ namespace Flux {
             blurBuffers[i]->bind();
             shader->uniform1i("mipmap", i + 1);
 
-            glBindVertexArray(Renderer::quadVao);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            renderState.drawQuad();
         }
         shader->uniform2f("direction", 0, 1);
         for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
@@ -83,8 +82,7 @@ namespace Flux {
             blurBuffers2[i]->bind();
             shader->uniform1i("mipmap", 0);
 
-            glBindVertexArray(Renderer::quadVao);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            renderState.drawQuad();
         }
         nvtxRangePop();
 
@@ -100,6 +98,6 @@ namespace Flux {
             blurBuffers2[3]->getColorTexture(0),
         };
         averagePass->SetTextures(v);
-        averagePass->render(scene);
+        averagePass->render(renderState, scene);
     }
 }

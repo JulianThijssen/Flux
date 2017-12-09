@@ -38,7 +38,7 @@ namespace Flux {
         this->windowSize = windowSize;
     }
 
-    void SSAOPass::render(const Scene& scene)
+    void SSAOPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -88,8 +88,7 @@ namespace Flux {
         ssaoShader->uniform2i("windowSize", windowSize->width / 2, windowSize->height / 2);
 
         ssaoInfo->getCurrentBuffer()->bind();
-        glBindVertexArray(Renderer::quadVao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        renderState.drawQuad();
 
         nvtxRangePushA("SSAO Blur");
         blurShader->bind();
@@ -100,8 +99,7 @@ namespace Flux {
 
         ssaoInfo->switchBuffers();
         ssaoInfo->getCurrentBuffer()->bind();
-        glBindVertexArray(Renderer::quadVao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        renderState.drawQuad();
 
         glViewport(0, 0, windowSize->width, windowSize->height);
         nvtxRangePop();

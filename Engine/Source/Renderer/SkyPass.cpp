@@ -15,7 +15,7 @@ namespace Flux {
         skysphereShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag"));
     }
 
-    void SkyPass::render(const Scene& scene)
+    void SkyPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -65,8 +65,7 @@ namespace Flux {
         shader->uniformMatrix4f("cameraBasis", cameraBasis);
 
         glDepthFunc(GL_LEQUAL);
-        glBindVertexArray(Renderer::quadVao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        renderState.drawQuad();
         glDepthFunc(GL_LESS);
 
         nvtxRangePop();

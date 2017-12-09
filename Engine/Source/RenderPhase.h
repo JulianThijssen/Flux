@@ -2,6 +2,7 @@
 #ifndef RENDER_PHASE_H
 #define RENDER_PHASE_H
 
+#include "Renderer/RenderState.h"
 #include "Util/String.h"
 
 #include "Scene.h"
@@ -36,7 +37,7 @@ namespace Flux {
             return enabled;
         }
 
-        virtual void render(const Scene& scene) = 0;
+        virtual void render(RenderState& renderState, const Scene& scene) = 0;
 
     private:
         String name;

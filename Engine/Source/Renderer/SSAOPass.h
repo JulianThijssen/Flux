@@ -24,7 +24,7 @@ namespace Flux
         void SetSsaoInfo(SsaoInfo* ssaoInfo);
         void SetWindowSize(const Size* size);
 
-        void render(const Scene& scene) override;
+        void render(RenderState& renderState, const Scene& scene) override;
 
     private:
         std::unique_ptr<Shader> ssaoShader;

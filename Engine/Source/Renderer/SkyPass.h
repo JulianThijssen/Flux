@@ -14,7 +14,7 @@ namespace Flux {
     public:
         SkyPass();
 
-        void render(const Scene& scene) override;
+        void render(RenderState& renderState, const Scene& scene) override;
 
     private:
         std::unique_ptr<Shader> skyboxShader;

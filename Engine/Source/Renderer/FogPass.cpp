@@ -32,7 +32,7 @@ namespace Flux {
         this->fogColor = fogColor;
     }
 
-    void FogPass::render(const Scene& scene)
+    void FogPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -48,7 +48,7 @@ namespace Flux {
         shader->uniform1f("zFar", camera->getZFar());
         shader->uniform3f("fogColor", fogColor);
         target->bind();
-        RenderState::drawQuad();
+        renderState.drawQuad();
 
         nvtxRangePop();
     }

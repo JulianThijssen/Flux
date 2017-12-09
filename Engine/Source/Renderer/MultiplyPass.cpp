@@ -23,7 +23,7 @@ namespace Flux {
         }
     }
 
-    void MultiplyPass::render(const Scene& scene)
+    void MultiplyPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -37,8 +37,7 @@ namespace Flux {
         shader->uniform1i("sourceCount", sourceCount);
         shader->uniform1iv("sources", sourceCount, units.data());
 
-        glBindVertexArray(Renderer::quadVao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        renderState.drawQuad();
 
         nvtxRangePop();
     }

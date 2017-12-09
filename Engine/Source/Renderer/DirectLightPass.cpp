@@ -24,13 +24,13 @@ namespace Flux {
         this->target = target;
     }
 
-    void DirectLightPass::render(const Scene& scene)
+    void DirectLightPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
         shader->bind();
 
-        RenderState::enable(BLENDING);
+        renderState.enable(BLENDING);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
 
@@ -87,10 +87,10 @@ namespace Flux {
                 continue;
             }
 
-            RenderState::drawQuad();
+            renderState.drawQuad();
         }
 
-        RenderState::disable(BLENDING);
+        renderState.disable(BLENDING);
 
         nvtxRangePop();
     }

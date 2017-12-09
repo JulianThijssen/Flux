@@ -62,6 +62,7 @@ namespace Flux {
 
         static GLuint quadVao;
     protected:
+        RenderState renderState;
         Vector3f clearColor;
 
         Matrix4f projMatrix;

@@ -24,7 +24,7 @@ namespace Flux
         void SetTarget(const Framebuffer* target);
         void Resize(const Size& windowSize);
 
-        void render(const Scene& scene) override;
+        void render(RenderState& renderState, const Scene& scene) override;
 
     private:
         std::unique_ptr<Shader> shader;

@@ -43,13 +43,13 @@ namespace Flux {
         this->target = target;
     }
 
-    void LtcLightPass::render(const Scene& scene)
+    void LtcLightPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
         shader->bind();
 
-        RenderState::enable(BLENDING);
+        renderState.enable(BLENDING);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
 
@@ -121,17 +121,20 @@ namespace Flux {
                     for (int i = 0; i < mesh->vertices.size(); i++) {
                         vertices.push_back(modelMatrix.transform(mesh->vertices[i], 1));
                     }
+                    Vector3f t = vertices[3];
+                    vertices[3] = vertices[2];
+                    vertices[2] = t;
 
                     shader->uniform1i("numVertices", vertices.size());
                     shader->uniform3fv("vertices", vertices.size(), vertices.data());
                     shader->uniform3f("emission", material->emission);
 
-                    RenderState::drawQuad();
+                    renderState.drawQuad();
                 }
             }
         }
 
-        RenderState::disable(BLENDING);
+        renderState.disable(BLENDING);
 
         nvtxRangePop();
     }

@@ -34,33 +34,14 @@ namespace Flux {
         this->target = target;
     }
 
-    void IndirectLightPass::render(const Scene& scene)
+    void IndirectLightPass::render(RenderState& renderState, const Scene& scene)
     {
         glClear(GL_COLOR_BUFFER_BIT);
         nvtxRangePushA(getPassName().c_str());
         shader->bind();
 
-        ///
-        Entity* camera = scene.getMainCamera();
-        Transform* ct = camera->getComponent<Transform>();
-        Camera* cam = camera->getComponent<Camera>();
-
-        // Set the projection matrix from the camera parameters
-        Matrix4f projMatrix;
-        camera->getComponent<Camera>()->loadProjectionMatrix(projMatrix);
-
-        // Set the view matrix to the camera view
-        Matrix4f viewMatrix;
-        viewMatrix.setIdentity();
-        viewMatrix.rotate(-ct->rotation);
-        viewMatrix.translate(-ct->position);
-
+        Transform* ct = scene.getMainCamera()->getComponent<Transform>();
         shader->uniform3f("camPos", ct->position);
-        shader->uniformMatrix4f("projMatrix", projMatrix);
-        shader->uniformMatrix4f("viewMatrix", viewMatrix);
-        shader->uniform1f("zNear", cam->getZNear());
-        shader->uniform1f("zFar", cam->getZFar());
-        ///
 
         gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
         shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
@@ -80,7 +61,7 @@ namespace Flux {
         iblSceneInfo.scaleBiasTexture->bind(TextureUnit::SCALEBIAS);
         shader->uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
 
-        RenderState::drawQuad();
+        renderState.drawQuad();
 
         nvtxRangePop();
     }

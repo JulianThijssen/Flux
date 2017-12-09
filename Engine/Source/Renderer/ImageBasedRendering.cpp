@@ -3,7 +3,7 @@
 #include "Framebuffer.h"
 #include "Shader.h"
 #include "ShaderLoader.h"
-#include "Renderer.h"
+#include "Renderer/RenderState.h"
 
 #include "Exceptions/ShaderCompilationException.h"
 #include "Exceptions/ShaderLinkException.h"
@@ -50,7 +50,7 @@ namespace Flux
             framebuffer.setCubemap(getHandle(), i, 0);
             framebuffer.validate();
 
-            glBindVertexArray(Renderer::quadVao);
+            glBindVertexArray(RenderState::quadVao);
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
         framebuffer.release();

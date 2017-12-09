@@ -27,7 +27,7 @@ namespace Flux {
         this->target = target;
     }
 
-    void TonemapPass::render(const Scene& scene)
+    void TonemapPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
@@ -40,8 +40,7 @@ namespace Flux {
 
         target->bind();
 
-        glBindVertexArray(Renderer::quadVao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        renderState.drawQuad();
 
         nvtxRangePop();
     }
