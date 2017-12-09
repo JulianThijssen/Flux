@@ -5,6 +5,7 @@
 #include "TextureUnit.h"
 #include "Texture.h"
 #include "Framebuffer.h"
+#include "Matrix4f.h"
 
 #include "DirectionalLight.h"
 
@@ -69,7 +70,13 @@ namespace Flux {
             Transform* transform = light->getComponent<Transform>();
 
             if (directionalLight) {
-                shader->uniform3f("dirLight.direction", directionalLight->direction);
+                Matrix4f pitchMatrix;
+                pitchMatrix.rotate(transform->rotation.x, 1, 0, 0);
+                Matrix4f yawMatrix;
+                yawMatrix.rotate(transform->rotation.y, 0, 1, 0);
+                Vector3f direction = (yawMatrix * pitchMatrix * Vector3f(0, 0, -1)).normalise();
+
+                shader->uniform3f("dirLight.direction", direction);
                 shader->uniform3f("dirLight.color", directionalLight->color);
                 shader->uniform1i("isDirLight", true);
                 shader->uniform1i("isPointLight", false);

@@ -39,22 +39,17 @@ namespace Flux {
 
             if (j3.find("sun") != j3.end()) {
                 json& element = j3["sun"];
-                std::cout << element << std::endl;
+
                 json& rad = element["radiance"];
-                Vector3f radiance(rad[0], rad[1], rad[2]);
-                json& dir = element["direction"];
-                Vector3f direction(dir[0], dir[1], dir[2]);
+                json& dir = element["rotation"];
                 
                 Entity* light = new Entity();
                 DirectionalLight* dirLight = new DirectionalLight();
-                dirLight->color.set(radiance);
-                dirLight->direction.set(direction);
-                dirLight->direction.normalise();
+                dirLight->color.set(rad[0], rad[1], rad[2]);
                 light->addComponent(dirLight);
                 light->addComponent(new Camera(-20, 20, -20, 20, -50, 50));
                 Transform* t1 = new Transform();
-                t1->position.set(-4, 0, 16);
-                t1->rotation.set(-30, 160, 0);
+                t1->rotation.set(dir[0], dir[1], dir[2]);
                 light->addComponent(t1);
                 scene.entities.push_back(light);
             }
