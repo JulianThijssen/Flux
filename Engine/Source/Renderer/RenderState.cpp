@@ -29,18 +29,22 @@ namespace Flux {
         Transform* ct = camera.getComponent<Transform>();
         Camera* cam = camera.getComponent<Camera>();
 
+        setCamera(shader, *ct, *cam);
+    }
+
+    void RenderState::setCamera(Shader& shader, Transform& t, Camera& cam) {
         // Set the projection matrix from the camera parameters
-        camera.getComponent<Camera>()->loadProjectionMatrix(projMatrix);
+        cam.loadProjectionMatrix(projMatrix);
 
         // Set the view matrix to the camera view
         viewMatrix.setIdentity();
-        viewMatrix.rotate(-ct->rotation);
-        viewMatrix.translate(-ct->position);
+        viewMatrix.rotate(-t.rotation);
+        viewMatrix.translate(-t.position);
 
-        shader.uniform3f("camPos", ct->position);
+        shader.uniform3f("camPos", t.position);
         shader.uniformMatrix4f("projMatrix", projMatrix);
         shader.uniformMatrix4f("viewMatrix", viewMatrix);
-        shader.uniform1f("zNear", cam->getZNear());
-        shader.uniform1f("zFar", cam->getZFar());
+        shader.uniform1f("zNear", cam.getZNear());
+        shader.uniform1f("zFar", cam.getZFar());
     }
 }

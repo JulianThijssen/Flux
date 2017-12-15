@@ -10,6 +10,8 @@
 namespace Flux {
     class Shader;
     class Entity;
+    class Transform;
+    class Camera;
 
     enum Capability {
         BLENDING = GL_BLEND,
@@ -36,6 +38,7 @@ namespace Flux {
         
         void drawQuad() const;
         void setCamera(Shader& shader, Entity& camera);
+        void setCamera(Shader& shader, Transform& t, Camera& cam);
 
         Matrix4f projMatrix;
         Matrix4f viewMatrix;
