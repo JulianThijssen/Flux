@@ -2,9 +2,12 @@
 #ifndef DIRECTIONAL_LIGHT_H
 #define DIRECTIONAL_LIGHT_H
 
+#include "Framebuffer.h"
 #include "Component.h"
 #include "Vector3f.h"
 #include "Matrix4f.h"
+
+#include <memory>
 
 namespace Flux {
     class DirectionalLight : public Component {
@@ -23,6 +26,7 @@ namespace Flux {
 
         Texture* shadowMap;
         Matrix4f shadowSpace;
+        std::unique_ptr<Framebuffer> shadowBuffer;
     };
 }
 

@@ -102,17 +102,19 @@ namespace Flux {
     }
 
     void DeferredRenderer::createShadowMaps(const Scene& scene) {
-        shadowBuffer = std::make_unique<Framebuffer>(4096, 4096);
-        shadowBuffer->bind();
-        shadowBuffer->disableColor();
-        shadowBuffer->release();
-
         for (Entity* entity : scene.lights) {
             Transform* t = entity->getComponent<Transform>();
             Camera* camera = entity->getComponent<Camera>();
-            DirectionalLight* light = entity->getComponent<DirectionalLight>();
+            DirectionalLight* dirLight = entity->getComponent<DirectionalLight>();
+            PointLight* pointLight = entity->getComponent<PointLight>();
 
-            light->shadowMap = TextureLoader::createShadowMap(4096, 4096);
+            if (dirLight) {
+                dirLight->shadowBuffer = std::make_unique<Framebuffer>(4096, 4096);
+                dirLight->shadowBuffer->bind();
+                dirLight->shadowBuffer->disableColor();
+                dirLight->shadowBuffer->release();
+                dirLight->shadowMap = TextureLoader::createShadowMap(4096, 4096);
+            }
         }
     }
 
@@ -351,8 +353,6 @@ namespace Flux {
 
         shadowShader->bind();
 
-        shadowBuffer->bind();
-        glClear(GL_DEPTH_BUFFER_BIT);
         glColorMask(false, false, false, false);
 
         glPolygonOffset(2.5f, 10.0f);
@@ -361,16 +361,24 @@ namespace Flux {
         for (Entity* entity : scene.lights) {
             Transform* t = entity->getComponent<Transform>();
             Camera* camera = entity->getComponent<Camera>();
-            DirectionalLight* light = entity->getComponent<DirectionalLight>();
+            DirectionalLight* dirLight = entity->getComponent<DirectionalLight>();
+            PointLight* pointLight = entity->getComponent<PointLight>();
 
-            renderState.setCamera(*shadowShader, *entity);
+            if (dirLight) {
+                renderState.setCamera(*shadowShader, *entity);
 
-            light->shadowSpace = Matrix4f::BIAS * renderState.projMatrix * renderState.viewMatrix;
+                dirLight->shadowSpace = Matrix4f::BIAS * renderState.projMatrix * renderState.viewMatrix;
 
-            shadowBuffer->addDepthTexture(light->shadowMap);
-            glViewport(0, 0, light->shadowMap->getWidth(), light->shadowMap->getHeight());
+                dirLight->shadowBuffer->bind();
+                dirLight->shadowBuffer->addDepthTexture(dirLight->shadowMap);
+                glViewport(0, 0, dirLight->shadowMap->getWidth(), dirLight->shadowMap->getHeight());
 
-            renderScene(scene, *shadowShader);
+                glClear(GL_DEPTH_BUFFER_BIT);
+
+                renderScene(scene, *shadowShader);
+            }
+
+
         }
         disable(POLYGON_OFFSET);
 

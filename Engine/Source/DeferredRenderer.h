@@ -66,7 +66,6 @@ namespace Flux {
         std::unique_ptr<Shader> textureShader;
 
         GBuffer gBuffer;
-        std::unique_ptr<Framebuffer> shadowBuffer;
 
         AveragePass* averagePass;
         MultiplyPass* multiplyPass;
