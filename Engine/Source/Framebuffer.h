@@ -52,6 +52,10 @@ namespace Flux {
             glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture.handle, 0);
         }
 
+        void setDepthCubemap(Cubemap* cubemap, unsigned int face, int mipmapLevel) {
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cubemap->getHandle(), mipmapLevel);
+        }
+
         void setCubemap(GLuint texture, unsigned int face, int mipmapLevel) {
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, texture, mipmapLevel);
         }
