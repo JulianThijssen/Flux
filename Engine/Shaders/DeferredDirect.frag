@@ -137,9 +137,10 @@ void main() {
     vec3 Li = vec3(1, 1, 1);
     float Attenuation = 1;
     if (isPointLight) {
-        vec3 dir = pointLight.position - P;
-        float distance = dot(dir, dir);
-        Attenuation = CosTheta(N, normalize(L)) * 1 / distance;
+        L = pointLight.position - P;
+        float distance = dot(L, L);
+        L = normalize(L);
+        Attenuation = CosTheta(N, L) * 1 / distance;
         Li = pointLight.color;
     }
     if (isDirLight) {
@@ -147,6 +148,7 @@ void main() {
         Attenuation = CosTheta(N, L);
         Li = dirLight.color;
     }
+
     vec3 H = normalize(L + V);
     
     float visibility = textureProj(dirLight.shadowMap, S);
