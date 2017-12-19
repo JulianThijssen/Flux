@@ -1,12 +1,12 @@
 #include "Shader.h"
 
-#include "Vector3f.h"
-#include "Matrix4f.h"
+#include "Util/Vector3f.h"
+#include "Util/Matrix4f.h"
 
 #include "ShaderLoader.h"
 #include "Exceptions/ShaderCompilationException.h"
 #include "Exceptions/ShaderLinkException.h"
-#include "Log.h"
+#include "Util/Log.h"
 
 namespace Flux {
     Shader::Shader(GLuint handle) {

@@ -12,7 +12,7 @@
 
 #include "Window.h"
 
-#include "Log.h"
+#include "Util/Log.h"
 #include "Input/Input.h"
 #include <iostream>
 

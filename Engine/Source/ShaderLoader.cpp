@@ -15,8 +15,8 @@
 #include "Exceptions/ShaderCompilationException.h"
 #include "Exceptions/ShaderLinkException.h"
 
-#include "Log.h"
-#include "File.h"
+#include "Util/Log.h"
+#include "Util/File.h"
 #include "Util/String.h"
 
 #include <glad/glad.h>

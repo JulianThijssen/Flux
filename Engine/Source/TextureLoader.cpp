@@ -1,7 +1,7 @@
 #include "TextureLoader.h"
 
-#include "Path.h"
-#include "Log.h"
+#include "Util/Path.h"
+#include "Util/Log.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

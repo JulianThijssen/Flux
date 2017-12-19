@@ -1,9 +1,9 @@
 #include "Skybox.h"
 
-#include "Vector3f.h"
+#include "Util/Vector3f.h"
 
 #include "Transform.h"
-#include "Matrix4f.h"
+#include "Util/Matrix4f.h"
 
 #include <glad/glad.h>
 

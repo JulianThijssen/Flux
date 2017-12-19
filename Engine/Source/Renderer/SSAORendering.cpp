@@ -1,6 +1,6 @@
 #include "Renderer/SSAORendering.h"
 
-#include "Vector3f.h"
+#include "Util/Vector3f.h"
 #include "TextureLoader.h"
 
 #include "Framebuffer.h"
