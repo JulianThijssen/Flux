@@ -3,7 +3,7 @@
 #define MATERIAL_LOADER_H
 
 #include "Material.h"
-#include "Path.h"
+#include "Util/Path.h"
 
 namespace Flux {
     class MaterialLoader {

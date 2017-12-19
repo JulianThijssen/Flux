@@ -3,14 +3,14 @@
 #define RENDERER_H
 
 #include "Shader.h"
-#include "Matrix4f.h"
+#include "Util/Matrix4f.h"
 #include "Scene.h"
 #include "Skybox.h"
 
 #include "RenderPhase.h"
 #include "Framebuffer.h"
 #include "Texture.h"
-#include "Size.h"
+#include "Util/Size.h"
 #include "Renderer/RenderState.h"
 
 #include <vector>

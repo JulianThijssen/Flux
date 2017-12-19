@@ -2,8 +2,8 @@
 #ifndef RENDERER_STATE_H
 #define RENDERER_STATE_H
 
-#include "Matrix4f.h"
-#include "Vector3f.h"
+#include "Util/Matrix4f.h"
+#include "Util/Vector3f.h"
 
 #include <glad/glad.h>
 

@@ -5,7 +5,7 @@
 #include "RenderPhase.h"
 
 #include "Shader.h"
-#include "Size.h"
+#include "Util/Size.h"
 
 #include <memory>
 

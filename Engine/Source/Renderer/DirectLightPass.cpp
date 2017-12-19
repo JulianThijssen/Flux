@@ -5,7 +5,7 @@
 #include "TextureUnit.h"
 #include "Texture.h"
 #include "Framebuffer.h"
-#include "Matrix4f.h"
+#include "Util/Matrix4f.h"
 
 #include "DirectionalLight.h"
 

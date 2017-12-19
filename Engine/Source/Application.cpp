@@ -10,8 +10,8 @@
 #include "DeferredRenderer.h"
 #include "FirstPersonView.h"
 #include "SceneLoader.h"
-#include "Path.h"
-#include "Size.h"
+#include "Util/Path.h"
+#include "Util/Size.h"
 
 #include <ctime>
 #include <iostream>

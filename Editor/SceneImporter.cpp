@@ -11,8 +11,8 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "MeshRenderer.h"
-#include "Path.h"
-#include "File.h"
+#include "Util/Path.h"
+#include "Util/File.h"
 
 #include "TextureLoader.h"
 

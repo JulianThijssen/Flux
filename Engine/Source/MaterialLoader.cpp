@@ -2,10 +2,10 @@
 
 #include "Material.h"
 #include "Util/String.h"
-#include "File.h"
+#include "Util/File.h"
 
 #include "TextureLoader.h"
-#include "Path.h"
+#include "Util/Path.h"
 
 #include <vector>
 #include <iostream>

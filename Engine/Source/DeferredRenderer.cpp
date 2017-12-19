@@ -27,12 +27,12 @@
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
-#include "Path.h"
-#include "Size.h"
+#include "Util/Path.h"
+#include "Util/Size.h"
 
 #include <iostream>
 
-#include "Matrix4f.h"
+#include "Util/Matrix4f.h"
 #include "nvToolsExt.h"
 
 //#define DEBUG_MODE

@@ -2,7 +2,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "Vector2f.h"
+#include "Util/Vector2f.h"
 
 namespace Flux {
     class Input {

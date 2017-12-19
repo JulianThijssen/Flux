@@ -5,7 +5,7 @@
 #include "Texture.h"
 #include "TextureLoader.h"
 #include "Cubemap.h"
-#include "Log.h"
+#include "Util/Log.h"
 
 #include <glad/glad.h>
 #include <vector>

@@ -3,8 +3,8 @@
 #define EDITOR_MESH_H
 
 #include "Component.h"
-#include "Vector3f.h"
-#include "Vector2f.h"
+#include "Util/Vector3f.h"
+#include "Util/Vector2f.h"
 
 #include <vector>
 #include <string>

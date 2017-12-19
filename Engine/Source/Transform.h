@@ -3,7 +3,7 @@
 #define TRANSFORM_H
 
 #include "Component.h"
-#include "Vector3f.h"
+#include "Util/Vector3f.h"
 
 namespace Flux {
     class Transform : public Component {

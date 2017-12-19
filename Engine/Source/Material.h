@@ -3,7 +3,7 @@
 #define MATERIAL_H
 
 #include "Texture.h"
-#include "Vector3f.h"
+#include "Util/Vector3f.h"
 
 namespace Flux {
     class Shader;

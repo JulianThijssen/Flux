@@ -2,7 +2,7 @@
 #include "MaterialLoader.h"
 #include "TextureLoader.h"
 
-#include "Path.h"
+#include "Util/Path.h"
 #include "Scene.h"
 #include "Skybox.h"
 

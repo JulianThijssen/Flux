@@ -53,21 +53,21 @@ set(COMPONENTS
 )
 
 set(UTIL
-    ${DIR}/File.h
-    ${DIR}/Log.h
-    ${DIR}/Log.cpp
+    ${DIR}/Util/File.h
+    ${DIR}/Util/Log.h
+    ${DIR}/Util/Log.cpp
     ${DIR}/Util/Math.h
     ${DIR}/Util/Math.cpp
-    ${DIR}/Matrix4f.h
-    ${DIR}/Matrix4f.cpp
-    ${DIR}/Path.h
-    ${DIR}/Path.cpp
-    ${DIR}/Size.h
+    ${DIR}/Util/Matrix4f.h
+    ${DIR}/Util/Matrix4f.cpp
+    ${DIR}/Util/Path.h
+    ${DIR}/Util/Path.cpp
+    ${DIR}/Util/Size.h
     ${DIR}/Util/String.h
-    ${DIR}/Vector2f.h
-    ${DIR}/Vector3f.h
-    ${DIR}/Vector2f.cpp
-    ${DIR}/Vector3f.cpp
+    ${DIR}/Util/Vector2f.h
+    ${DIR}/Util/Vector3f.h
+    ${DIR}/Util/Vector2f.cpp
+    ${DIR}/Util/Vector3f.cpp
     PARENT_SCOPE
 )
 

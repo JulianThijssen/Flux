@@ -8,8 +8,8 @@
 #include "Transform.h"
 #include "Camera.h"
 
-#include "Matrix4f.h"
-#include "Size.h"
+#include "Util/Matrix4f.h"
+#include "Util/Size.h"
 
 #include <glad/glad.h>
 

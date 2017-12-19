@@ -4,7 +4,7 @@
 #include "Skybox.h"
 #include "Skysphere.h"
 
-#include "Path.h"
+#include "Util/Path.h"
 
 #include "AssetManager.h"
 #include "Transform.h"

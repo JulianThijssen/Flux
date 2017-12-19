@@ -6,8 +6,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 
-#include "Log.h"
-#include "Path.h"
+#include "Util/Log.h"
+#include "Util/Path.h"
 #include "Mesh.h"
 
 #include <vector>

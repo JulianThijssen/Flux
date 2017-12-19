@@ -5,7 +5,7 @@
 #include "Script.h"
 #include "Scene.h"
 
-#include "Vector2f.h"
+#include "Util/Vector2f.h"
 
 namespace Flux {
     class FirstPersonView : public Script {

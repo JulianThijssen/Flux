@@ -8,7 +8,7 @@
 #include "Framebuffer.h"
 
 #include "TextureLoader.h"
-#include "Path.h"
+#include "Util/Path.h"
 
 namespace Flux {
     ColorGradingPass::ColorGradingPass() : RenderPhase("Color Grading")
