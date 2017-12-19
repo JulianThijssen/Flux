@@ -115,6 +115,14 @@ namespace Flux {
                 dirLight->shadowBuffer->release();
                 dirLight->shadowMap = TextureLoader::createShadowMap(4096, 4096);
             }
+            if (pointLight) {
+                pointLight->shadowBuffer = std::make_unique<Framebuffer>(512, 512);
+                pointLight->shadowBuffer->bind();
+                pointLight->shadowBuffer->disableColor();
+                pointLight->shadowBuffer->release();
+                pointLight->shadowMap = new Cubemap();
+                pointLight->shadowMap->createShadowMap(512);
+            }
         }
     }
 
@@ -377,8 +385,34 @@ namespace Flux {
 
                 renderScene(scene, *shadowShader);
             }
+            if (pointLight) {
+                Camera cam(90, 1, 0.1, 100);
 
+                pointLight->shadowBuffer->bind();
+                pointLight->shadowBuffer->disableColor();
 
+                // Set the clear depth to be the furthest distance possible
+                glClearDepth(1);
+
+                // Set the viewport to the size of the shadow map
+                glViewport(0, 0, pointLight->shadowMap->getResolution(), pointLight->shadowMap->getResolution());
+
+                for (int i = 0; i < 6; i++) {
+                    Vector3f rotation = pointLight->transforms[i];
+                    t->rotation.set(rotation);
+
+                    renderState.setCamera(*shadowShader, *t, cam);
+
+                    // Set up the framebuffer and validate it
+                    pointLight->shadowBuffer->setDepthCubemap(pointLight->shadowMap, i, 0);
+                    pointLight->shadowBuffer->validate();
+
+                    // Clear the framebuffer and render the scene from the view of the light
+                    glClear(GL_DEPTH_BUFFER_BIT);
+
+                    renderScene(scene, *shadowShader);
+                }
+            }
         }
         disable(POLYGON_OFFSET);
 
