@@ -72,6 +72,8 @@ namespace Flux {
                 shader->uniform3f("pointLight.color", pointLight->color);
                 shader->uniform1i("isPointLight", true);
                 shader->uniform1i("isDirLight", false);
+                pointLight->shadowMap->bind(TextureUnit::TEXTURE7);
+                shader->uniform1i("pointLight.shadowMap", TextureUnit::TEXTURE7);
             }
             else {
                 continue;
