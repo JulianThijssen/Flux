@@ -51,7 +51,7 @@ namespace Flux {
                 Transform* t1 = new Transform();
                 t1->rotation.set(dir[0], dir[1], dir[2]);
                 light->addComponent(t1);
-                scene.entities.push_back(light);
+                scene.addEntity(light);
             }
             if (j3.find("skysphere") != j3.end()) {
                 std::string path = j3["skysphere"].get<std::string>();
@@ -193,16 +193,16 @@ namespace Flux {
             camT->rotation.set(0, -90, 0);
             mainCamera->addComponent(camT);
             mainCamera->addComponent(new Camera(60, 1920.0f / 1080, 0.1f, 400.f));
-            scene.entities.push_back(mainCamera);
+            scene.addEntity(mainCamera);
 
-            //Entity* light2 = new Entity();
-            //PointLight* pointLight = new PointLight();
-            //pointLight->color.set(0.4, 0.4, 0.6);
-            //light2->addComponent(pointLight);
-            //Transform* t2 = new Transform();
-            //t2->position.set(5, 4, 10);
-            //light2->addComponent(t2);
-            //scene.entities.push_back(light2);
+            Entity* light2 = new Entity();
+            PointLight* pointLight = new PointLight();
+            pointLight->color.set(0, 80, 0.6);
+            light2->addComponent(pointLight);
+            Transform* t2 = new Transform();
+            t2->position.set(5, 8, 10);
+            light2->addComponent(t2);
+            scene.addEntity(light2);
 
             clockEnd = clock();
             elapsed = double(clockEnd - clockStart) / CLOCKS_PER_SEC;
