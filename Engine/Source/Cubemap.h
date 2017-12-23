@@ -73,6 +73,8 @@ namespace Flux {
         }
 
         void createShadowMap(const int resolution) {
+            this->resolution = resolution;
+
             glGenTextures(1, &handle);
 
             glBindTexture(GL_TEXTURE_CUBE_MAP, handle);
