@@ -15,6 +15,7 @@ struct DirectionalLight {
 struct PointLight {
     vec3 position;
     vec3 color;
+    samplerCubeShadow shadowMap;
 };
 
 uniform sampler2D albedoMap;
@@ -121,6 +122,16 @@ vec3 CookTorrance(vec3 N, vec3 V, vec3 H, vec3 L, vec3 BaseColor, float Metalnes
     return (D * F * G) / (4.0 * NdotL * NdotV);
 }
 
+float vecToDepthVal(vec3 v) {
+	vec3 absVec = abs(v);
+	float locZcomp = max(absVec.x, max(absVec.y, absVec.z));
+	
+	float f = 400;
+	float n = 0.1;
+	float normZcomp = (f + n) / (f - n) - (2*f*n) / (f-n) / locZcomp;
+	return (normZcomp + 1.0) * 0.5;
+}
+
 void main() {
     vec3 BaseColor = toLinear(texture(albedoMap, pass_texCoords).rgb);
     float Roughness = texture(albedoMap, pass_texCoords).w;
@@ -135,10 +146,12 @@ void main() {
     
     vec3 L;
     vec3 Li = vec3(1, 1, 1);
+    float visibility = 1;
     float Attenuation = 1;
     if (isPointLight) {
         L = pointLight.position - P;
         float distance = dot(L, L);
+        visibility = texture(pointLight.shadowMap, vec4(-L, vecToDepthVal(L)));
         L = normalize(L);
         Attenuation = CosTheta(N, L) * 1 / distance;
         Li = pointLight.color;
@@ -147,11 +160,10 @@ void main() {
         L = -dirLight.direction;
         Attenuation = CosTheta(N, L);
         Li = dirLight.color;
+        visibility = textureProj(dirLight.shadowMap, S);
     }
 
     vec3 H = normalize(L + V);
-    
-    float visibility = textureProj(dirLight.shadowMap, S);
     
     // Lambert Diffuse BRDF
     vec3 LambertBRDF = (BaseColor / PI) * (1 - Metalness);
