@@ -107,10 +107,9 @@ namespace Flux {
                 modelMatrix.scale(transform->scale);
 
                 std::vector<Vector3f> vertices;
-                vertices.push_back(modelMatrix.transform(Vector3f(-1, -1, 0), 1));
-                vertices.push_back(modelMatrix.transform(Vector3f(1, -1, 0), 1));
-                vertices.push_back(modelMatrix.transform(Vector3f(1, 1, 0), 1));
-                vertices.push_back(modelMatrix.transform(Vector3f(-1, 1, 0), 1));
+                for (Vector3f vertex : areaLight->vertices) {
+                    vertices.push_back(modelMatrix.transform(vertex, 1));
+                }
 
                 shader->uniform3f("areaLight.color", areaLight->color);
                 shader->uniform3fv("areaLight.vertices", vertices.size(), vertices.data());
