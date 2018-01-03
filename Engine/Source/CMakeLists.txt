@@ -49,6 +49,7 @@ set(COMPONENTS
     ${DIR}/MeshRenderer.h
     ${DIR}/PointLight.h
     ${DIR}/Transform.h
+    ${DIR}/AreaLight.h
     PARENT_SCOPE
 )
 

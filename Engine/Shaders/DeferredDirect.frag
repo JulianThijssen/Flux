@@ -1,6 +1,7 @@
 #version 150 core
 
 #define PI 3.14159265359
+#define EPSILON 0.0001
 
 #define D_GGX
 #define G_Schlick
@@ -18,6 +19,13 @@ struct PointLight {
     samplerCubeShadow shadowMap;
 };
 
+struct AreaLight {
+    vec3 color;
+    vec3 vertices[4];
+    sampler2D ampTex;
+    sampler2D matTex;
+};
+
 uniform sampler2D albedoMap;
 uniform sampler2D normalMap;
 uniform sampler2D positionMap;
@@ -26,9 +34,11 @@ uniform mat4 modelMatrix;
 
 uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
+uniform AreaLight areaLight;
 
 uniform bool isPointLight;
 uniform bool isDirLight;
+uniform bool isAreaLight;
 
 uniform vec3 camPos;
 
@@ -148,6 +158,10 @@ void main() {
     vec3 Li = vec3(1, 1, 1);
     float visibility = 1;
     float Attenuation = 1;
+    
+    // Lambert Diffuse BRDF
+    vec3 LambertBRDF = (BaseColor / PI) * (1 - Metalness);
+
     if (isPointLight) {
         L = pointLight.position - P;
         float distance = dot(L, L);
@@ -162,11 +176,44 @@ void main() {
         Li = dirLight.color;
         visibility = textureProj(dirLight.shadowMap, S);
     }
+    if (isAreaLight) {
+        vec3 Li = areaLight.color;
+        
+        float theta = clamp(acos(dot(N, V)) / (PI * 0.5), 0.0, 1.0);
+        vec2 coords = vec2(Roughness, theta);
+        vec4 param = texture(areaLight.matTex, coords);
+        mat3 M = mat3(vec3(param.x, 0, param.w), vec3(0, param.z, 0), vec3(param.y, 0, 1));
+        mat3 invMat = inverse(M);
+        
+        vec3 T1, T2;
+        T1 = normalize(V - N*dot(V, N));
+        T2 = cross(N, T1);
+        invMat = invMat * transpose(mat3(T1, T2, N));
+        
+        vec3 verts[4];
+        for (int i = 0; i < 4; i++) {
+            verts[i] = normalize(invMat * (areaLight.vertices[i] - P));
+        }
+        
+        float E = 0;
+        for (int i = 0; i < 4; i++) {
+            vec3 pi = verts[i];
+            vec3 pj = verts[(i+1) % 4];
+            
+            float ft = acos(clamp(dot(pi, pj), -0.999, 0.999));
+            E += ft * normalize(cross(pi, pj)).z;
+        }
+        E *= 1.0 / (2.0 * PI);
+
+        E = max(0, -E);
+        
+        vec3 Rad = vec3(E) * Li;
+
+        fragColor = vec4(LambertBRDF * Rad, 1);
+        return;
+    }
 
     vec3 H = normalize(L + V);
-    
-    // Lambert Diffuse BRDF
-    vec3 LambertBRDF = (BaseColor / PI) * (1 - Metalness);
     
     // Cook Torrance Specular BRDF
     vec3 CookBRDF = clamp(CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness), 0, 1);

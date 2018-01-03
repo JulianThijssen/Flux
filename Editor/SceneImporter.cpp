@@ -10,6 +10,7 @@
 #include "AttachedTo.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "AreaLight.h"
 #include "MeshRenderer.h"
 #include "Util/Path.h"
 #include "Util/File.h"
@@ -203,6 +204,15 @@ namespace Flux {
             t2->position.set(5, 8, 10);
             light2->addComponent(t2);
             scene.addEntity(light2);
+
+            Entity* areaLight = new Entity();
+            AreaLight* light = new AreaLight();
+            light->color.set(20, 10, 1);
+            areaLight->addComponent(light);
+            Transform* t3 = new Transform();
+            t3->position.set(-30, 3, 25);
+            areaLight->addComponent(t3);
+            scene.addEntity(areaLight);
 
             clockEnd = clock();
             elapsed = double(clockEnd - clockStart) / CLOCKS_PER_SEC;

@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "AreaLight.h"
 #include "AttachedTo.h"
 
 #include <fstream>
@@ -245,6 +246,17 @@ namespace Flux {
                     
                     e->addComponent(dirLight);
                 }
+                if (component == 'l') {
+                    AreaLight* areaLight = new AreaLight();
+
+                    inFile.read((char *)&areaLight->color, sizeof(Vector3f));
+                    float energy;
+                    inFile.read((char *)&energy, sizeof(energy));
+
+                    areaLight->energy = energy;
+
+                    e->addComponent(areaLight);
+                }
                 if (component == 'a') {
                     uint32_t pid;
                     inFile.read((char *) &pid, sizeof(pid));
@@ -256,7 +268,7 @@ namespace Flux {
             }
 
             // TODO add main camera id to the scene description
-            if (e->hasComponent<PointLight>() || e->hasComponent<DirectionalLight>()) {
+            if (e->hasComponent<PointLight>() || e->hasComponent<DirectionalLight>() || e->hasComponent<AreaLight>()) {
                 scene.lights.push_back(e);
             }
             else if (e->hasComponent<Camera>()) {

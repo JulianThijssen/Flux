@@ -14,6 +14,7 @@
 
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "AreaLight.h"
 
 #include <fstream>
 #include <iostream> // Temp
@@ -220,6 +221,14 @@ namespace Flux {
                 copy(buffer, &dirLight->color, sizeof(Vector3f));
 
                 const float energy = dirLight->energy;
+                copy(buffer, &energy, sizeof(float));
+            }
+            if (e->hasComponent<AreaLight>()) {
+                copy(buffer, "l", sizeof(char));
+                AreaLight* areaLight = e->getComponent<AreaLight>();
+
+                copy(buffer, &areaLight->color, sizeof(Vector3f));
+                const float energy = areaLight->energy;
                 copy(buffer, &energy, sizeof(float));
             }
             if (e->hasComponent<AttachedTo>()) {

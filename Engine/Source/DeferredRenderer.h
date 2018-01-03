@@ -80,7 +80,6 @@ namespace Flux {
         FxaaPass* fxaaPass;
         ColorGradingPass* colorGradingPass;
         FogPass* fogPass;
-        LtcLightPass* areaLightPass;
 
         SsaoInfo ssaoInfo;
     };

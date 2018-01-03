@@ -29,6 +29,9 @@ namespace Flux
 
         const GBuffer* gBuffer;
         const Framebuffer* target;
+
+        const Texture* ampTex;
+        const Texture* matTex;
     };
 }
 
