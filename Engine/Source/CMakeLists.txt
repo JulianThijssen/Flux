@@ -1,8 +1,6 @@
 set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(BASE
-    ${DIR}/Application.h
-    ${DIR}/Application.cpp
     ${DIR}/AssetManager.h
     ${DIR}/AssetManager.cpp
     ${DIR}/Cubemap.h

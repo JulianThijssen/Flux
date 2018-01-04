@@ -22,10 +22,14 @@ namespace Flux {
     void Application::startGame() {
         std::cout << "Flux version " << Flux_VERSION_MAJOR << "." << Flux_VERSION_MINOR << std::endl;
 
-        Editor::SceneDesc scene;
-        Editor::SceneImporter::loadScene(Path("res/Temple.json"), scene);
+        //Editor::SceneDesc scene;
+        //Editor::SceneImporter::loadScene(Path("res/Temple.json"), scene);
 
-        Editor::SceneConverter::convert(scene, Path("res/Temple.scene"));
+        //Editor::SceneConverter::convert(scene, Path("res/Temple.scene"));
+        bool created = window.create();
+        if (!created)
+            return;
+
         bool loaded = SceneLoader::loadScene(Path("res/Temple.scene"), currentScene);
         if (!loaded)
             return;
