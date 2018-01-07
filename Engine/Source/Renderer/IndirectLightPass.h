@@ -31,6 +31,8 @@ namespace Flux
         const GBuffer* gBuffer;
         const Framebuffer* target;
         IblSceneInfo iblSceneInfo;
+
+        bool sky = true;
     };
 }
 

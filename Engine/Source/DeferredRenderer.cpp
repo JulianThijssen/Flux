@@ -135,11 +135,11 @@ namespace Flux {
 
         gaussianBlurPass->Resize(windowSize);
         fxaaPass->Resize(windowSize);
-
-        renderState.setClearColor(1.0, 0.0, 1.0, 1.0);
     }
 
     void DeferredRenderer::update(const Scene& scene) {
+        renderState.setClearColor(1.0, 0.0, 1.0, 1.0);
+
         LOG("Updating");
         if (scene.getMainCamera() == nullptr)
             return;

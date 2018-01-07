@@ -84,7 +84,7 @@ namespace Flux {
         unsigned int skyType;
         inFile.read((char *)&skyType, sizeof(skyType));
         std::cout << "Sky type: " << skyType << std::endl;
-        if (skyType == 0) {
+        if (skyType == 1) {
             char* paths[6];
             for (int i = 0; i < 6; i++) {
                 uint32_t numChars;
@@ -97,7 +97,7 @@ namespace Flux {
             }
             scene.skybox = new Skybox(paths);
         }
-        if (skyType == 1) {
+        if (skyType == 2) {
             uint32_t numChars;
             inFile.read((char *)&numChars, sizeof(numChars));
             std::cout << "Sky num chars: " << numChars << std::endl;

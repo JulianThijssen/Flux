@@ -22,6 +22,9 @@ namespace Flux {
         else if (scene.skySphere) {
             iblSceneInfo.PrecomputeEnvironmentData(*scene.skySphere);
         }
+        else {
+            sky = false;
+        }
     }
 
     void IndirectLightPass::SetGBuffer(const GBuffer* gBuffer)
@@ -36,7 +39,12 @@ namespace Flux {
 
     void IndirectLightPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.setClearColor(0, 0, 0, 1);
+
         glClear(GL_COLOR_BUFFER_BIT);
+        if (!sky) {
+            return;
+        }
         nvtxRangePushA(getPassName().c_str());
         shader->bind();
 

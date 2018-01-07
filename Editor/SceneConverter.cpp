@@ -49,10 +49,18 @@ namespace Flux {
             buffer.buf = new char[1000000000];
 
             if (scene.skybox) {
+                const uint32_t type = 1;
+                copy(buffer, type);
                 writeSkybox(scene.skybox, buffer);
             }
             else if (scene.skysphere) {
+                const uint32_t type = 2;
+                copy(buffer, type);
                 writeSkysphere(scene.skysphere, buffer);
+            }
+            else {
+                const uint32_t type = 0;
+                copy(buffer, type);
             }
 
             const uint32_t numMaterials = (uint32_t)scene.materials.size();
@@ -83,10 +91,6 @@ namespace Flux {
         }
 
         void SceneConverter::writeSkybox(Editor::Skybox* skybox, Buffer& buffer) {
-            const uint32_t type = 0;
-
-            copy(buffer, type);
-
             const std::string* paths = skybox->getPaths();
 
             for (int i = 0; i < 6; i++) {
@@ -98,9 +102,7 @@ namespace Flux {
         }
 
         void SceneConverter::writeSkysphere(Skysphere* skysphere, Buffer& buffer) {
-            const uint32_t type = 1;
             std::cout << "SKYSPHERE" << std::endl;
-            copy(buffer, type);
             const std::string path = skysphere->getPath();
             const uint32_t pathLen = (uint32_t)path.length();
             copy(buffer, pathLen);
