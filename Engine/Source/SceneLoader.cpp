@@ -70,6 +70,12 @@ namespace Flux {
         glBindVertexArray(0);
     }
 
+    uint32_t readUnsignedInt(std::ifstream& stream) {
+        uint32_t i;
+        stream.read((char *) &i, sizeof(i));
+        return i;
+    }
+
     bool SceneLoader::loadScene(const Path path, Scene& scene) {
         std::cout << "LOADING SCENE" << std::endl;
         std::ifstream inFile;
@@ -81,14 +87,12 @@ namespace Flux {
             return false;
         }
 
-        unsigned int skyType;
-        inFile.read((char *)&skyType, sizeof(skyType));
+        uint32_t skyType = readUnsignedInt(inFile);
         std::cout << "Sky type: " << skyType << std::endl;
         if (skyType == 1) {
             char* paths[6];
             for (int i = 0; i < 6; i++) {
-                uint32_t numChars;
-                inFile.read((char *)&numChars, sizeof(numChars));
+                uint32_t numChars = readUnsignedInt(inFile);
 
                 paths[i] = new char[numChars + 1];
                 paths[i][numChars] = 0;
@@ -98,8 +102,7 @@ namespace Flux {
             scene.skybox = new Skybox(paths);
         }
         if (skyType == 2) {
-            uint32_t numChars;
-            inFile.read((char *)&numChars, sizeof(numChars));
+            uint32_t numChars = readUnsignedInt(inFile);
             std::cout << "Sky num chars: " << numChars << std::endl;
             char* path = new char[numChars + 1];
             path[numChars] = 0;
@@ -109,16 +112,13 @@ namespace Flux {
             delete path;
         }
 
-        unsigned int numMaterials;
-        inFile.read((char *) &numMaterials, sizeof(numMaterials));
+        uint32_t numMaterials = readUnsignedInt(inFile);
         std::cout << "NUM MATERIALS: " << numMaterials << std::endl;
 
         for (unsigned int i = 0; i < numMaterials; ++i) {
-            uint32_t id;
-            inFile.read((char *)&id, sizeof(id));
+            uint32_t id = readUnsignedInt(inFile);
 
-            uint32_t numChars;
-            inFile.read((char *)&numChars, sizeof(numChars));
+            uint32_t numChars = readUnsignedInt(inFile);
 
             char* path = new char[numChars+1];
             path[numChars] = 0;
@@ -129,19 +129,16 @@ namespace Flux {
             delete path;
         }
 
-        unsigned int numEntities;
-        inFile.read((char *) &numEntities, sizeof(numEntities));
+        uint32_t numEntities = readUnsignedInt(inFile);
         std::cout << "NUM ENTITIES: " << numEntities << std::endl;
 
         for (unsigned int i = 0; i < numEntities; ++i) {
             Entity* e = new Entity();
 
-            uint32_t id;
-            inFile.read((char *) &id, sizeof(id));
+            uint32_t id = readUnsignedInt(inFile);
             e->setId(id);
             std::cout << "Loading entity with id: " << e->getId() << std::endl;
-            unsigned int numComponents;
-            inFile.read((char *) &numComponents, sizeof(numComponents));
+            uint32_t numComponents = readUnsignedInt(inFile);
             
             char component;
             for (unsigned int j = 0; j < numComponents; j++) {
@@ -158,28 +155,23 @@ namespace Flux {
                 if (component == 'm') {
                     Mesh* mesh = new Mesh();
 
-                    unsigned int numVertices;
-                    inFile.read((char *) &numVertices, sizeof(numVertices));
+                    uint32_t numVertices = readUnsignedInt(inFile);
                     mesh->vertices.resize(numVertices);
                     inFile.read((char *) &mesh->vertices[0], numVertices * sizeof(Vector3f));
 
-                    unsigned int numTexCoords;
-                    inFile.read((char *) &numTexCoords, sizeof(numTexCoords));
+                    uint32_t numTexCoords = readUnsignedInt(inFile);
                     mesh->texCoords.resize(numTexCoords);
                     inFile.read((char *) &mesh->texCoords[0], numTexCoords * sizeof(Vector2f));
 
-                    unsigned int numNormals;
-                    inFile.read((char *) &numNormals, sizeof(numNormals));
+                    uint32_t numNormals = readUnsignedInt(inFile);
                     mesh->normals.resize(numNormals);
                     inFile.read((char *) &mesh->normals[0], numNormals * sizeof(Vector3f));
 
-                    unsigned int numTangents;
-                    inFile.read((char *)&numTangents, sizeof(numTangents));
+                    uint32_t numTangents = readUnsignedInt(inFile);
                     mesh->tangents.resize(numTangents);
                     inFile.read((char *)&mesh->tangents[0], numTangents * sizeof(Vector3f));
 
-                    unsigned int numIndices;
-                    inFile.read((char *) &numIndices, sizeof(numIndices));
+                    uint32_t numIndices = readUnsignedInt(inFile);
                     mesh->indices.resize(numIndices);
                     inFile.read((char *) &mesh->indices[0], numIndices * sizeof(unsigned int));
 
@@ -188,8 +180,7 @@ namespace Flux {
                     e->addComponent(mesh);
                 }
                 if (component == 'r') {
-                    uint32_t id;
-                    inFile.read((char *)&id, sizeof(id));
+                    uint32_t id = readUnsignedInt(inFile);
 
                     MeshRenderer* mr = new MeshRenderer();
                     mr->materialID = id;
@@ -258,8 +249,7 @@ namespace Flux {
                     e->addComponent(areaLight);
                 }
                 if (component == 'a') {
-                    uint32_t pid;
-                    inFile.read((char *) &pid, sizeof(pid));
+                    uint32_t pid = readUnsignedInt(inFile);
                     std::cout << "Attached to: " << pid << std::endl;
                     AttachedTo* attachedTo = new AttachedTo(pid);
 
