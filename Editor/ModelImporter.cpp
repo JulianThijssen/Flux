@@ -20,7 +20,7 @@ namespace Flux {
         Model* ModelImporter::loadModel(const Path& path) {
             Assimp::Importer importer;
 
-            unsigned int flags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_SortByPType | aiProcess_GenUVCoords | aiProcess_CalcTangentSpace;
+            unsigned int flags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_SortByPType | aiProcess_GenUVCoords | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices;
             const aiScene* scene = importer.ReadFile(path.str(), flags);
 
             if (!scene) {
