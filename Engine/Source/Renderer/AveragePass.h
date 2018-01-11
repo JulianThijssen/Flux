@@ -23,7 +23,7 @@ namespace Flux
     private:
         static const unsigned int MAX_SOURCES = 8;
 
-        std::unique_ptr<Shader> shader;
+        Shader shader;
 
         std::vector<Texture> textures;
 

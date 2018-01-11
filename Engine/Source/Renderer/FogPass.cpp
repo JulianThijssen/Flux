@@ -9,7 +9,7 @@
 namespace Flux {
     FogPass::FogPass() : RenderPhase("Fog")
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Fog.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Fog.frag");
     }
 
     void FogPass::SetSource(const Texture* source)
@@ -36,17 +36,17 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        shader->bind();
+        shader.bind();
 
         source->bind(TextureUnit::TEXTURE0);
-        shader->uniform1i("tex", TextureUnit::TEXTURE0);
+        shader.uniform1i("tex", TextureUnit::TEXTURE0);
         depthMap->bind(TextureUnit::TEXTURE1);
-        shader->uniform1i("depthMap", TextureUnit::TEXTURE1);
+        shader.uniform1i("depthMap", TextureUnit::TEXTURE1);
 
         Camera* camera = scene.getMainCamera()->getComponent<Camera>();
-        shader->uniform1f("zNear", camera->getZNear());
-        shader->uniform1f("zFar", camera->getZFar());
-        shader->uniform3f("fogColor", fogColor);
+        shader.uniform1f("zNear", camera->getZNear());
+        shader.uniform1f("zFar", camera->getZFar());
+        shader.uniform3f("fogColor", fogColor);
         target->bind();
         renderState.drawQuad();
 

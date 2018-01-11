@@ -19,8 +19,8 @@
 namespace Flux {
     SSAOPass::SSAOPass() : RenderPhase("SSAO")
     {
-        ssaoShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag"));
-        blurShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag"));
+        ssaoShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag");
+        blurShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag");
     }
 
     void SSAOPass::SetGBuffer(const GBuffer* gBuffer)
@@ -42,7 +42,7 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        ssaoShader->bind();
+        ssaoShader.bind();
 
         ///
         Entity* camera = scene.getMainCamera();
@@ -59,11 +59,11 @@ namespace Flux {
         viewMatrix.rotate(-ct->rotation);
         viewMatrix.translate(-ct->position);
 
-        ssaoShader->uniform3f("camPos", ct->position);
-        ssaoShader->uniformMatrix4f("projMatrix", projMatrix);
-        ssaoShader->uniformMatrix4f("viewMatrix", viewMatrix);
-        ssaoShader->uniform1f("zNear", cam->getZNear());
-        ssaoShader->uniform1f("zFar", cam->getZFar());
+        ssaoShader.uniform3f("camPos", ct->position);
+        ssaoShader.uniformMatrix4f("projMatrix", projMatrix);
+        ssaoShader.uniformMatrix4f("viewMatrix", viewMatrix);
+        ssaoShader.uniform1f("zNear", cam->getZNear());
+        ssaoShader.uniform1f("zFar", cam->getZFar());
         ///
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -72,30 +72,30 @@ namespace Flux {
         glViewport(0, 0, windowSize->width / 2, windowSize->height / 2);
 
         gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
-        ssaoShader->uniform1i("albedoMap", TextureUnit::ALBEDO);
+        ssaoShader.uniform1i("albedoMap", TextureUnit::ALBEDO);
         gBuffer->normalTex->bind(TextureUnit::NORMAL);
-        ssaoShader->uniform1i("normalMap", TextureUnit::NORMAL);
+        ssaoShader.uniform1i("normalMap", TextureUnit::NORMAL);
         gBuffer->positionTex->bind(TextureUnit::POSITION);
-        ssaoShader->uniform1i("positionMap", TextureUnit::POSITION);
+        ssaoShader.uniform1i("positionMap", TextureUnit::POSITION);
         gBuffer->depthTex->bind(TextureUnit::DEPTH);
-        ssaoShader->uniform1i("depthMap", TextureUnit::DEPTH);
+        ssaoShader.uniform1i("depthMap", TextureUnit::DEPTH);
 
         ssaoInfo->noiseTexture->bind(TextureUnit::NOISE);
-        ssaoShader->uniform1i("noiseMap", TextureUnit::NOISE);
-        ssaoShader->uniform3fv("kernel", (int)ssaoInfo->kernel.size(), ssaoInfo->kernel.data());
-        ssaoShader->uniform1i("kernelSize", (int)ssaoInfo->kernel.size());
+        ssaoShader.uniform1i("noiseMap", TextureUnit::NOISE);
+        ssaoShader.uniform3fv("kernel", (int)ssaoInfo->kernel.size(), ssaoInfo->kernel.data());
+        ssaoShader.uniform1i("kernelSize", (int)ssaoInfo->kernel.size());
 
-        ssaoShader->uniform2i("windowSize", windowSize->width / 2, windowSize->height / 2);
+        ssaoShader.uniform2i("windowSize", windowSize->width / 2, windowSize->height / 2);
 
         ssaoInfo->getCurrentBuffer()->bind();
         renderState.drawQuad();
 
         nvtxRangePushA("SSAO Blur");
-        blurShader->bind();
-        blurShader->uniform2i("windowSize", windowSize->width, windowSize->height);
+        blurShader.bind();
+        blurShader.uniform2i("windowSize", windowSize->width, windowSize->height);
 
         ssaoInfo->getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::TEXTURE);
-        blurShader->uniform1i("tex", TextureUnit::TEXTURE);
+        blurShader.uniform1i("tex", TextureUnit::TEXTURE);
 
         ssaoInfo->switchBuffers();
         ssaoInfo->getCurrentBuffer()->bind();

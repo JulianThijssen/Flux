@@ -14,7 +14,7 @@
 namespace Flux {
     IndirectLightPass::IndirectLightPass(const Scene& scene) : RenderPhase("Indirect Lighting")
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredIndirect.frag");
 
         if (scene.skybox) {
             iblSceneInfo.PrecomputeEnvironmentData(*scene.skybox);
@@ -46,28 +46,28 @@ namespace Flux {
             return;
         }
         nvtxRangePushA(getPassName().c_str());
-        shader->bind();
+        shader.bind();
 
         Transform* ct = scene.getMainCamera()->getComponent<Transform>();
-        shader->uniform3f("camPos", ct->position);
+        shader.uniform3f("camPos", ct->position);
 
         gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
-        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
+        shader.uniform1i("albedoMap", TextureUnit::ALBEDO);
         gBuffer->normalTex->bind(TextureUnit::NORMAL);
-        shader->uniform1i("normalMap", TextureUnit::NORMAL);
+        shader.uniform1i("normalMap", TextureUnit::NORMAL);
         gBuffer->positionTex->bind(TextureUnit::POSITION);
-        shader->uniform1i("positionMap", TextureUnit::POSITION);
+        shader.uniform1i("positionMap", TextureUnit::POSITION);
         gBuffer->depthTex->bind(TextureUnit::DEPTH);
-        shader->uniform1i("depthMap", TextureUnit::DEPTH);
+        shader.uniform1i("depthMap", TextureUnit::DEPTH);
 
         iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);
-        shader->uniform1i("irradianceMap", TextureUnit::IRRADIANCE);
+        shader.uniform1i("irradianceMap", TextureUnit::IRRADIANCE);
 
         iblSceneInfo.prefilterEnvmap->bind(TextureUnit::PREFILTER);
-        shader->uniform1i("prefilterEnvmap", TextureUnit::PREFILTER);
+        shader.uniform1i("prefilterEnvmap", TextureUnit::PREFILTER);
 
         iblSceneInfo.scaleBiasTexture->bind(TextureUnit::SCALEBIAS);
-        shader->uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
+        shader.uniform1i("scaleBiasMap", TextureUnit::SCALEBIAS);
 
         renderState.drawQuad();
 

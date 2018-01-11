@@ -25,7 +25,7 @@ namespace Flux
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
-        std::unique_ptr<Shader> shader;
+        Shader shader;
 
         const Texture* source;
         const Texture* bloom;

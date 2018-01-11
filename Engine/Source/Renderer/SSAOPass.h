@@ -27,8 +27,8 @@ namespace Flux
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
-        std::unique_ptr<Shader> ssaoShader;
-        std::unique_ptr<Shader> blurShader;
+        Shader ssaoShader;
+        Shader blurShader;
 
         const GBuffer* gBuffer;
         SsaoInfo* ssaoInfo;

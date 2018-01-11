@@ -2,11 +2,7 @@
 
 #include "Framebuffer.h"
 #include "Shader.h"
-#include "ShaderLoader.h"
 #include "Renderer/RenderState.h"
-
-#include "Exceptions/ShaderCompilationException.h"
-#include "Exceptions/ShaderLinkException.h"
 
 #include <glad/glad.h>
 #include <iostream>
@@ -15,7 +11,8 @@ namespace Flux
 {
     void IrradianceMap::generate(const unsigned int textureSize)
     {
-        Shader* shader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Irradiance.frag");
+        Shader shader;
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Irradiance.frag");
 
         Framebuffer framebuffer(textureSize, textureSize);
         framebuffer.bind();
@@ -23,30 +20,30 @@ namespace Flux
 
         glClearColor(1, 0, 0, 1);
 
-        shader->bind();
+        shader.bind();
 
         if (skybox) {
             createEmpty(textureSize, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, false);
 
             envMap->bind(0);
-            shader->uniform1i("EnvMap", 0);
+            shader.uniform1i("EnvMap", 0);
         }
         else {
             createEmpty(textureSize, GL_RGBA16F, GL_RGBA, GL_FLOAT, false);
 
             envTex->bind(0);
-            shader->uniform1i("EnvTex", 0);
+            shader.uniform1i("EnvTex", 0);
         }
 
-        shader->uniform1i("Skybox", skybox);
+        shader.uniform1i("Skybox", skybox);
         // Should be resolution of environment map for perfect accuracy, but this is good enough
-        shader->uniform1i("textureSize", textureSize * 4);
+        shader.uniform1i("textureSize", textureSize * 4);
 
         glViewport(0, 0, textureSize, textureSize);
 
         for (int i = 0; i < 6; i++)
         {
-            shader->uniform1i("Face", i);
+            shader.uniform1i("Face", i);
             framebuffer.setCubemap(getHandle(), i, 0);
             framebuffer.validate();
 
@@ -58,19 +55,8 @@ namespace Flux
 
     void PrefilterEnvmap::generate()
     {
-        Shader* shader;
-        try
-        {
-            shader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/PrefilterEnvmap.frag");
-        }
-        catch (const ShaderCompilationException& e)
-        {
-            Log::error(e.what());
-        }
-        catch (const ShaderLinkException& e)
-        {
-            Log::error(e.what());
-        }
+        Shader shader;
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/PrefilterEnvmap.frag");
 
         // Should be resolution of environment map for perfect accuracy, but this is good enough
         const unsigned int resolution = 512;
@@ -81,22 +67,22 @@ namespace Flux
 
         glClearColor(1, 0, 0, 1);
 
-        shader->bind();
+        shader.bind();
 
         if (skybox) {
             createEmpty(resolution, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, true);
 
             envMap->bind(0);
-            shader->uniform1i("EnvMap", 0);
+            shader.uniform1i("EnvMap", 0);
         }
         else {
             createEmpty(resolution, GL_RGBA16F, GL_RGBA, GL_FLOAT, true);
 
             envTex->bind(0);
-            shader->uniform1i("EnvTex", 0);
+            shader.uniform1i("EnvTex", 0);
         }
 
-        shader->uniform1i("Skybox", skybox);
+        shader.uniform1i("Skybox", skybox);
 
         const unsigned int MIP_MAP_LEVELS = 6;
         for (int level = 0; level < MIP_MAP_LEVELS; level++)
@@ -105,11 +91,11 @@ namespace Flux
             glViewport(0, 0, mipmapSize, mipmapSize);
             float Roughness = (float)level / (MIP_MAP_LEVELS - 1);
             std::cout << "Roughness: " << Roughness << std::endl;
-            shader->uniform1f("Roughness", Roughness);
+            shader.uniform1f("Roughness", Roughness);
 
             for (int i = 0; i < 6; i++)
             {
-                shader->uniform1i("Face", i);
+                shader.uniform1i("Face", i);
                 framebuffer.setCubemap(getHandle(), i, level);
                 framebuffer.validate();
 
@@ -140,19 +126,8 @@ namespace Flux
 
     void ScaleBiasTexture::generate()
     {
-        Shader* shader;
-        try
-        {
-            shader = Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/BRDFintegration.frag");
-        }
-        catch (const ShaderCompilationException& e)
-        {
-            Log::error(e.what());
-        }
-        catch (const ShaderLinkException& e)
-        {
-            Log::error(e.what());
-        }
+        Shader shader;
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/BRDFintegration.frag");
 
         Framebuffer framebuffer(256, 256);
         framebuffer.bind();
@@ -160,7 +135,7 @@ namespace Flux
 
         glClearColor(1, 0, 0, 1);
 
-        shader->bind();
+        shader.bind();
 
         glViewport(0, 0, 256, 256);
 

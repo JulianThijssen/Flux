@@ -17,8 +17,8 @@ namespace Flux {
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
-        std::unique_ptr<Shader> skyboxShader;
-        std::unique_ptr<Shader> skysphereShader;
+        Shader skyboxShader;
+        Shader skysphereShader;
     };
 }
 

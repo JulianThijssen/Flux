@@ -9,7 +9,7 @@
 namespace Flux {
     TonemapPass::TonemapPass() : RenderPhase("Tonemap")
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
     }
 
     void TonemapPass::SetSource(const Texture* source)
@@ -31,12 +31,12 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        shader->bind();
+        shader.bind();
 
         source->bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        shader.uniform1i("tex", TextureUnit::TEXTURE);
         bloom->bind(TextureUnit::BLOOM);
-        shader->uniform1i("bloomTex", TextureUnit::BLOOM);
+        shader.uniform1i("bloomTex", TextureUnit::BLOOM);
 
         target->bind();
 

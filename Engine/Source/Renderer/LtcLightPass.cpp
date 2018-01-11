@@ -18,7 +18,7 @@
 namespace Flux {
     LtcLightPass::LtcLightPass() : RenderPhase("Area Lighting")
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredArea.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredArea.frag");
 
         ampTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE), amp.data());
         std::vector<float> data;
@@ -47,7 +47,7 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        shader->bind();
+        shader.bind();
 
         renderState.enable(BLENDING);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
@@ -68,24 +68,24 @@ namespace Flux {
         viewMatrix.rotate(-ct->rotation);
         viewMatrix.translate(-ct->position);
 
-        shader->uniform3f("camPos", ct->position);
-        shader->uniformMatrix4f("projMatrix", projMatrix);
-        shader->uniformMatrix4f("viewMatrix", viewMatrix);
-        shader->uniform1f("zNear", cam->getZNear());
-        shader->uniform1f("zFar", cam->getZFar());
+        shader.uniform3f("camPos", ct->position);
+        shader.uniformMatrix4f("projMatrix", projMatrix);
+        shader.uniformMatrix4f("viewMatrix", viewMatrix);
+        shader.uniform1f("zNear", cam->getZNear());
+        shader.uniform1f("zFar", cam->getZFar());
         ///
 
         gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
-        shader->uniform1i("albedoMap", TextureUnit::ALBEDO);
+        shader.uniform1i("albedoMap", TextureUnit::ALBEDO);
         gBuffer->normalTex->bind(TextureUnit::NORMAL);
-        shader->uniform1i("normalMap", TextureUnit::NORMAL);
+        shader.uniform1i("normalMap", TextureUnit::NORMAL);
         gBuffer->positionTex->bind(TextureUnit::POSITION);
-        shader->uniform1i("positionMap", TextureUnit::POSITION);
+        shader.uniform1i("positionMap", TextureUnit::POSITION);
 
         ampTex->bind(TextureUnit::TEXTURE3);
         matTex->bind(TextureUnit::TEXTURE4);
-        shader->uniform1i("ampTex", TextureUnit::TEXTURE3);
-        shader->uniform1i("matTex", TextureUnit::TEXTURE4);
+        shader.uniform1i("ampTex", TextureUnit::TEXTURE3);
+        shader.uniform1i("matTex", TextureUnit::TEXTURE4);
 
         for (Entity* e : scene.entities) {
             if (!e->hasComponent<Mesh>())
@@ -125,9 +125,9 @@ namespace Flux {
                     vertices[3] = vertices[2];
                     vertices[2] = t;
 
-                    shader->uniform1i("numVertices", vertices.size());
-                    shader->uniform3fv("vertices", vertices.size(), vertices.data());
-                    shader->uniform3f("emission", material->emission);
+                    shader.uniform1i("numVertices", vertices.size());
+                    shader.uniform3fv("vertices", vertices.size(), vertices.data());
+                    shader.uniform3f("emission", material->emission);
 
                     renderState.drawQuad();
                 }

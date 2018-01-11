@@ -11,7 +11,7 @@
 namespace Flux {
     GaussianBlurPass::GaussianBlurPass() : RenderPhase("GaussianBlur"), windowSize(1, 1)
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/BlurFast.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/BlurFast.frag");
 
         averagePass = new AveragePass();
     }
@@ -52,35 +52,35 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
         
-        shader->bind();
+        shader.bind();
 
         source->bind(TextureUnit::TEXTURE);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        shader.uniform1i("tex", TextureUnit::TEXTURE);
 
-        shader->uniform2f("direction", 1, 0);
+        shader.uniform2f("direction", 1, 0);
         for (unsigned int i = 0; i < blurBuffers.size(); i++) {
             const Texture& texture = blurBuffers[i]->getColorTexture(0);
             int width = texture.getWidth();
             int height = texture.getHeight();
             glViewport(0, 0, width, height);
-            shader->uniform2i("windowSize", width, height);
+            shader.uniform2i("windowSize", width, height);
             blurBuffers[i]->bind();
-            shader->uniform1i("mipmap", i + 1);
+            shader.uniform1i("mipmap", i + 1);
 
             renderState.drawQuad();
         }
-        shader->uniform2f("direction", 0, 1);
+        shader.uniform2f("direction", 0, 1);
         for (unsigned int i = 0; i < blurBuffers2.size(); i++) {
             const Texture& texture = blurBuffers[i]->getColorTexture(0);
             texture.bind(TextureUnit::TEXTURE);
             int width = texture.getWidth();
             int height = texture.getHeight();
             glViewport(0, 0, width, height);
-            shader->uniform2i("windowSize", width, height);
+            shader.uniform2i("windowSize", width, height);
             blurBuffers2[i]->bind();
-            shader->uniform1i("mipmap", 0);
+            shader.uniform1i("mipmap", 0);
 
             renderState.drawQuad();
         }

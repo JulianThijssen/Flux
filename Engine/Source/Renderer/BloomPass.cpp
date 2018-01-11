@@ -9,7 +9,7 @@
 namespace Flux {
     BloomPass::BloomPass() : RenderPhase("Bloom")
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag");
     }
 
     void BloomPass::SetSource(const Texture* source)
@@ -26,12 +26,12 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        shader->bind();
+        shader.bind();
 
         source->bind(TextureUnit::TEXTURE);
         glGenerateMipmap(GL_TEXTURE_2D);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
-        shader->uniform1f("threshold", 0);
+        shader.uniform1i("tex", TextureUnit::TEXTURE);
+        shader.uniform1f("threshold", 0);
 
         target->bind();
         renderState.drawQuad();

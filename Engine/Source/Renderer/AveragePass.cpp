@@ -10,7 +10,7 @@
 namespace Flux {
     AveragePass::AveragePass() : RenderPhase("Average")
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Average.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Average.frag");
     }
 
     void AveragePass::SetTextures(std::vector<Texture> textures)
@@ -27,15 +27,15 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        shader->bind();
+        shader.bind();
 
         const unsigned int sourceCount = textures.size();
 
         for (int i = 0; i < sourceCount; i++) {
             textures[i].bind(TextureUnit::TEXTURE0 + i);
         }
-        shader->uniform1i("sourceCount", sourceCount);
-        shader->uniform1iv("sources", sourceCount, units.data());
+        shader.uniform1i("sourceCount", sourceCount);
+        shader.uniform1iv("sources", sourceCount, units.data());
 
         renderState.drawQuad();
 

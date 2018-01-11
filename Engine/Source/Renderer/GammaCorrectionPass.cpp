@@ -9,7 +9,7 @@
 namespace Flux {
     GammaCorrectionPass::GammaCorrectionPass() : RenderPhase("Gamma Correction")
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
     }
 
     void GammaCorrectionPass::SetSource(const Texture* source)
@@ -26,10 +26,10 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        shader->bind();
+        shader.bind();
 
         source->bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        shader.uniform1i("tex", TextureUnit::TEXTURE);
         target->bind();
         renderState.drawQuad();
 

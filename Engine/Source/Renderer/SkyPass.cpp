@@ -11,8 +11,8 @@
 namespace Flux {
     SkyPass::SkyPass() : RenderPhase("Sky")
     {
-        skyboxShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag"));
-        skysphereShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag"));
+        skyboxShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
+        skysphereShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag");
     }
 
     void SkyPass::render(RenderState& renderState, const Scene& scene)
@@ -36,24 +36,22 @@ namespace Flux {
         cameraBasis[10] = -1;
         cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
-        Shader* shader;
+        Shader& shader = scene.skybox ? skyboxShader : skysphereShader;
         if (scene.skybox) {
-            shader = skyboxShader.get();
-            shader->bind();
+            shader.bind();
             scene.skybox->bind(TextureUnit::TEXTURE);
-            shader->uniform1i("skybox", TextureUnit::TEXTURE);
+            shader.uniform1i("skybox", TextureUnit::TEXTURE);
         }
         else if (scene.skySphere) {
-            shader = skysphereShader.get();
-            shader->bind();
+            shader.bind();
             scene.skySphere->bind(TextureUnit::TEXTURE);
-            shader->uniform1i("tex", TextureUnit::TEXTURE);
+            shader.uniform1i("tex", TextureUnit::TEXTURE);
 
             for (Entity* entity : scene.lights) {
                 DirectionalLight* sun = entity->getComponent<DirectionalLight>();
                 if (sun) {
                     sun->direction.normalise();
-                    shader->uniform3f("sun", sun->direction);
+                    shader.uniform3f("sun", sun->direction);
                 }
             }
         }
@@ -61,8 +59,8 @@ namespace Flux {
             return;
         }
 
-        shader->uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
-        shader->uniformMatrix4f("cameraBasis", cameraBasis);
+        shader.uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
+        shader.uniformMatrix4f("cameraBasis", cameraBasis);
 
         glDepthFunc(GL_LEQUAL);
         renderState.drawQuad();

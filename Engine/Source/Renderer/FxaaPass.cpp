@@ -9,7 +9,7 @@
 namespace Flux {
     FxaaPass::FxaaPass() : RenderPhase("FXAA"), windowSize(1, 1)
     {
-        shader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag"));
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
     }
 
     void FxaaPass::SetSource(const Texture* source)
@@ -31,12 +31,12 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        shader->bind();
+        shader.bind();
 
         source->bind(TextureUnit::TEXTURE);
-        shader->uniform1i("tex", TextureUnit::TEXTURE);
+        shader.uniform1i("tex", TextureUnit::TEXTURE);
         glGenerateMipmap(GL_TEXTURE_2D);
-        shader->uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
+        shader.uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
         target->bind();
         renderState.drawQuad();
 
