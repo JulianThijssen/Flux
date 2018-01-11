@@ -44,9 +44,9 @@
 
 namespace Flux {
     bool DeferredRenderer::create(const Scene& scene, const Size windowSize) {
-        gBufferShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag"));
-        shadowShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag"));
-        textureShader = std::unique_ptr<Shader>(Shader::fromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag"));
+        gBufferShader.loadFromFile("res/Shaders/Model.vert", "res/Shaders/GBuffer.frag");
+        shadowShader.loadFromFile("res/Shaders/Model.vert", "res/Shaders/Shadow.frag");
+        textureShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
 
         createShadowMaps(scene);
 
@@ -149,11 +149,11 @@ namespace Flux {
         glViewport(0, 0, windowSize.width, windowSize.height);
         LOG("Rendering GBuffer");
         gBuffer.bind();
-        gBufferShader->bind();
+        gBufferShader.bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        renderState.setCamera(*gBufferShader, *scene.getMainCamera());
+        renderState.setCamera(gBufferShader, *scene.getMainCamera());
         nvtxRangePushA("GBuffer");
-        renderScene(scene, *gBufferShader);
+        renderScene(scene, gBufferShader);
         nvtxRangePop();
         LOG("Finished GBuffer");
 
@@ -337,13 +337,13 @@ namespace Flux {
     void DeferredRenderer::renderDepth(const Scene& scene) {
         nvtxRangePushA("Depth");
 
-        shadowShader->bind();
+        shadowShader.bind();
 
         glClear(GL_DEPTH_BUFFER_BIT);
         glColorMask(false, false, false, false);
 
-        renderState.setCamera(*shadowShader, *scene.getMainCamera());
-        renderScene(scene, *shadowShader);
+        renderState.setCamera(shadowShader, *scene.getMainCamera());
+        renderScene(scene, shadowShader);
 
         glColorMask(true, true, true, true);
 
@@ -353,7 +353,7 @@ namespace Flux {
     void DeferredRenderer::renderShadowMaps(const Scene& scene) {
         nvtxRangePushA("Shadow");
 
-        shadowShader->bind();
+        shadowShader.bind();
 
         glColorMask(false, false, false, false);
 
@@ -367,7 +367,7 @@ namespace Flux {
             PointLight* pointLight = entity->getComponent<PointLight>();
 
             if (dirLight) {
-                renderState.setCamera(*shadowShader, *entity);
+                renderState.setCamera(shadowShader, *entity);
 
                 dirLight->shadowSpace = Matrix4f::BIAS * renderState.projMatrix * renderState.viewMatrix;
 
@@ -377,7 +377,7 @@ namespace Flux {
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
-                renderScene(scene, *shadowShader);
+                renderScene(scene, shadowShader);
             }
             if (pointLight) {
                 Camera cam(90, 1, 0.1, 100);
@@ -395,7 +395,7 @@ namespace Flux {
                     Vector3f rotation = pointLight->transforms[i];
                     t->rotation.set(rotation);
 
-                    renderState.setCamera(*shadowShader, *t, cam);
+                    renderState.setCamera(shadowShader, *t, cam);
 
                     // Set up the framebuffer and validate it
                     pointLight->shadowBuffer->setDepthCubemap(pointLight->shadowMap, i, 0);
@@ -404,7 +404,7 @@ namespace Flux {
                     // Clear the framebuffer and render the scene from the view of the light
                     glClear(GL_DEPTH_BUFFER_BIT);
 
-                    renderScene(scene, *shadowShader);
+                    renderScene(scene, shadowShader);
                 }
             }
         }
@@ -417,9 +417,9 @@ namespace Flux {
 
     void DeferredRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
         LOG("Rendering framebuffer");
-        textureShader->bind();
+        textureShader.bind();
         framebuffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
-        textureShader->uniform1i("tex", TextureUnit::TEXTURE);
+        textureShader.uniform1i("tex", TextureUnit::TEXTURE);
         renderState.drawQuad();
     }
 }

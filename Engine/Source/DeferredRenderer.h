@@ -61,9 +61,9 @@ namespace Flux {
         void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);
 
-        std::unique_ptr<Shader> gBufferShader;
-        std::unique_ptr<Shader> shadowShader;
-        std::unique_ptr<Shader> textureShader;
+        Shader gBufferShader;
+        Shader shadowShader;
+        Shader textureShader;
 
         GBuffer gBuffer;
 
