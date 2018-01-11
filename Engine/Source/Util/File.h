@@ -33,6 +33,7 @@ namespace Flux {
             ifstream file(path);
             if (file.fail() || !file.is_open()) {
                 Log::error("No such file: " + string(path));
+                return String("");
             }
 
             string source;
