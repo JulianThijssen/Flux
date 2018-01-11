@@ -7,13 +7,20 @@
 #include <unordered_map>
 #include <string>
 
+#include <exception>
+#include <stdexcept>
+
 namespace Flux {
     class Vector3f;
     class Matrix4f;
 
+    class ShaderCompilationException : public std::runtime_error {
+    public:
+        ShaderCompilationException(std::string path, std::string error) : runtime_error("Shader failed to compile: " + path + " " + error) { }
+    };
+
     class Shader {
     public:
-        Shader(GLuint handle);
         ~Shader();
         void bind();
         void release();
@@ -28,7 +35,7 @@ namespace Flux {
         void uniform3fv(const char* name, int count, Vector3f* v);
         void uniformMatrix4f(const char* name, Matrix4f& m);
 
-        static Shader* fromFile(std::string vertPath, std::string fragPath);
+        bool loadFromFile(std::string vertPath, std::string fragPath);
     private:
         int location(const char* uniform);
 
