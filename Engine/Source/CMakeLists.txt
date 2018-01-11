@@ -72,8 +72,6 @@ set(UTIL
 
 set(EXCEPTIONS
     ${DIR}/Exceptions/ComponentNotFoundException.h
-    ${DIR}/Exceptions/ShaderCompilationException.h
-    ${DIR}/Exceptions/ShaderLinkException.h
     PARENT_SCOPE
 )
 
@@ -128,8 +126,6 @@ set (LOADERS
     ${DIR}/MaterialLoader.cpp
     ${DIR}/SceneLoader.h
     ${DIR}/SceneLoader.cpp
-    ${DIR}/ShaderLoader.h
-    ${DIR}/ShaderLoader.cpp
     ${DIR}/TextureLoader.h
     ${DIR}/TextureLoader.cpp
     PARENT_SCOPE
