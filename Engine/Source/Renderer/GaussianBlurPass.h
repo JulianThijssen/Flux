@@ -21,7 +21,6 @@ namespace Flux {
         GaussianBlurPass();
 
         void Resize(const Size& windowSize);
-        void SetSource(const Texture* source);
         void SetTarget(const Framebuffer* target);
 
         void render(RenderState& renderState, const Scene& scene) override;
@@ -29,7 +28,6 @@ namespace Flux {
     private:
         Shader shader;
 
-        const Texture* source;
         const Framebuffer* target;
 
         Size windowSize;

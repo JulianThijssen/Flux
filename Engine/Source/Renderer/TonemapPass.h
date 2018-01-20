@@ -18,7 +18,6 @@ namespace Flux
     public:
         TonemapPass();
 
-        void SetSource(const Texture* source);
         void SetBloom(const Texture* bloom);
         void SetTarget(const Framebuffer* target);
 

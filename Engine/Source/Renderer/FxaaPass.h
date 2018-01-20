@@ -20,7 +20,6 @@ namespace Flux
     public:
         FxaaPass();
 
-        void SetSource(const Texture* source);
         void SetTarget(const Framebuffer* target);
         void Resize(const Size& windowSize);
 
@@ -29,7 +28,6 @@ namespace Flux
     private:
         Shader shader;
 
-        const Texture* source;
         const Framebuffer* target;
 
         Size windowSize;

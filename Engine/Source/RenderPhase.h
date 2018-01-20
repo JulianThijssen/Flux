@@ -25,6 +25,10 @@ namespace Flux {
             return name;
         }
 
+        void SetSource(const Texture* source) {
+            this->source = source;
+        }
+
         void enable() {
             enabled = true;
         }
@@ -38,6 +42,9 @@ namespace Flux {
         }
 
         virtual void render(RenderState& renderState, const Scene& scene) = 0;
+
+    protected:
+        const Texture* source;
 
     private:
         String name;

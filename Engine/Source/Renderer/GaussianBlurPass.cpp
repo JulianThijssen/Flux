@@ -38,11 +38,6 @@ namespace Flux {
         }
     }
 
-    void GaussianBlurPass::SetSource(const Texture* source)
-    {
-        this->source = source;
-    }
-
     void GaussianBlurPass::SetTarget(const Framebuffer* target)
     {
         this->target = target;

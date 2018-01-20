@@ -12,11 +12,6 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
     }
 
-    void FxaaPass::SetSource(const Texture* source)
-    {
-        this->source = source;
-    }
-
     void FxaaPass::SetTarget(const Framebuffer* target)
     {
         this->target = target;

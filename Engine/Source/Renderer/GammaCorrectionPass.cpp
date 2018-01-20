@@ -12,11 +12,6 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
     }
 
-    void GammaCorrectionPass::SetSource(const Texture* source)
-    {
-        this->source = source;
-    }
-
     void GammaCorrectionPass::SetTarget(const Framebuffer* target)
     {
         this->target = target;

@@ -19,7 +19,6 @@ namespace Flux
     public:
         FogPass();
 
-        void SetSource(const Texture* source);
         void SetDepthMap(const Texture* depthMap);
         void SetTarget(const Framebuffer* target);
         void SetFogColor(const Vector3f fogColor);
@@ -29,7 +28,6 @@ namespace Flux
     private:
         Shader shader;
 
-        const Texture* source;
         const Texture* depthMap;
         const Framebuffer* target;
 

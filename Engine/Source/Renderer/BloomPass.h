@@ -17,7 +17,6 @@ namespace Flux {
     public:
         BloomPass();
 
-        void SetSource(const Texture* source);
         void SetTarget(const Framebuffer* target);
 
         void render(RenderState& renderState, const Scene& scene) override;

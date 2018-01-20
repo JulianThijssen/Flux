@@ -18,7 +18,6 @@ namespace Flux
     public:
         GammaCorrectionPass();
 
-        void SetSource(const Texture* source);
         void SetTarget(const Framebuffer* target);
 
         void render(RenderState& renderState, const Scene& scene) override;
@@ -26,7 +25,6 @@ namespace Flux
     private:
         Shader shader;
 
-        const Texture* source;
         const Framebuffer* target;
     };
 }

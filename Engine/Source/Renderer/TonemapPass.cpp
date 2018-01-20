@@ -12,11 +12,6 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
     }
 
-    void TonemapPass::SetSource(const Texture* source)
-    {
-        this->source = source;
-    }
-
     void TonemapPass::SetBloom(const Texture* bloom)
     {
         this->bloom = bloom;

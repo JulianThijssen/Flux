@@ -12,11 +12,6 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag");
     }
 
-    void BloomPass::SetSource(const Texture* source)
-    {
-        this->source = source;
-    }
-
     void BloomPass::SetTarget(const Framebuffer* target)
     {
         this->target = target;

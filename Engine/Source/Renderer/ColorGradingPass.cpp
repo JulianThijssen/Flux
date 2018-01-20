@@ -17,11 +17,6 @@ namespace Flux {
         lut = TextureLoader::loadTexture3D(Path("res/reinhart_grading.png"));
     }
 
-    void ColorGradingPass::SetSource(const Texture* source)
-    {
-        this->source = source;
-    }
-
     void ColorGradingPass::SetTarget(const Framebuffer* target)
     {
         this->target = target;
