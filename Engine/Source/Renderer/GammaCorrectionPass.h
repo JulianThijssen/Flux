@@ -24,8 +24,6 @@ namespace Flux
 
     private:
         Shader shader;
-
-        const Framebuffer* target;
     };
 }
 

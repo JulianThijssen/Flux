@@ -27,7 +27,7 @@ namespace Flux {
         shader.uniform1i("tex", TextureUnit::TEXTURE);
         glGenerateMipmap(GL_TEXTURE_2D);
         shader.uniform2f("rcpScreenSize", 1.0f / windowSize.width, 1.0f / windowSize.height);
-        target->bind();
+
         renderState.drawQuad();
 
         nvtxRangePop();

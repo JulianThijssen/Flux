@@ -33,8 +33,6 @@ namespace Flux {
         bloom->bind(TextureUnit::BLOOM);
         shader.uniform1i("bloomTex", TextureUnit::BLOOM);
 
-        target->bind();
-
         renderState.drawQuad();
 
         nvtxRangePop();

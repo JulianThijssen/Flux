@@ -29,7 +29,6 @@ namespace Flux
         Shader shader;
 
         const GBuffer* gBuffer;
-        const Framebuffer* target;
 
         const Texture* ampTex;
         const Texture* matTex;

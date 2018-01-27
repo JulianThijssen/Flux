@@ -81,8 +81,6 @@ namespace Flux {
 
         glViewport(0, 0, windowSize.width, windowSize.height);
 
-        target->bind();
-
         std::vector<Texture> v = {
             blurBuffers2[0]->getColorTexture(0),
             blurBuffers2[1]->getColorTexture(0),

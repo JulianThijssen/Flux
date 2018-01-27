@@ -29,7 +29,6 @@ namespace Flux
 
         const Texture* source;
         const Texture* bloom;
-        const Framebuffer* target;
     };
 }
 

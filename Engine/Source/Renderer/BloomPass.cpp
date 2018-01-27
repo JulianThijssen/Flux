@@ -28,7 +28,6 @@ namespace Flux {
         shader.uniform1i("tex", TextureUnit::TEXTURE);
         shader.uniform1f("threshold", 0);
 
-        target->bind();
         renderState.drawQuad();
 
         nvtxRangePop();

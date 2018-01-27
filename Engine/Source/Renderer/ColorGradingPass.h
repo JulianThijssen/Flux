@@ -26,8 +26,6 @@ namespace Flux
     private:
         Shader shader;
 
-        const Framebuffer* target;
-
         Texture3D* lut;
     };
 }

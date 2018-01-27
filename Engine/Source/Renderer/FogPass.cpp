@@ -42,7 +42,7 @@ namespace Flux {
         shader.uniform1f("zNear", camera->getZNear());
         shader.uniform1f("zFar", camera->getZFar());
         shader.uniform3f("fogColor", fogColor);
-        target->bind();
+
         renderState.drawQuad();
 
         nvtxRangePop();

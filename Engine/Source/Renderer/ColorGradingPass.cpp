@@ -32,7 +32,7 @@ namespace Flux {
         shader.uniform1i("tex", TextureUnit::TEXTURE0);
         lut->bind(TextureUnit::TEXTURE1);
         shader.uniform1i("lut", TextureUnit::TEXTURE1);
-        target->bind();
+
         renderState.drawQuad();
 
         nvtxRangePop();

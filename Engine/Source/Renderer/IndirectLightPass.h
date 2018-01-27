@@ -30,7 +30,6 @@ namespace Flux
         Shader shader;
 
         const GBuffer* gBuffer;
-        const Framebuffer* target;
         IblSceneInfo iblSceneInfo;
 
         bool sky = true;

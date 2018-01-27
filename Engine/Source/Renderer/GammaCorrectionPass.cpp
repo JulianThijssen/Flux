@@ -25,7 +25,7 @@ namespace Flux {
 
         source->bind(TextureUnit::TEXTURE);
         shader.uniform1i("tex", TextureUnit::TEXTURE);
-        target->bind();
+
         renderState.drawQuad();
 
         nvtxRangePop();

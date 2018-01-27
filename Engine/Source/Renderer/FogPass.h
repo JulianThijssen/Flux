@@ -30,7 +30,6 @@ namespace Flux
         Shader shader;
 
         const Texture* depthMap;
-        const Framebuffer* target;
 
         Vector3f fogColor;
     };

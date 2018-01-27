@@ -27,8 +27,6 @@ namespace Flux {
     private:
         Shader shader;
 
-        const Framebuffer* target;
-
         Size windowSize;
         std::vector<Framebuffer*> blurBuffers;
         std::vector<Framebuffer*> blurBuffers2;
