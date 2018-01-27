@@ -6,6 +6,7 @@
 #include "Util/String.h"
 
 #include "Scene.h"
+#include "Util/Size.h"
 
 #include "nvToolsExt.h"
 
@@ -41,6 +42,7 @@ namespace Flux {
             return enabled;
         }
 
+        virtual void Resize(const Size& windowSize) = 0;
         virtual void render(RenderState& renderState, const Scene& scene) = 0;
 
     protected:

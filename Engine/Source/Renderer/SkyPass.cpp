@@ -15,6 +15,11 @@ namespace Flux {
         skysphereShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag");
     }
 
+    void SkyPass::Resize(const Size& windowSize)
+    {
+
+    }
+
     void SkyPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());

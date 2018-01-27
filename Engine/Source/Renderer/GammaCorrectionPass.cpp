@@ -12,9 +12,9 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
     }
 
-    void GammaCorrectionPass::SetTarget(const Framebuffer* target)
+    void GammaCorrectionPass::Resize(const Size& windowSize)
     {
-        this->target = target;
+
     }
 
     void GammaCorrectionPass::render(RenderState& renderState, const Scene& scene)

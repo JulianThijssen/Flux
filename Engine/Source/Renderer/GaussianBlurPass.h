@@ -20,8 +20,7 @@ namespace Flux {
     public:
         GaussianBlurPass();
 
-        void Resize(const Size& windowSize);
-        void SetTarget(const Framebuffer* target);
+        void Resize(const Size& windowSize) override;
 
         void render(RenderState& renderState, const Scene& scene) override;
 

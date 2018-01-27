@@ -34,9 +34,9 @@ namespace Flux {
         this->gBuffer = gBuffer;
     }
 
-    void DirectLightPass::SetTarget(const Framebuffer* target)
+    void DirectLightPass::Resize(const Size& windowSize)
     {
-        this->target = target;
+
     }
 
     void DirectLightPass::render(RenderState& renderState, const Scene& scene)

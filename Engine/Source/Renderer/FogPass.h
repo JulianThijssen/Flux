@@ -20,8 +20,9 @@ namespace Flux
         FogPass();
 
         void SetDepthMap(const Texture* depthMap);
-        void SetTarget(const Framebuffer* target);
         void SetFogColor(const Vector3f fogColor);
+
+        void Resize(const Size& windowSize) override;
 
         void render(RenderState& renderState, const Scene& scene) override;
 

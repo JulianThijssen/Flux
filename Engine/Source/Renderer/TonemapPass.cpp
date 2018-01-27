@@ -17,9 +17,9 @@ namespace Flux {
         this->bloom = bloom;
     }
 
-    void TonemapPass::SetTarget(const Framebuffer* target)
+    void TonemapPass::Resize(const Size& windowSize)
     {
-        this->target = target;
+
     }
 
     void TonemapPass::render(RenderState& renderState, const Scene& scene)

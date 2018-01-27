@@ -19,7 +19,8 @@ namespace Flux
         TonemapPass();
 
         void SetBloom(const Texture* bloom);
-        void SetTarget(const Framebuffer* target);
+
+        void Resize(const Size& windowSize) override;
 
         void render(RenderState& renderState, const Scene& scene) override;
 

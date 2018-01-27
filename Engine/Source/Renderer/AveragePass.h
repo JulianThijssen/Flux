@@ -18,6 +18,9 @@ namespace Flux
         AveragePass();
 
         void SetTextures(std::vector<Texture>);
+
+        void Resize(const Size& windowSize) override;
+
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:

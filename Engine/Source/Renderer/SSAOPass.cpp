@@ -33,7 +33,7 @@ namespace Flux {
         this->ssaoInfo = ssaoInfo;
     }
 
-    void SSAOPass::SetWindowSize(const Size* windowSize)
+    void SSAOPass::Resize(const Size& windowSize)
     {
         this->windowSize = windowSize;
     }

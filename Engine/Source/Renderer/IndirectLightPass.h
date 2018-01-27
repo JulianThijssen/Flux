@@ -21,7 +21,8 @@ namespace Flux
         IndirectLightPass(const Scene& scene);
 
         void SetGBuffer(const GBuffer* gBuffer);
-        void SetTarget(const Framebuffer* target);
+
+        void Resize(const Size& windowSize) override;
 
         void render(RenderState& renderState, const Scene& scene) override;
 

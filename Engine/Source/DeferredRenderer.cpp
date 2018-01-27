@@ -139,6 +139,7 @@ namespace Flux {
         // Generate half sized framebuffers for low-resolution SSAO rendering
         ssaoInfo.createBuffers(windowSize.width, windowSize.height);
 
+        bloomPass->Resize(windowSize);
         gaussianBlurPass->Resize(windowSize);
         fxaaPass->Resize(windowSize);
     }

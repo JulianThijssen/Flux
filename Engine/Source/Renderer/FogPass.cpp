@@ -17,14 +17,14 @@ namespace Flux {
         this->depthMap = depthMap;
     }
 
-    void FogPass::SetTarget(const Framebuffer* target)
-    {
-        this->target = target;
-    }
-
     void FogPass::SetFogColor(const Vector3f fogColor)
     {
         this->fogColor = fogColor;
+    }
+
+    void FogPass::Resize(const Size& windowSize)
+    {
+
     }
 
     void FogPass::render(RenderState& renderState, const Scene& scene)

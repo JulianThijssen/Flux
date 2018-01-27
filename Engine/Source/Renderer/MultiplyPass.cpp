@@ -23,6 +23,11 @@ namespace Flux {
         }
     }
 
+    void MultiplyPass::Resize(const Size& windowSize)
+    {
+
+    }
+
     void MultiplyPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());

@@ -40,11 +40,6 @@ namespace Flux {
         }
     }
 
-    void GaussianBlurPass::SetTarget(const Framebuffer* target)
-    {
-        this->target = target;
-    }
-
     void GaussianBlurPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());

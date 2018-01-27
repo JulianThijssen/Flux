@@ -22,7 +22,8 @@ namespace Flux
 
         void SetGBuffer(const GBuffer* gBuffer);
         void SetSsaoInfo(SsaoInfo* ssaoInfo);
-        void SetWindowSize(const Size* size);
+
+        void Resize(const Size& windowSize) override;
 
         void render(RenderState& renderState, const Scene& scene) override;
 

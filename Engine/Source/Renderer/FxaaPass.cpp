@@ -12,11 +12,6 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
     }
 
-    void FxaaPass::SetTarget(const Framebuffer* target)
-    {
-        this->target = target;
-    }
-
     void FxaaPass::Resize(const Size& windowSize)
     {
         this->windowSize = windowSize;
