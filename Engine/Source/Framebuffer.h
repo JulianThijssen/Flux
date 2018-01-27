@@ -13,11 +13,22 @@
 namespace Flux {
     class Framebuffer {
     public:
-        Framebuffer(const unsigned int width, const unsigned int height)
-            : width(width)
-            , height(height)
+        Framebuffer()
         {
+
+        }
+
+        void create() {
             glGenFramebuffers(1, &handle);
+        }
+
+        void destroy() {
+            glDeleteFramebuffers(1, &handle);
+
+            for (int i = 0; i < 8; i++) {
+                delete colorTexture[i];
+            }
+            delete depthTexture;
         }
 
         void bind() const {

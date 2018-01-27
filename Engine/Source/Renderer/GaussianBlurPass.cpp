@@ -25,12 +25,14 @@ namespace Flux {
         blurBuffers2.resize(4);
         for (unsigned int i = 0; i < blurBuffers.size(); i++) {
             blurWidth = blurWidth >> 1; blurHeight = blurHeight >> 1;
-            blurBuffers[i] = new Framebuffer(blurWidth, blurHeight);
+            blurBuffers[i] = new Framebuffer();
+            blurBuffers[i]->create();
             blurBuffers[i]->bind();
             blurBuffers[i]->addColorTexture(0, TextureLoader::create(blurWidth, blurHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
             blurBuffers[i]->validate();
             blurBuffers[i]->release();
-            blurBuffers2[i] = new Framebuffer(blurWidth, blurHeight);
+            blurBuffers2[i] = new Framebuffer();
+            blurBuffers2[i]->create();
             blurBuffers2[i]->bind();
             blurBuffers2[i]->addColorTexture(0, TextureLoader::create(blurWidth, blurHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
             blurBuffers2[i]->validate();

@@ -73,15 +73,21 @@ namespace Flux {
     }
 
     void DeferredRenderer::createBackBuffers(const unsigned int width, const unsigned int height) {
-        hdrBuffer = new Framebuffer(windowSize.width, windowSize.height);
-        hdrBuffer->bind();
-        hdrBuffer->addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP));
-        hdrBuffer->addDepthTexture(gBuffer.depthTex);
-        hdrBuffer->validate();
-        hdrBuffer->release();
+        renderState.hdrBuffer.create();
+        renderState.hdrBuffer.bind();
+        renderState.hdrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP));
+        renderState.hdrBuffer.addDepthTexture(gBuffer.depthTex);
+        renderState.hdrBuffer.validate();
+        renderState.hdrBuffer.release();
+
+        renderState.ldrBuffer.create();
+        renderState.ldrBuffer.bind();
+        renderState.ldrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
+        renderState.ldrBuffer.validate();
+        renderState.ldrBuffer.release();
 
         for (int i = 0; i < 2; i++) {
-            Framebuffer framebuffer(windowSize.width, windowSize.height);
+            Framebuffer framebuffer;
             framebuffer.bind();
             // Textures are linearly sampled for first step of gaussian bloom blur
             framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
@@ -90,7 +96,7 @@ namespace Flux {
             hdrBackBuffers.push_back(framebuffer);
         }
         for (int i = 0; i < 2; i++) {
-            Framebuffer framebuffer(windowSize.width, windowSize.height);
+            Framebuffer framebuffer;
             framebuffer.bind();
             framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
             framebuffer.validate();
@@ -107,17 +113,17 @@ namespace Flux {
             PointLight* pointLight = entity->getComponent<PointLight>();
 
             if (dirLight) {
-                dirLight->shadowBuffer = std::make_unique<Framebuffer>(4096, 4096);
-                dirLight->shadowBuffer->bind();
-                dirLight->shadowBuffer->disableColor();
-                dirLight->shadowBuffer->release();
+                dirLight->shadowBuffer.create();
+                dirLight->shadowBuffer.bind();
+                dirLight->shadowBuffer.disableColor();
+                dirLight->shadowBuffer.release();
                 dirLight->shadowMap = TextureLoader::createShadowMap(4096, 4096);
             }
             if (pointLight) {
-                pointLight->shadowBuffer = std::make_unique<Framebuffer>(512, 512);
-                pointLight->shadowBuffer->bind();
-                pointLight->shadowBuffer->disableColor();
-                pointLight->shadowBuffer->release();
+                pointLight->shadowBuffer.create();
+                pointLight->shadowBuffer.bind();
+                pointLight->shadowBuffer.disableColor();
+                pointLight->shadowBuffer.release();
                 pointLight->shadowMap = new Cubemap();
                 pointLight->shadowMap->createShadowMap(512);
             }
@@ -371,8 +377,8 @@ namespace Flux {
 
                 dirLight->shadowSpace = Matrix4f::BIAS * renderState.projMatrix * renderState.viewMatrix;
 
-                dirLight->shadowBuffer->bind();
-                dirLight->shadowBuffer->addDepthTexture(dirLight->shadowMap);
+                dirLight->shadowBuffer.bind();
+                dirLight->shadowBuffer.addDepthTexture(dirLight->shadowMap);
                 glViewport(0, 0, dirLight->shadowMap->getWidth(), dirLight->shadowMap->getHeight());
 
                 glClear(GL_DEPTH_BUFFER_BIT);
@@ -382,8 +388,8 @@ namespace Flux {
             if (pointLight) {
                 Camera cam(90, 1, 0.1, 100);
 
-                pointLight->shadowBuffer->bind();
-                pointLight->shadowBuffer->disableColor();
+                pointLight->shadowBuffer.bind();
+                pointLight->shadowBuffer.disableColor();
 
                 // Set the clear depth to be the furthest distance possible
                 glClearDepth(1);
@@ -398,8 +404,8 @@ namespace Flux {
                     renderState.setCamera(shadowShader, *t, cam);
 
                     // Set up the framebuffer and validate it
-                    pointLight->shadowBuffer->setDepthCubemap(pointLight->shadowMap, i, 0);
-                    pointLight->shadowBuffer->validate();
+                    pointLight->shadowBuffer.setDepthCubemap(pointLight->shadowMap, i, 0);
+                    pointLight->shadowBuffer.validate();
 
                     // Clear the framebuffer and render the scene from the view of the light
                     glClear(GL_DEPTH_BUFFER_BIT);

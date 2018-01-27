@@ -62,7 +62,8 @@ namespace Flux
         // Generate half sized framebuffers for low-resolution SSAO rendering
         buffers.resize(2);
         for (int i = 0; i < 2; i++) {
-            buffers[i] = new Framebuffer(width / 2, height / 2);
+            buffers[i] = new Framebuffer();
+            buffers[i]->create();
             buffers[i]->bind();
             buffers[i]->addColorTexture(0, TextureLoader::create(width / 2, height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
             buffers[i]->validate();

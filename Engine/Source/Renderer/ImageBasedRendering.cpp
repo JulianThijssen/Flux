@@ -14,7 +14,8 @@ namespace Flux
         Shader shader;
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Irradiance.frag");
 
-        Framebuffer framebuffer(textureSize, textureSize);
+        Framebuffer framebuffer;
+        framebuffer.create();
         framebuffer.bind();
         framebuffer.addDrawBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -61,7 +62,8 @@ namespace Flux
         // Should be resolution of environment map for perfect accuracy, but this is good enough
         const unsigned int resolution = 512;
 
-        Framebuffer framebuffer(resolution, resolution);
+        Framebuffer framebuffer;
+        framebuffer.create();
         framebuffer.bind();
         framebuffer.addDrawBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -129,7 +131,8 @@ namespace Flux
         Shader shader;
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/BRDFintegration.frag");
 
-        Framebuffer framebuffer(256, 256);
+        Framebuffer framebuffer;
+        framebuffer.create();
         framebuffer.bind();
         framebuffer.addDrawBuffer(GL_COLOR_ATTACHMENT0);
 

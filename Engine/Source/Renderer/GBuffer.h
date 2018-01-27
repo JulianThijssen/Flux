@@ -15,21 +15,21 @@ namespace Flux {
             positionTex = TextureLoader::create(width, height, GL_RGBA32F, GL_RGBA, GL_FLOAT, CLAMP);
             depthTex = TextureLoader::create(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, CLAMP);
 
-            buffer = std::make_unique<Framebuffer>(width, height);
-            buffer->bind();
-            buffer->addColorTexture(0, albedoTex);
-            buffer->addColorTexture(1, normalTex);
-            buffer->addColorTexture(2, positionTex);
-            buffer->addDrawBuffer(GL_COLOR_ATTACHMENT0);
-            buffer->addDrawBuffer(GL_COLOR_ATTACHMENT1);
-            buffer->addDrawBuffer(GL_COLOR_ATTACHMENT2);
-            buffer->addDepthTexture(depthTex);
-            buffer->validate();
-            buffer->release();
+            buffer.create();
+            buffer.bind();
+            buffer.addColorTexture(0, albedoTex);
+            buffer.addColorTexture(1, normalTex);
+            buffer.addColorTexture(2, positionTex);
+            buffer.addDrawBuffer(GL_COLOR_ATTACHMENT0);
+            buffer.addDrawBuffer(GL_COLOR_ATTACHMENT1);
+            buffer.addDrawBuffer(GL_COLOR_ATTACHMENT2);
+            buffer.addDepthTexture(depthTex);
+            buffer.validate();
+            buffer.release();
         }
 
         void bind() {
-            buffer->bind();
+            buffer.bind();
         }
 
         Texture* albedoTex;
@@ -37,7 +37,7 @@ namespace Flux {
         Texture* positionTex;
         Texture* depthTex;
 
-        std::unique_ptr<Framebuffer> buffer;
+        Framebuffer buffer;
     };
 }
 

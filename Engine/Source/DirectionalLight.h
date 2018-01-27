@@ -26,7 +26,7 @@ namespace Flux {
 
         Texture* shadowMap;
         Matrix4f shadowSpace;
-        std::unique_ptr<Framebuffer> shadowBuffer;
+        Framebuffer shadowBuffer;
     };
 }
 

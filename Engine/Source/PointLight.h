@@ -31,7 +31,7 @@ namespace Flux {
         float energy;
 
         Cubemap* shadowMap;
-        std::unique_ptr<Framebuffer> shadowBuffer;
+        Framebuffer shadowBuffer;
     };
 }
 
