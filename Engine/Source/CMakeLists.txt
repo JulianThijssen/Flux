@@ -82,6 +82,8 @@ set(INPUT
 )
 
 set(RENDERING
+    ${DIR}/Renderer/AddPass.h
+    ${DIR}/Renderer/AddPass.cpp
     ${DIR}/Renderer/RenderState.h
     ${DIR}/Renderer/RenderState.cpp
     ${DIR}/Renderer/GBuffer.h
