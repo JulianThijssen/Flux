@@ -4,6 +4,7 @@
 
 #include "Util/Matrix4f.h"
 #include "Util/Vector3f.h"
+#include "Framebuffer.h"
 
 #include <glad/glad.h>
 
@@ -45,6 +46,9 @@ namespace Flux {
         Matrix4f modelMatrix;
 
         static GLuint quadVao;
+
+        Framebuffer hdrBuffer;
+        Framebuffer ldrBuffer;
     private:
         Vector3f clearColor;
     };

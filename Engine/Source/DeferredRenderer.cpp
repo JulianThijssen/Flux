@@ -166,6 +166,8 @@ namespace Flux {
 
         glDepthMask(false);
 
+        // HDR Rendering
+        renderState.hdrBuffer.bind();
         globalIllumination(scene);
         directLighting(scene);
 

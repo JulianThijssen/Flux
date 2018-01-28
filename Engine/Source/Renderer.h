@@ -49,7 +49,6 @@ namespace Flux {
 
         Size windowSize;
 
-        Framebuffer* hdrBuffer;
         std::vector<Framebuffer> backBuffers;
         std::vector<Framebuffer> hdrBackBuffers;
         unsigned int currentFramebuffer;
