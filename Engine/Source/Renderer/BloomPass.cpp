@@ -43,6 +43,12 @@ namespace Flux {
 
         renderState.hdrBuffer.bind();
 
+        std::vector<Texture> sources{ renderState.hdrBuffer.getColorTexture(0), buffers[0].getColorTexture(0) };
+        std::vector<float> weights{ 1, 1 };
+        addPass.SetTextures(sources);
+        addPass.SetWeights(weights);
+        addPass.render(renderState, scene);
+
         nvtxRangePop();
     }
 }
