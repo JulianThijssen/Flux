@@ -12,9 +12,18 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag");
     }
 
-    void BloomPass::SetTarget(const Framebuffer* target)
+    void BloomPass::Resize(const Size& windowSize)
     {
-        this->target = target;
+        for (int i = 0; i < 2; i++) {
+            Framebuffer framebuffer;
+            framebuffer.create();
+            framebuffer.bind();
+            // Textures are linearly sampled for first step of gaussian bloom blur
+            framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
+            framebuffer.validate();
+            framebuffer.release();
+            buffers.push_back(framebuffer);
+        }
     }
 
     void BloomPass::render(RenderState& renderState, const Scene& scene)
@@ -28,7 +37,11 @@ namespace Flux {
         shader.uniform1i("tex", TextureUnit::TEXTURE);
         shader.uniform1f("threshold", 0);
 
+        buffers[0].bind();
+
         renderState.drawQuad();
+
+        renderState.hdrBuffer.bind();
 
         nvtxRangePop();
     }
