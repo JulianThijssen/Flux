@@ -17,7 +17,7 @@
 #include "nvToolsExt.h"
 
 namespace Flux {
-    SSAOPass::SSAOPass() : RenderPhase("SSAO")
+    SSAOPass::SSAOPass() : RenderPhase("SSAO"), windowSize(1, 1)
     {
         ssaoShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag");
         blurShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag");
@@ -69,7 +69,7 @@ namespace Flux {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glViewport(0, 0, windowSize->width / 2, windowSize->height / 2);
+        glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
 
         gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
         ssaoShader.uniform1i("albedoMap", TextureUnit::ALBEDO);
@@ -85,14 +85,14 @@ namespace Flux {
         ssaoShader.uniform3fv("kernel", (int)ssaoInfo->kernel.size(), ssaoInfo->kernel.data());
         ssaoShader.uniform1i("kernelSize", (int)ssaoInfo->kernel.size());
 
-        ssaoShader.uniform2i("windowSize", windowSize->width / 2, windowSize->height / 2);
+        ssaoShader.uniform2i("windowSize", windowSize.width / 2, windowSize.height / 2);
 
         ssaoInfo->getCurrentBuffer()->bind();
         renderState.drawQuad();
 
         nvtxRangePushA("SSAO Blur");
         blurShader.bind();
-        blurShader.uniform2i("windowSize", windowSize->width, windowSize->height);
+        blurShader.uniform2i("windowSize", windowSize.width, windowSize.height);
 
         ssaoInfo->getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::TEXTURE);
         blurShader.uniform1i("tex", TextureUnit::TEXTURE);
@@ -101,7 +101,7 @@ namespace Flux {
         ssaoInfo->getCurrentBuffer()->bind();
         renderState.drawQuad();
 
-        glViewport(0, 0, windowSize->width, windowSize->height);
+        glViewport(0, 0, windowSize.width, windowSize.height);
         nvtxRangePop();
 
         nvtxRangePop();

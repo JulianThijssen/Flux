@@ -33,7 +33,7 @@ namespace Flux
 
         const GBuffer* gBuffer;
         SsaoInfo* ssaoInfo;
-        const Size* windowSize;
+        Size windowSize;
     };
 }
 
