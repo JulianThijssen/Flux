@@ -22,7 +22,6 @@ namespace Flux {
 
     void SkyPass::render(RenderState& renderState, const Scene& scene)
     {
-        nvtxRangePushA(getPassName().c_str());
 
         Transform* transform = scene.mainCamera->getComponent<Transform>();
         Camera* cam = scene.mainCamera->getComponent<Camera>();
@@ -63,6 +62,8 @@ namespace Flux {
         else {
             return;
         }
+
+        nvtxRangePushA(getPassName().c_str());
 
         shader.uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
         shader.uniformMatrix4f("cameraBasis", cameraBasis);
