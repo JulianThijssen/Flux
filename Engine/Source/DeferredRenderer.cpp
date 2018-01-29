@@ -151,8 +151,8 @@ namespace Flux {
         if (scene.getMainCamera() == nullptr)
             return;
 
+        glDepthMask(GL_TRUE);
         renderShadowMaps(scene);
-
         glViewport(0, 0, windowSize.width, windowSize.height);
         LOG("Rendering GBuffer");
         gBuffer.bind();
@@ -164,14 +164,14 @@ namespace Flux {
         nvtxRangePop();
         LOG("Finished GBuffer");
 
-        glDepthMask(false);
+        glDepthMask(GL_FALSE);
 
         // HDR Rendering
         renderState.hdrBuffer.bind();
         globalIllumination(scene);
         directLighting(scene);
 
-        glDepthMask(true);
+        glDepthMask(GL_TRUE);
         skyPass->render(renderState, scene);
         applyPostprocess(scene);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
