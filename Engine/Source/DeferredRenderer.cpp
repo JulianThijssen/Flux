@@ -312,9 +312,7 @@ namespace Flux {
     }
 
     void DeferredRenderer::tonemap(const Scene& scene) {
-        tonemapPass->SetSource(&hdrBuffer->getColorTexture(0));
-        tonemapPass->SetBloom(&getCurrentHdrFramebuffer().getColorTexture(0));
-        tonemapPass->SetTarget(&getCurrentFramebuffer());
+        tonemapPass->SetSource(&renderState.hdrBuffer.getColorTexture(0));
 
         tonemapPass->render(renderState, scene);
     }

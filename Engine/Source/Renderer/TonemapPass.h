@@ -18,17 +18,12 @@ namespace Flux
     public:
         TonemapPass();
 
-        void SetBloom(const Texture* bloom);
-
         void Resize(const Size& windowSize) override;
 
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
         Shader shader;
-
-        const Texture* source;
-        const Texture* bloom;
     };
 }
 
