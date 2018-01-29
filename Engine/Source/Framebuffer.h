@@ -35,6 +35,14 @@ namespace Flux {
             glBindFramebuffer(GL_FRAMEBUFFER, handle);
         }
 
+        void bindDraw() const {
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, handle);
+        }
+
+        void bindRead() const {
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, handle);
+        }
+
         void release() const {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
