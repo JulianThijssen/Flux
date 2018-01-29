@@ -415,6 +415,12 @@ namespace Flux {
 
     void DeferredRenderer::renderFramebuffer(const Framebuffer& framebuffer) {
         LOG("Rendering framebuffer");
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glClearColor(0.5, 1, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         textureShader.bind();
         framebuffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
         textureShader.uniform1i("tex", TextureUnit::TEXTURE);
