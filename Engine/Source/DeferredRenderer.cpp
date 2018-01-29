@@ -288,25 +288,22 @@ namespace Flux {
     }
 
     void DeferredRenderer::fog(const Scene& scene) {
-        fogPass->SetSource(&getCurrentFramebuffer().getColorTexture(0));
+        fogPass->SetSource(&renderState.ldrBuffer.getColorTexture(0));
         fogPass->SetDepthMap(gBuffer.depthTex);
         switchBuffers();
-        fogPass->SetTarget(&getCurrentFramebuffer());
         fogPass->SetFogColor(Vector3f(165.0f / 255, 96.0f / 255, 81.0f / 255));
 
         fogPass->render(renderState, scene);
     }
 
     void DeferredRenderer::bloom(const Scene& scene) {
-        bloomPass->SetSource(&hdrBuffer->getColorTexture(0));
-        bloomPass->SetTarget(&getCurrentHdrFramebuffer());
+        bloomPass->SetSource(&renderState.hdrBuffer.getColorTexture(0));
 
         bloomPass->render(renderState, scene);
     }
 
     void DeferredRenderer::blur(const Scene& scene) {
         gaussianBlurPass->SetSource(&getCurrentHdrFramebuffer().getColorTexture(0));
-        gaussianBlurPass->SetTarget(&getCurrentHdrFramebuffer());
 
         gaussianBlurPass->render(renderState, scene);
     }
@@ -318,25 +315,19 @@ namespace Flux {
     }
 
     void DeferredRenderer::gammaCorrection(const Scene& scene) {
-        gammaCorrectionPass->SetSource(&getCurrentFramebuffer().getColorTexture(0));
-        switchBuffers();
-        gammaCorrectionPass->SetTarget(&getCurrentFramebuffer());
+        gammaCorrectionPass->SetSource(&renderState.ldrBuffer.getColorTexture(0));
 
         gammaCorrectionPass->render(renderState, scene);
     }
 
     void DeferredRenderer::antiAliasing(const Scene& scene) {
-        fxaaPass->SetSource(&getCurrentFramebuffer().getColorTexture(0));
-        switchBuffers();
-        fxaaPass->SetTarget(&getCurrentFramebuffer());
+        fxaaPass->SetSource(&renderState.ldrBuffer.getColorTexture(0));
 
         fxaaPass->render(renderState, scene);
     }
 
     void DeferredRenderer::colorGrading(const Scene& scene) {
-        colorGradingPass->SetSource(&getCurrentFramebuffer().getColorTexture(0));
-        switchBuffers();
-        colorGradingPass->SetTarget(&getCurrentFramebuffer());
+        colorGradingPass->SetSource(&renderState.ldrBuffer.getColorTexture(0));
 
         colorGradingPass->render(renderState, scene);
     }
