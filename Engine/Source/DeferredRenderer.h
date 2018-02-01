@@ -49,7 +49,7 @@ namespace Flux {
         void directLighting(const Scene& scene);
         void ssao(const Scene& scene);
         void multiply(const Scene& scene);
-        void applyPostprocess(const Scene& scene);
+
         void fog(const Scene& scene);
         void bloom(const Scene& scene);
         void blur(const Scene& scene);
@@ -68,6 +68,8 @@ namespace Flux {
         GBuffer gBuffer;
         Framebuffer hdrBuffer;
         Framebuffer ldrBuffer;
+
+        std::vector<RenderPhase*> hdrPasses;
 
         AveragePass* averagePass;
         MultiplyPass* multiplyPass;

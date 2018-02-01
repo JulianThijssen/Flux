@@ -66,6 +66,13 @@ namespace Flux {
         colorGradingPass = new ColorGradingPass();
         fogPass = new FogPass();
 
+        indirectLightPass->SetGBuffer(&gBuffer);
+        directLightPass->SetGBuffer(&gBuffer);
+
+        hdrPasses.push_back(indirectLightPass);
+        hdrPasses.push_back(directLightPass);
+        hdrPasses.push_back(skyPass);
+        hdrPasses.push_back(bloomPass);
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
 
@@ -73,18 +80,18 @@ namespace Flux {
     }
 
     void DeferredRenderer::createBackBuffers(const unsigned int width, const unsigned int height) {
-        renderState.hdrBuffer.create();
-        renderState.hdrBuffer.bind();
-        renderState.hdrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP));
-        renderState.hdrBuffer.addDepthTexture(gBuffer.depthTex);
-        renderState.hdrBuffer.validate();
-        renderState.hdrBuffer.release();
+        hdrBuffer.create();
+        hdrBuffer.bind();
+        hdrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP));
+        hdrBuffer.addDepthTexture(gBuffer.depthTex);
+        hdrBuffer.validate();
+        hdrBuffer.release();
 
-        renderState.ldrBuffer.create();
-        renderState.ldrBuffer.bind();
-        renderState.ldrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
-        renderState.ldrBuffer.validate();
-        renderState.ldrBuffer.release();
+        ldrBuffer.create();
+        ldrBuffer.bind();
+        ldrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
+        ldrBuffer.validate();
+        ldrBuffer.release();
 
         for (int i = 0; i < 2; i++) {
             Framebuffer framebuffer;
@@ -167,16 +174,28 @@ namespace Flux {
         glDepthMask(GL_FALSE);
 
         // HDR Rendering
-        renderState.hdrBuffer.bind();
-        globalIllumination(scene);
-        directLighting(scene);
+        hdrBuffer.bind();
 
-        glDepthMask(GL_TRUE);
-        skyPass->render(renderState, scene);
-        applyPostprocess(scene);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        renderFramebuffer(getCurrentFramebuffer());
+        for (RenderPhase* renderPass : hdrPasses) {
+            renderPass->SetSource(&hdrBuffer.getColorTexture(0));
+
+            renderPass->render(renderState, scene);
+        }
+
+        //blur(scene);
+
+        // LDR Rendering
+        ldrBuffer.bind();
+        tonemap(scene);
+        //fog(scene);
+        //gammaCorrection(scene);
+        //antiAliasing(scene);
+        //colorGrading(scene);
+
+        GLenum error = glGetError();
+        std::cout << "ERROR: " << error << std::endl;
+
+        renderFramebuffer(ldrBuffer);
         LOG("Done updating");
     }
 
@@ -269,21 +288,6 @@ namespace Flux {
         glBindVertexArray(mesh->handle);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
         glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
-        nvtxRangePop();
-    }
-
-    void DeferredRenderer::applyPostprocess(const Scene& scene) {
-        LOG("Post-processing");
-        nvtxRangePushA("Post-process");
-
-        bloom(scene);
-        blur(scene);
-        tonemap(scene);
-        fog(scene);
-        gammaCorrection(scene);
-        antiAliasing(scene);
-        colorGrading(scene);
-
         nvtxRangePop();
     }
 
