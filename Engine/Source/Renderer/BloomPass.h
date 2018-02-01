@@ -4,6 +4,7 @@
 
 #include "RenderPhase.h"
 #include "AddPass.h"
+#include "GaussianBlurPass.h"
 
 #include "Shader.h"
 
@@ -25,8 +26,9 @@ namespace Flux {
     private:
         Shader shader;
 
-        std::vector<Framebuffer> buffers;
+        Framebuffer buffer;
 
+        GaussianBlurPass blurPass;
         AddPass addPass;
     };
 }

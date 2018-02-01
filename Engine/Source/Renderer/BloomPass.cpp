@@ -14,21 +14,21 @@ namespace Flux {
 
     void BloomPass::Resize(const Size& windowSize)
     {
-        for (int i = 0; i < 2; i++) {
-            Framebuffer framebuffer;
-            framebuffer.create();
-            framebuffer.bind();
-            // Textures are linearly sampled for first step of gaussian bloom blur
-            framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
-            framebuffer.validate();
-            framebuffer.release();
-            buffers.push_back(framebuffer);
-        }
+        buffer.create();
+        buffer.bind();
+        // Textures are linearly sampled for first step of gaussian bloom blur
+        buffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
+        buffer.validate();
+        buffer.release();
+
+        blurPass.Resize(windowSize);
     }
 
     void BloomPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
+
+        const Framebuffer* sourceFramebuffer = RenderState::currentFramebuffer;
 
         shader.bind();
 
@@ -37,13 +37,18 @@ namespace Flux {
         shader.uniform1i("tex", TextureUnit::TEXTURE);
         shader.uniform1f("threshold", 0);
 
-        buffers[0].bind();
+        buffer.bind();
 
         renderState.drawQuad();
 
-        renderState.hdrBuffer.bind();
+        // Blur the buffer
+        blurPass.SetSource(&buffer.getColorTexture(0));
+        blurPass.render(renderState, scene);
 
-        std::vector<Texture> sources{ renderState.hdrBuffer.getColorTexture(0), buffers[0].getColorTexture(0) };
+        // Add the bloom to the HDR buffer
+        sourceFramebuffer->bind();
+
+        std::vector<Texture> sources{ sourceFramebuffer->getColorTexture(0), buffer.getColorTexture(0) };
         std::vector<float> weights{ 1, 1 };
         addPass.SetTextures(sources);
         addPass.SetWeights(weights);
