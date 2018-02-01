@@ -3,6 +3,7 @@
 #define GAUSSIAN_BLUR_PASS_H
 
 #include "RenderPhase.h"
+#include "AddPass.h"
 
 #include "Shader.h"
 #include "Util/Size.h"
@@ -12,8 +13,6 @@
 namespace Flux {
     class Texture;
     class Framebuffer;
-
-    class AveragePass;
 
     class GaussianBlurPass : public RenderPhase
     {
@@ -30,7 +29,7 @@ namespace Flux {
         Size windowSize;
         std::vector<Framebuffer> blurBuffers;
 
-        AveragePass* averagePass;
+        AddPass averagePass;
     };
 }
 

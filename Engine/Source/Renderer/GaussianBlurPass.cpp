@@ -1,7 +1,5 @@
 #include "Renderer/GaussianBlurPass.h"
 
-#include "Renderer/AveragePass.h"
-
 #include "Renderer.h"
 
 #include "TextureUnit.h"
@@ -12,8 +10,6 @@ namespace Flux {
     GaussianBlurPass::GaussianBlurPass() : RenderPhase("GaussianBlur"), windowSize(1, 1)
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/BlurFast.frag");
-
-        averagePass = new AveragePass();
     }
 
     void GaussianBlurPass::Resize(const Size& windowSize) {
@@ -85,7 +81,9 @@ namespace Flux {
             blurBuffers[5].getColorTexture(0),
             blurBuffers[7].getColorTexture(0),
         };
-        averagePass->SetTextures(v);
-        averagePass->render(renderState, scene);
+        std::vector<float> weights{ 0.25f, 0.25f, 0.25f, 0.25f };
+        averagePass.SetTextures(v);
+        averagePass.SetWeights(weights);
+        averagePass.render(renderState, scene);
     }
 }

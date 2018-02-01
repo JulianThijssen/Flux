@@ -87,8 +87,6 @@ set(RENDERING
     ${DIR}/Renderer/RenderState.h
     ${DIR}/Renderer/RenderState.cpp
     ${DIR}/Renderer/GBuffer.h
-    ${DIR}/Renderer/AveragePass.h
-    ${DIR}/Renderer/AveragePass.cpp
     ${DIR}/Renderer/MultiplyPass.h
     ${DIR}/Renderer/MultiplyPass.cpp
     ${DIR}/Renderer/SSAOPass.h
