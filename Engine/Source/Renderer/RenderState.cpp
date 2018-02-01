@@ -1,5 +1,6 @@
 #include "Renderer/RenderState.h"
 
+#include "Framebuffer.h"
 #include "Shader.h"
 #include "Entity.h"
 #include "Transform.h"
@@ -7,6 +8,8 @@
 
 namespace Flux {
     GLuint RenderState::quadVao = 0;
+
+    const Framebuffer* RenderState::currentFramebuffer = 0;
 
     void RenderState::enable(Capability capability) {
         glEnable(capability);

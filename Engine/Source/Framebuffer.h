@@ -2,6 +2,7 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
+#include "Renderer/RenderState.h"
 #include "Texture.h"
 #include "TextureLoader.h"
 #include "Cubemap.h"
@@ -33,6 +34,7 @@ namespace Flux {
 
         void bind() const {
             glBindFramebuffer(GL_FRAMEBUFFER, handle);
+            RenderState::currentFramebuffer = this;
         }
 
         void bindDraw() const {

@@ -4,11 +4,11 @@
 
 #include "Util/Matrix4f.h"
 #include "Util/Vector3f.h"
-#include "Framebuffer.h"
 
 #include <glad/glad.h>
 
 namespace Flux {
+    class Framebuffer;
     class Shader;
     class Entity;
     class Transform;
@@ -47,6 +47,7 @@ namespace Flux {
 
         static GLuint quadVao;
 
+        static const Framebuffer* currentFramebuffer;
         Framebuffer hdrBuffer;
         Framebuffer ldrBuffer;
     private:
