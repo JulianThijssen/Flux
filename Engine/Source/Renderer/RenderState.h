@@ -48,8 +48,6 @@ namespace Flux {
         static GLuint quadVao;
 
         static const Framebuffer* currentFramebuffer;
-        Framebuffer hdrBuffer;
-        Framebuffer ldrBuffer;
     private:
         Vector3f clearColor;
     };

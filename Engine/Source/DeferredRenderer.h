@@ -66,6 +66,8 @@ namespace Flux {
         Shader textureShader;
 
         GBuffer gBuffer;
+        Framebuffer hdrBuffer;
+        Framebuffer ldrBuffer;
 
         AveragePass* averagePass;
         MultiplyPass* multiplyPass;
