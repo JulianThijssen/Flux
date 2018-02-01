@@ -28,8 +28,7 @@ namespace Flux {
         Shader shader;
 
         Size windowSize;
-        std::vector<Framebuffer*> blurBuffers;
-        std::vector<Framebuffer*> blurBuffers2;
+        std::vector<Framebuffer> blurBuffers;
 
         AveragePass* averagePass;
     };
