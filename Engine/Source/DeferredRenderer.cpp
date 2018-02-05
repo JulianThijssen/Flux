@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 
-#include "Renderer/AveragePass.h"
 #include "Renderer/MultiplyPass.h"
 #include "Renderer/SSAOPass.h"
 #include "Renderer/SkyPass.h"
@@ -52,19 +51,17 @@ namespace Flux {
 
         ssaoInfo.generate();
 
-        averagePass = new AveragePass();
-        multiplyPass = new MultiplyPass();
-        ssaoPass = new SSAOPass();
-        skyPass = new SkyPass();
-        bloomPass = new BloomPass();
-        gaussianBlurPass = new GaussianBlurPass();
-        tonemapPass = new TonemapPass();
-        indirectLightPass = new IndirectLightPass(scene);
-        directLightPass = new DirectLightPass();
-        gammaCorrectionPass = new GammaCorrectionPass();
-        fxaaPass = new FxaaPass();
-        colorGradingPass = new ColorGradingPass();
-        fogPass = new FogPass();
+        SSAOPass* ssaoPass = new SSAOPass();
+        SkyPass* skyPass = new SkyPass();
+        BloomPass* bloomPass = new BloomPass();
+        TonemapPass* tonemapPass = new TonemapPass();
+        IndirectLightPass* indirectLightPass = new IndirectLightPass(scene);
+        DirectLightPass* directLightPass = new DirectLightPass();
+        GammaCorrectionPass* gammaCorrectionPass = new GammaCorrectionPass();
+        FxaaPass* fxaaPass = new FxaaPass();
+        ColorGradingPass* colorGradingPass = new ColorGradingPass();
+        FogPass* fogPass = new FogPass();
+        toneMapPass = new TonemapPass();
 
         indirectLightPass->SetGBuffer(&gBuffer);
         directLightPass->SetGBuffer(&gBuffer);
@@ -73,6 +70,11 @@ namespace Flux {
         hdrPasses.push_back(directLightPass);
         hdrPasses.push_back(skyPass);
         hdrPasses.push_back(bloomPass);
+
+        //fog(scene);
+        //gammaCorrection(scene);
+        //antiAliasing(scene);
+        //colorGrading(scene);
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
 
@@ -143,12 +145,9 @@ namespace Flux {
         gBuffer.create(windowSize.width, windowSize.height);
         createBackBuffers(windowSize.width, windowSize.height);
 
-        // Generate half sized framebuffers for low-resolution SSAO rendering
-        ssaoInfo.createBuffers(windowSize.width, windowSize.height);
-
-        bloomPass->Resize(windowSize);
-        gaussianBlurPass->Resize(windowSize);
-        fxaaPass->Resize(windowSize);
+        for (RenderPhase* renderPass : hdrPasses) {
+            renderPass->Resize(windowSize);
+        }
     }
 
     void DeferredRenderer::update(const Scene& scene) {
@@ -182,59 +181,16 @@ namespace Flux {
             renderPass->render(renderState, scene);
         }
 
-        //blur(scene);
-
         // LDR Rendering
         ldrBuffer.bind();
-        tonemap(scene);
-        //fog(scene);
-        //gammaCorrection(scene);
-        //antiAliasing(scene);
-        //colorGrading(scene);
+        toneMapPass->SetSource(&hdrBuffer.getColorTexture(0));
+        toneMapPass->render(renderState, scene);
 
         GLenum error = glGetError();
         std::cout << "ERROR: " << error << std::endl;
 
         renderFramebuffer(ldrBuffer);
         LOG("Done updating");
-    }
-
-    void DeferredRenderer::globalIllumination(const Scene& scene) {
-        switchHdrBuffers();
-
-        indirectLightPass->SetGBuffer(&gBuffer);
-
-        indirectLightPass->render(renderState, scene);
-
-        switchBuffers();
-
-        ssao(scene);
-        multiply(scene);
-    }
-
-    void DeferredRenderer::ssao(const Scene& scene) {
-        ssaoPass->SetGBuffer(&gBuffer);
-        ssaoPass->SetSsaoInfo(&ssaoInfo);
-        ssaoPass->SetWindowSize(&windowSize);
-
-        ssaoPass->render(renderState, scene);
-    }
-
-    void DeferredRenderer::multiply(const Scene& scene) {
-        hdrBuffer->bind();
-
-        std::vector<Texture> v = {
-            getCurrentHdrFramebuffer().getColorTexture(0),
-            ssaoInfo.getCurrentBuffer()->getColorTexture(0)
-        };
-        multiplyPass->SetTextures(v);
-        multiplyPass->render(renderState, scene);
-    }
-
-    void DeferredRenderer::directLighting(const Scene& scene) {
-        directLightPass->SetGBuffer(&gBuffer);
-
-        directLightPass->render(renderState, scene);
     }
 
     void DeferredRenderer::renderScene(const Scene& scene, Shader& shader) {
@@ -289,51 +245,6 @@ namespace Flux {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
         glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
         nvtxRangePop();
-    }
-
-    void DeferredRenderer::fog(const Scene& scene) {
-        fogPass->SetSource(&renderState.ldrBuffer.getColorTexture(0));
-        fogPass->SetDepthMap(gBuffer.depthTex);
-        switchBuffers();
-        fogPass->SetFogColor(Vector3f(165.0f / 255, 96.0f / 255, 81.0f / 255));
-
-        fogPass->render(renderState, scene);
-    }
-
-    void DeferredRenderer::bloom(const Scene& scene) {
-        bloomPass->SetSource(&renderState.hdrBuffer.getColorTexture(0));
-
-        bloomPass->render(renderState, scene);
-    }
-
-    void DeferredRenderer::blur(const Scene& scene) {
-        gaussianBlurPass->SetSource(&getCurrentHdrFramebuffer().getColorTexture(0));
-
-        gaussianBlurPass->render(renderState, scene);
-    }
-
-    void DeferredRenderer::tonemap(const Scene& scene) {
-        tonemapPass->SetSource(&renderState.hdrBuffer.getColorTexture(0));
-
-        tonemapPass->render(renderState, scene);
-    }
-
-    void DeferredRenderer::gammaCorrection(const Scene& scene) {
-        gammaCorrectionPass->SetSource(&renderState.ldrBuffer.getColorTexture(0));
-
-        gammaCorrectionPass->render(renderState, scene);
-    }
-
-    void DeferredRenderer::antiAliasing(const Scene& scene) {
-        fxaaPass->SetSource(&renderState.ldrBuffer.getColorTexture(0));
-
-        fxaaPass->render(renderState, scene);
-    }
-
-    void DeferredRenderer::colorGrading(const Scene& scene) {
-        colorGradingPass->SetSource(&renderState.ldrBuffer.getColorTexture(0));
-
-        colorGradingPass->render(renderState, scene);
     }
 
     void DeferredRenderer::renderDepth(const Scene& scene) {
