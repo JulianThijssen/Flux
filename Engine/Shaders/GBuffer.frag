@@ -9,6 +9,7 @@ struct Material {
     sampler2D roughnessMap;
     sampler2D stencilMap;
 
+    vec3 emission;
     vec2 tiling;
 
     bool hasDiffuseMap;
@@ -82,8 +83,11 @@ void main() {
     if (material.hasDiffuseMap) {
         BaseColor = sampleTiled(material.diffuseMap, pass_texCoords).rgb;
     }
+    if (length(material.emission) > 0.001) {
+        BaseColor = normalize(material.emission);
+    }
     
     fragColor = vec4(BaseColor, Roughness);
     fragNormal = vec4(N * 0.5 + 0.5, Metalness);
-    fragPosition = vec4(P, 1);
+    fragPosition = vec4(P, length(material.emission));
 }
