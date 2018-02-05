@@ -92,9 +92,7 @@ set(RENDERING
     ${DIR}/Renderer/SSAOPass.h
     ${DIR}/Renderer/SSAOPass.cpp
     ${DIR}/Renderer/ImageBasedRendering.h
-    ${DIR}/Renderer/SSAORendering.h
     ${DIR}/Renderer/ImageBasedRendering.cpp
-    ${DIR}/Renderer/SSAORendering.cpp
     ${DIR}/Renderer/SkyPass.h
     ${DIR}/Renderer/SkyPass.cpp
     ${DIR}/Renderer/BloomPass.h

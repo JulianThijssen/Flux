@@ -6,7 +6,6 @@
 
 #include "Cubemap.h"
 #include "Renderer/ImageBasedRendering.h"
-#include "Renderer/SSAORendering.h"
 
 #include "Texture.h"
 
@@ -28,7 +27,6 @@ namespace Flux {
         void renderFramebuffer(const Framebuffer& framebuffer);
     private:
         IblSceneInfo iblSceneInfo;
-        SsaoInfo ssaoInfo;
     };
 }
 

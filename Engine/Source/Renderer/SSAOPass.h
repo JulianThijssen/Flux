@@ -7,7 +7,6 @@
 
 #include "Shader.h"
 #include "Renderer/GBuffer.h"
-#include "Renderer/SSAORendering.h"
 
 #include <memory>
 

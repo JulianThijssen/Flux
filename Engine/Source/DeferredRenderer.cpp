@@ -49,8 +49,6 @@ namespace Flux {
 
         createShadowMaps(scene);
 
-        ssaoInfo.generate();
-
         SSAOPass* ssaoPass = new SSAOPass();
         SkyPass* skyPass = new SkyPass();
         BloomPass* bloomPass = new BloomPass();

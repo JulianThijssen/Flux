@@ -6,7 +6,6 @@
 #include "Renderer/GBuffer.h"
 
 #include "Cubemap.h"
-#include "Renderer/SSAORendering.h"
 
 #include "Texture.h"
 
