@@ -63,8 +63,10 @@ namespace Flux {
 
         indirectLightPass->SetGBuffer(&gBuffer);
         directLightPass->SetGBuffer(&gBuffer);
+        ssaoPass->SetGBuffer(&gBuffer);
 
         hdrPasses.push_back(indirectLightPass);
+        hdrPasses.push_back(ssaoPass);
         hdrPasses.push_back(directLightPass);
         hdrPasses.push_back(skyPass);
         hdrPasses.push_back(bloomPass);

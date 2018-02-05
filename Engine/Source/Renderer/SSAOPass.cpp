@@ -86,12 +86,23 @@ namespace Flux {
     void SSAOPass::Resize(const Size& windowSize)
     {
         this->windowSize = windowSize;
+
+        // Generate half sized framebuffers for low-resolution SSAO rendering
+        //buffers.resize(2);
+        //for (int i = 0; i < 2; i++) {
+            buffer.create();
+            buffer.bind();
+            buffer.addColorTexture(0, TextureLoader::create(windowSize.width / 2, windowSize.height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
+            buffer.validate();
+            buffer.release();
+        //}
     }
 
     void SSAOPass::render(RenderState& renderState, const Scene& scene)
     {
         nvtxRangePushA(getPassName().c_str());
 
+        const Framebuffer* sourceFramebuffer = RenderState::currentFramebuffer;
         ssaoShader.bind();
 
         ///
