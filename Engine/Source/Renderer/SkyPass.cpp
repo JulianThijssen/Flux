@@ -22,7 +22,6 @@ namespace Flux {
 
     void SkyPass::render(RenderState& renderState, const Scene& scene)
     {
-
         Transform* transform = scene.mainCamera->getComponent<Transform>();
         Camera* cam = scene.mainCamera->getComponent<Camera>();
 
@@ -65,12 +64,15 @@ namespace Flux {
 
         nvtxRangePushA(getPassName().c_str());
 
+        glDepthMask(GL_TRUE);
         shader.uniform2f("persp", 1.0f / projMatrix.toArray()[0], 1.0f / projMatrix.toArray()[5]);
         shader.uniformMatrix4f("cameraBasis", cameraBasis);
 
         glDepthFunc(GL_LEQUAL);
         renderState.drawQuad();
         glDepthFunc(GL_LESS);
+
+        glDepthMask(GL_FALSE);
 
         nvtxRangePop();
     }
