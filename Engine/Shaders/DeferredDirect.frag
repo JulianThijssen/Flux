@@ -149,7 +149,7 @@ void main() {
     
     vec3 BaseColor = toLinear(arMap.rgb);
     float Roughness = arMap.w;
-    vec3 N = nmMap.rgb * 2 - 1;
+    vec3 N = normalize(nmMap.rgb * 2 - 1);
     float Metalness = nmMap.w;
     vec3 P = peMap.rgb;
     float Emission = peMap.w;
