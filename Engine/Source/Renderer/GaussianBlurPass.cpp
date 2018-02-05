@@ -25,7 +25,7 @@ namespace Flux {
 
             blurBuffers[i].create();
             blurBuffers[i].bind();
-            blurBuffers[i].addColorTexture(0, TextureLoader::create(blurWidth, blurHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
+            blurBuffers[i].addColorTexture(0, TextureLoader::create(blurWidth, blurHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE)));
             blurBuffers[i].validate();
             blurBuffers[i].release();
         }
