@@ -17,20 +17,70 @@
 #include "nvToolsExt.h"
 
 namespace Flux {
+    const unsigned int NUM_SAMPLES = 13;
+    const unsigned int NOISE_SIZE = 4;
+
+    float random(float low, float high)
+    {
+        return low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
+    }
+
     SSAOPass::SSAOPass() : RenderPhase("SSAO"), windowSize(1, 1)
     {
         ssaoShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/SSAO.frag");
         blurShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag");
+
+        generate();
+    }
+
+    void SSAOPass::generate()
+    {
+        // Generate a hemispherical kernel
+        srand(0);
+        kernel.resize(NUM_SAMPLES);
+
+        kernel[0].set(0.0f, -0.92388f, 0.38268f);
+        kernel[1].set(0.92388f, 0.0f, 0.38268f);
+        kernel[2].set(0.0f, 0.92388f, 0.38268f);
+        kernel[3].set(-0.92388f, 0.0f, 0.2f);
+        kernel[4].set(0.5f, -0.5f, 0.70711f);
+        kernel[5].set(0.5f, 0.5f, 0.70711f);
+        kernel[6].set(-0.5f, 0.5f, 0.70711f);
+        kernel[7].set(-0.5f, -0.5f, 0.70711f);
+        kernel[8].set(0.0f, -0.38268f, 0.92388f);
+        kernel[9].set(0.38268f, 0.0f, 0.92388f);
+        kernel[10].set(0.0f, 0.38268f, 0.92388f);
+        kernel[11].set(-0.38268f, 0.0f, 0.92388f);
+        kernel[12].set(0.0f, 0.0f, 1.0f);
+
+        for (int i = 0; i < NUM_SAMPLES; i++) {
+            float scale = (float)i / NUM_SAMPLES;
+            scale = (1 - scale*scale) * 0.1f + scale*scale;
+
+            kernel[i] *= scale;
+        }
+
+        // Generate a noise texture
+        noise.reserve(NOISE_SIZE*NOISE_SIZE);
+        for (int i = 0; i < NOISE_SIZE*NOISE_SIZE; i++) {
+            Vector3f v(random(-1, 1), random(-1, 1), 0.0f);
+            v.normalise();
+            v = v * 0.5 + Vector3f(0.5, 0.5, 0.5);
+            noise.push_back(v);
+        }
+
+        GLuint noiseHandle;
+        glGenTextures(1, &noiseHandle);
+        glBindTexture(GL_TEXTURE_2D, noiseHandle);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, NOISE_SIZE, NOISE_SIZE, 0, GL_RGB, GL_FLOAT, noise.data());
+        noiseTexture = new Texture(noiseHandle, NOISE_SIZE, NOISE_SIZE);
     }
 
     void SSAOPass::SetGBuffer(const GBuffer* gBuffer)
     {
         this->gBuffer = gBuffer;
-    }
-
-    void SSAOPass::SetSsaoInfo(SsaoInfo* ssaoInfo)
-    {
-        this->ssaoInfo = ssaoInfo;
     }
 
     void SSAOPass::Resize(const Size& windowSize)
@@ -80,29 +130,34 @@ namespace Flux {
         gBuffer->depthTex->bind(TextureUnit::DEPTH);
         ssaoShader.uniform1i("depthMap", TextureUnit::DEPTH);
 
-        ssaoInfo->noiseTexture->bind(TextureUnit::NOISE);
+        noiseTexture->bind(TextureUnit::NOISE);
         ssaoShader.uniform1i("noiseMap", TextureUnit::NOISE);
-        ssaoShader.uniform3fv("kernel", (int)ssaoInfo->kernel.size(), ssaoInfo->kernel.data());
-        ssaoShader.uniform1i("kernelSize", (int)ssaoInfo->kernel.size());
+        ssaoShader.uniform3fv("kernel", (int)kernel.size(), kernel.data());
+        ssaoShader.uniform1i("kernelSize", (int)kernel.size());
 
         ssaoShader.uniform2i("windowSize", windowSize.width / 2, windowSize.height / 2);
 
-        ssaoInfo->getCurrentBuffer()->bind();
+        buffer.bind();
         renderState.drawQuad();
 
+        // Blur
         nvtxRangePushA("SSAO Blur");
         blurShader.bind();
         blurShader.uniform2i("windowSize", windowSize.width, windowSize.height);
 
-        ssaoInfo->getCurrentBuffer()->getColorTexture(0).bind(TextureUnit::TEXTURE);
+        buffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
         blurShader.uniform1i("tex", TextureUnit::TEXTURE);
 
-        ssaoInfo->switchBuffers();
-        ssaoInfo->getCurrentBuffer()->bind();
         renderState.drawQuad();
-
-        glViewport(0, 0, windowSize.width, windowSize.height);
         nvtxRangePop();
+
+        // Multiply
+        glViewport(0, 0, windowSize.width, windowSize.height);
+        sourceFramebuffer->bind();
+
+        std::vector<Texture> sources{ sourceFramebuffer->getColorTexture(1), buffer.getColorTexture(0) };
+        multiplyPass.SetTextures(sources);
+        multiplyPass.render(renderState, scene);
 
         nvtxRangePop();
     }

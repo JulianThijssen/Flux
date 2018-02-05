@@ -3,6 +3,7 @@
 #define SSAO_PASS_H
 
 #include "RenderPhase.h"
+#include "MultiplyPass.h"
 
 #include "Shader.h"
 #include "Renderer/GBuffer.h"
@@ -20,8 +21,9 @@ namespace Flux
     public:
         SSAOPass();
 
+        void generate();
+
         void SetGBuffer(const GBuffer* gBuffer);
-        void SetSsaoInfo(SsaoInfo* ssaoInfo);
 
         void Resize(const Size& windowSize) override;
 
@@ -31,9 +33,17 @@ namespace Flux
         Shader ssaoShader;
         Shader blurShader;
 
-        const GBuffer* gBuffer;
-        SsaoInfo* ssaoInfo;
+        MultiplyPass multiplyPass;
+
         Size windowSize;
+
+        const GBuffer* gBuffer;
+
+        Framebuffer buffer;
+
+        std::vector<Vector3f> kernel;
+        std::vector<Vector3f> noise;
+        Texture* noiseTexture;
     };
 }
 
