@@ -53,7 +53,7 @@ vec3 toLinear(vec3 gammaColor) {
 
 /* Calculates the diffuse contribution of the light */
 float CosTheta(vec3 N, vec3 L) {
-	return clamp(dot(N, L), 0, 1);
+    return max(0, dot(N, L));
 }
 
 /* ------------------------ Fresnel functions -------------------------- */
