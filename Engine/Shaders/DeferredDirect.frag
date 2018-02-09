@@ -233,43 +233,25 @@ void main() {
         float theta = acos(dot(N, V)) / (PI * 0.5);
         vec2 coords = vec2(Roughness, theta);
         vec4 param = texture(areaLight.matTex, coords);
+
         mat3 M = mat3(vec3(param.x, 0, param.w), vec3(0, param.z, 0), vec3(param.y, 0, 1));
         mat3 invMat = inverse(M);
+        //mat3 invMat = mat3(vec3(1, 0, param.y), vec3(0, param.z, 0), vec3(param.w, 0, param.x));
         
-        vec3 T1, T2;
-        T1 = normalize(V - N*dot(V, N));
-        T2 = cross(N, T1);
-        invMat = invMat * transpose(mat3(T1, T2, N));
-        
-        vec3 verts[4];
-        for (int i = 0; i < 4; i++) {
-            verts[i] = normalize(invMat * (areaLight.vertices[i] - P));
-        }
-        
-        float E = 0;
-        for (int i = 0; i < 4; i++) {
-            vec3 pi = verts[i];
-            vec3 pj = verts[(i+1) % 4];
-            
-            float ft = acos(clamp(dot(pi, pj), -0.999, 0.999));
-            E += ft * normalize(cross(pi, pj)).z;
-        }
-        E *= 1.0 / (2.0 * PI);
+        vec3 Ed = Evaluate_LTC(N, V, P, mat3(1), areaLight.vertices);
+        vec3 Es = Evaluate_LTC(N, V, P, invMat, areaLight.vertices);
 
-        E = max(0, -E);
-        
-        vec3 Rad = vec3(E) * Li;
+        vec3 DiffColor = (BaseColor) * (1 - Metalness);
+        vec2 schlick = texture(areaLight.ampTex, coords).xy;
+        vec3 SpecColor = mix(vec3(0.04), BaseColor, Metalness);
+        // Scale by light intensity
+        vec3 Rad = vec3(Ed * DiffColor + Es * (SpecColor*schlick.x + (1 - SpecColor) * schlick.y)) * Li;
 
-        fragColor = vec4(LambertBRDF * Rad, 1);
-        return;
+        // Normalize
+        Rad *= 1.0 / (2.0 * PI);
+
+        Radiance += vec3(Rad);
     }
-
-    vec3 H = normalize(L + V);
-    
-    // Cook Torrance Specular BRDF
-    vec3 CookBRDF = clamp(CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness), 0, 1);
-
-    vec3 Radiance = (LambertBRDF + CookBRDF) * Li * Attenuation;
 
     fragColor = vec4(Emission * BaseColor + Radiance * visibility, 1.0);
 }
