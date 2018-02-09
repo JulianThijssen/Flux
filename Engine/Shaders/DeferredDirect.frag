@@ -194,6 +194,8 @@ void main() {
     float visibility = 1;
     float Attenuation = 1;
     
+    vec3 Radiance = vec3(0, 0, 0);
+
     // Lambert Diffuse BRDF
     vec3 LambertBRDF = (BaseColor / PI) * (1 - Metalness);
 
@@ -204,12 +206,26 @@ void main() {
         L = normalize(L);
         Attenuation = CosTheta(N, L) * 1 / distance;
         Li = pointLight.color;
+
+        vec3 H = normalize(L + V);
+
+        // Cook Torrance Specular BRDF
+        vec3 CookBRDF = clamp(CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness), 0, 1);
+
+        Radiance += (LambertBRDF + CookBRDF) * Li * Attenuation;
     }
     if (isDirLight) {
         L = -dirLight.direction;
         Attenuation = CosTheta(N, L);
         Li = dirLight.color;
         visibility = textureProj(dirLight.shadowMap, S);
+
+        vec3 H = normalize(L + V);
+
+        // Cook Torrance Specular BRDF
+        vec3 CookBRDF = clamp(CookTorrance(N, V, H, L, BaseColor, Metalness, Roughness), 0, 1);
+
+        Radiance += (LambertBRDF + CookBRDF) * Li * Attenuation;
     }
     if (isAreaLight) {
         vec3 Li = areaLight.color;
