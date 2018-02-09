@@ -140,6 +140,36 @@ float vecToDepthVal(vec3 v) {
 	float n = 0.1;
 	float normZcomp = (f + n) / (f - n) - (2*f*n) / (f-n) / locZcomp;
 	return (normZcomp + 1.0) * 0.5;
+
+vec3 Evaluate_LTC(vec3 N, vec3 V, vec3 P, mat3 invMat, vec3 vertices[4]) {
+    // Construct orthonormal basis around N
+    vec3 T1, T2;
+    T1 = normalize(V - N*dot(V, N));
+    T2 = cross(N, T1);
+
+    // Calculate the inverse matrix for putting vertices in light space
+    invMat = invMat * transpose(mat3(T1, T2, N));
+
+    // Apply matrix to all vertices
+    vec3 verts[4];
+    for (int i = 0; i < 4; i++) {
+        verts[i] = normalize(invMat * (vertices[i] - P));
+    }
+
+    // Integrate
+    float E = 0;
+    for (int i = 0; i < 4; i++) {
+        vec3 pi = verts[i];
+        vec3 pj = verts[(i + 1) % 4];
+
+        float ft = acos(clamp(dot(pi, pj), -0.999, 0.999));
+        E += ft * normalize(cross(pi, pj)).z;
+    }
+
+    // Make it one-sided
+    E = max(0, -E);
+
+    return vec3(E);
 }
 
 void main() {
