@@ -16,7 +16,7 @@ namespace Flux {
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
 
-        ampTex = TextureLoader::create(64, 64, GL_R32F, GL_RED, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE), amp.data());
+        ampTex = TextureLoader::create(32, 32, GL_RG32F, GL_RG, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE), amp.data());
         std::vector<float> data;
         data.reserve(a.size() + b.size() + c.size() + d.size());
         for (int i = 0; i < 64 * 64; i++) {
@@ -60,7 +60,7 @@ namespace Flux {
         shader.uniform1i("normalMap", TextureUnit::NORMAL);
         gBuffer->positionTex->bind(TextureUnit::POSITION);
         shader.uniform1i("positionMap", TextureUnit::POSITION);
-
+        
         for (Entity* light : scene.lights) {
             DirectionalLight* directionalLight = light->getComponent<DirectionalLight>();
             PointLight* pointLight = light->getComponent<PointLight>();
