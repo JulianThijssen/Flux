@@ -133,13 +133,14 @@ vec3 CookTorrance(vec3 N, vec3 V, vec3 H, vec3 L, vec3 BaseColor, float Metalnes
 }
 
 float vecToDepthVal(vec3 v) {
-	vec3 absVec = abs(v);
-	float locZcomp = max(absVec.x, max(absVec.y, absVec.z));
-	
-	float f = 400;
-	float n = 0.1;
-	float normZcomp = (f + n) / (f - n) - (2*f*n) / (f-n) / locZcomp;
-	return (normZcomp + 1.0) * 0.5;
+    vec3 absVec = abs(v);
+    float locZcomp = max(absVec.x, max(absVec.y, absVec.z));
+    
+    float f = 400;
+    float n = 0.1;
+    float normZcomp = (f + n) / (f - n) - (2*f*n) / (f-n) / locZcomp;
+    return (normZcomp + 1.0) * 0.5;
+}
 
 vec3 Evaluate_LTC(vec3 N, vec3 V, vec3 P, mat3 invMat, vec3 vertices[4]) {
     // Construct orthonormal basis around N
