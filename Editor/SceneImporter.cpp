@@ -108,6 +108,7 @@ namespace Flux {
                     if (it.key() == "materials") {
                         unsigned int numMaterials = (unsigned int)it.value().size();
 
+                        // For every material find the material ID corresponding to its name
                         for (unsigned int i = 0; i < numMaterials; i++) {
                             std::string name = it.value()[i].get<std::string>();
 
@@ -121,6 +122,7 @@ namespace Flux {
                                 }
                             }
 
+                            // Save the material ID in a mesh renderer
                             MeshRenderer* meshRenderer = new MeshRenderer();
                             meshRenderer->materialID = id;
                             meshRenderers.push_back(meshRenderer);
@@ -156,6 +158,27 @@ namespace Flux {
                         elapsed = double(clockEnd - clockModel) / CLOCKS_PER_SEC;
                         std::cout << "Importing models took: " << elapsed << " seconds." << std::endl;
                     }
+                    if (it.key() == "camera") {
+                        json c = it.value();
+
+                        float fov = 60;
+                        float aspect = 1;
+                        float zNear = 0.1;
+                        float zFar = 400;
+
+                        for (json::iterator it = c.begin(); it != c.end(); ++it) {
+                            if (it.key() == "fov")
+                                fov = c[it.key()];
+                            if (it.key() == "aspect")
+                                aspect = c[it.key()];
+                            if (it.key() == "zNear")
+                                zNear = c[it.key()];
+                            if (it.key() == "zFar")
+                                zFar = c[it.key()];
+                        }
+
+                        e->addComponent(new Camera(fov, aspect, zNear, zFar));
+                    }
                     if (it.key() == "transform") {
                         Transform* transform = new Transform();
 
@@ -188,31 +211,14 @@ namespace Flux {
             clockMid = clock();
             //////////////
 
-            Entity* mainCamera = new Entity();
-            Transform* camT = new Transform();
-            camT->position.set(-26, 2, 14); //camT->position.set(4, 4, 12);
-            camT->rotation.set(0, -90, 0);
-            mainCamera->addComponent(camT);
-            mainCamera->addComponent(new Camera(60, 1920.0f / 1080, 0.1f, 400.f));
-            scene.addEntity(mainCamera);
-
-            Entity* light2 = new Entity();
-            PointLight* pointLight = new PointLight();
-            pointLight->color.set(0, 80, 0.6);
-            light2->addComponent(pointLight);
-            Transform* t2 = new Transform();
-            t2->position.set(5, 8, 10);
-            light2->addComponent(t2);
-            scene.addEntity(light2);
-
-            Entity* areaLight = new Entity();
-            AreaLight* light = new AreaLight();
-            light->color.set(20, 10, 1);
-            areaLight->addComponent(light);
-            Transform* t3 = new Transform();
-            t3->position.set(-30, 3, 25);
-            areaLight->addComponent(t3);
-            scene.addEntity(areaLight);
+            //Entity* light2 = new Entity();
+            //PointLight* pointLight = new PointLight();
+            //pointLight->color.set(0, 8, 0.6);
+            //light2->addComponent(pointLight);
+            //Transform* t2 = new Transform();
+            //t2->position.set(0, 1, 0);
+            //light2->addComponent(t2);
+            //scene.addEntity(light2);
 
             clockEnd = clock();
             elapsed = double(clockEnd - clockStart) / CLOCKS_PER_SEC;
