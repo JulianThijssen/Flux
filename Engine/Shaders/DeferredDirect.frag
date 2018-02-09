@@ -271,5 +271,5 @@ void main() {
 
     vec3 Radiance = (LambertBRDF + CookBRDF) * Li * Attenuation;
 
-    fragColor = vec4(Radiance * visibility, 1.0);
+    fragColor = vec4(Emission * BaseColor + Radiance * visibility, 1.0);
 }
