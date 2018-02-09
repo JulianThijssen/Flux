@@ -49,7 +49,7 @@ namespace Flux {
         sourceFramebuffer->bind();
 
         std::vector<Texture> sources{ sourceFramebuffer->getColorTexture(0), buffer.getColorTexture(0) };
-        std::vector<float> weights{ 1, 1 };
+        std::vector<float> weights{ 1, 0.5f };
         addPass.SetTextures(sources);
         addPass.SetWeights(weights);
         addPass.render(renderState, scene);
