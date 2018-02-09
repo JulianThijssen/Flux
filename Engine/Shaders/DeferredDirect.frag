@@ -230,7 +230,7 @@ void main() {
     if (isAreaLight) {
         vec3 Li = areaLight.color;
         
-        float theta = clamp(acos(dot(N, V)) / (PI * 0.5), 0.0, 1.0);
+        float theta = acos(dot(N, V)) / (PI * 0.5);
         vec2 coords = vec2(Roughness, theta);
         vec4 param = texture(areaLight.matTex, coords);
         mat3 M = mat3(vec3(param.x, 0, param.w), vec3(0, param.z, 0), vec3(param.y, 0, 1));
