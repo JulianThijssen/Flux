@@ -179,6 +179,11 @@ namespace Flux {
 
                         e->addComponent(new Camera(fov, aspect, zNear, zFar));
                     }
+                    if (it.key() == "arealight") {
+                        AreaLight* areaLight = new AreaLight();
+                        areaLight->color.set(20, 10, 1);
+                        e->addComponent(areaLight);
+                    }
                     if (it.key() == "transform") {
                         Transform* transform = new Transform();
 
