@@ -41,7 +41,7 @@ namespace Flux {
                     return e;
                 }
             }
-            for (Entity* e : entities) {
+            for (Entity* e : lights) {
                 if (e->getId() == id) {
                     return e;
                 }
