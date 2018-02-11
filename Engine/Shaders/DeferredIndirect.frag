@@ -26,10 +26,10 @@ vec3 ApproximateSpecularIBL(vec3 SpecularColor, float Roughness, vec3 N, vec3 V)
 {
     float NdotV = clamp(dot(N, V), 0, 1);
     vec3 R = reflect(-V, N);
-    
+
     vec3 PrefilteredColor = textureLod(prefilterEnvmap, R, Roughness * 5).rgb;
     vec2 EnvBRDF = texture(scaleBiasMap, vec2(Roughness, NdotV)).rg;
-    
+
     return PrefilteredColor * (SpecularColor * EnvBRDF.x + EnvBRDF.y);
 }
 
@@ -48,8 +48,8 @@ void main() {
 
     vec3 DiffuseColor = BaseColor * (1 - Metalness);
     vec3 SpecularColor = mix(vec3(0.04), BaseColor, Metalness);
-    
-    vec3 Irradiance = texture(irradianceMap, R).rgb;
+
+    vec3 Irradiance = texture(irradianceMap, N).rgb;
     vec3 indirectDiffuse = DiffuseColor * Irradiance;
     vec3 indirectSpecular = ApproximateSpecularIBL(SpecularColor, Roughness, N, V);
 
