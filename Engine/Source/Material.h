@@ -17,6 +17,7 @@ namespace Flux {
             metalTex(0),
             roughnessTex(0),
             stencilTex(0),
+            emissionTex(0),
             emission(0, 0, 0),
             tilingX(1), tilingY(1)
         {
@@ -28,6 +29,7 @@ namespace Flux {
         Texture* metalTex;
         Texture* roughnessTex;
         Texture* stencilTex;
+        Texture* emissionTex;
         Vector3f emission;
         float tilingX, tilingY;
 

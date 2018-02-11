@@ -48,6 +48,11 @@ namespace Flux {
                 String path = value;
                 material->stencilTex = TextureLoader::loadTexture(Path(path), GREYSCALE, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
             }
+            if (key == "EmissionTex") {
+                Log::debug(value.c_str());
+                String path = value;
+                material->emissionTex = TextureLoader::loadTexture(Path(path), COLOR, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
+            }
             if (key == "Emission") {
                 material->emission = Vector3f(std::stof(tokens[1].c_str()), std::stof(tokens[2].c_str()), std::stof(tokens[3].c_str()));
             }

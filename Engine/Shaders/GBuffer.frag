@@ -8,6 +8,7 @@ struct Material {
     sampler2D metalMap;
     sampler2D roughnessMap;
     sampler2D stencilMap;
+    sampler2D emissionMap;
 
     vec3 emission;
     vec2 tiling;
@@ -17,6 +18,7 @@ struct Material {
     bool hasMetalMap;
     bool hasRoughnessMap;
     bool hasStencilMap;
+    bool hasEmissionMap;
 };
 
 uniform mat4 modelMatrix;
@@ -83,11 +85,17 @@ void main() {
     if (material.hasDiffuseMap) {
         BaseColor = sampleTiled(material.diffuseMap, pass_texCoords).rgb;
     }
+    
+    // Emission
+    vec3 Emission = vec3(0);
     if (length(material.emission) > 0.001) {
         BaseColor = normalize(material.emission);
     }
+    if (material.hasEmissionMap) {
+        Emission = sampleTiled(material.emissionMap, pass_texCoords).rgb;
+    }
     
-    fragColor = vec4(BaseColor, Roughness);
+    fragColor = vec4(BaseColor + Emission, Roughness);
     fragNormal = vec4(N * 0.5 + 0.5, Metalness);
-    fragPosition = vec4(P, length(material.emission));
+    fragPosition = vec4(P, length(Emission * 2));
 }
