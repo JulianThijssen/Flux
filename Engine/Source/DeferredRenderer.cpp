@@ -71,10 +71,10 @@ namespace Flux {
         hdrPasses.push_back(skyPass);
         hdrPasses.push_back(bloomPass);
 
-        //fog(scene);
-        //gammaCorrection(scene);
-        //antiAliasing(scene);
-        //colorGrading(scene);
+        ldrPasses.push_back(gammaCorrectionPass);
+        ldrPasses.push_back(fxaaPass);
+        ldrPasses.push_back(colorGradingPass);
+
         enable(DEPTH_TEST);
         enable(FACE_CULLING);
 
@@ -146,6 +146,9 @@ namespace Flux {
         createBackBuffers(windowSize.width, windowSize.height);
 
         for (RenderPhase* renderPass : hdrPasses) {
+            renderPass->Resize(windowSize);
+        }
+        for (RenderPhase* renderPass : ldrPasses) {
             renderPass->Resize(windowSize);
         }
     }
