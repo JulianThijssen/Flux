@@ -12,7 +12,6 @@ namespace Flux
 {
     class Texture;
     class Texture3D;
-    class Framebuffer;
 
     class FogPass : public RenderPhase
     {

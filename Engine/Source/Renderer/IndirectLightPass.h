@@ -13,7 +13,6 @@
 namespace Flux
 {
     class Texture;
-    class Framebuffer;
 
     class IndirectLightPass : public RenderPhase
     {

@@ -12,7 +12,6 @@
 namespace Flux
 {
     class Texture;
-    class Framebuffer;
 
     class LtcLightPass : public RenderPhase
     {

@@ -11,7 +11,6 @@
 namespace Flux
 {
     class Texture;
-    class Framebuffer;
 
     class GammaCorrectionPass : public RenderPhase
     {
