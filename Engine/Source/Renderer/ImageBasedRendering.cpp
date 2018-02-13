@@ -24,13 +24,13 @@ namespace Flux
         shader.bind();
 
         if (skybox) {
-            createEmpty(textureSize, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, false);
+            createEmpty(textureSize, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, REPEAT, false);
 
             envMap->bind(0);
             shader.uniform1i("EnvMap", 0);
         }
         else {
-            createEmpty(textureSize, GL_RGBA16F, GL_RGBA, GL_FLOAT, false);
+            createEmpty(textureSize, GL_RGBA16F, GL_RGBA, GL_FLOAT, REPEAT, false);
 
             envTex->bind(0);
             shader.uniform1i("EnvTex", 0);
@@ -72,13 +72,13 @@ namespace Flux
         shader.bind();
 
         if (skybox) {
-            createEmpty(resolution, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, true);
+            createEmpty(resolution, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, REPEAT, true);
 
             envMap->bind(0);
             shader.uniform1i("EnvMap", 0);
         }
         else {
-            createEmpty(resolution, GL_RGBA16F, GL_RGBA, GL_FLOAT, true);
+            createEmpty(resolution, GL_RGBA16F, GL_RGBA, GL_FLOAT, REPEAT, true);
 
             envTex->bind(0);
             shader.uniform1i("EnvTex", 0);
