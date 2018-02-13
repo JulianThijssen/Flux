@@ -2,6 +2,7 @@
 #ifndef CUBEMAP_H
 #define CUBEMAP_H
 
+#include "TextureLoader.h"
 #include "Util/String.h"
 
 #include "stb_image.h"
@@ -43,7 +44,7 @@ namespace Flux {
             release();
         }
 
-        void createEmpty(const unsigned int resolution, GLint internalFormat, GLenum format, GLenum type, bool mipmaps) {
+        void createEmpty(const unsigned int resolution, GLint internalFormat, GLenum format, GLenum type, Wrapping wrapping, bool mipmaps) {
             this->resolution = resolution;
 
             glGenTextures(1, &handle);
@@ -53,9 +54,18 @@ namespace Flux {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, resolution, resolution, 0, format, type, 0);
             }
 
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            switch (wrapping) {
+            case CLAMP:
+                glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+                break;
+            case REPEAT:
+                glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_REPEAT);
+                break;
+            }
 
             if (mipmaps) {
                 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BASE_LEVEL, 0);
