@@ -17,7 +17,7 @@ namespace Flux {
 
         int blurWidth = windowSize.width;
         int blurHeight = windowSize.height;
-        blurBuffers.resize(8);
+        blurBuffers.resize(6);
         for (unsigned int i = 0; i < blurBuffers.size(); i++) {
             if (i % 2 == 0) {
                 blurWidth = blurWidth >> 1; blurHeight = blurHeight >> 1;
@@ -79,9 +79,8 @@ namespace Flux {
             blurBuffers[1].getColorTexture(0),
             blurBuffers[3].getColorTexture(0),
             blurBuffers[5].getColorTexture(0),
-            blurBuffers[7].getColorTexture(0),
         };
-        std::vector<float> weights{ 0.25f, 0.25f, 0.25f, 0.25f };
+        std::vector<float> weights{ 0.33f, 0.33f, 0.34f };
         averagePass.SetTextures(v);
         averagePass.SetWeights(weights);
         averagePass.render(renderState, scene);
