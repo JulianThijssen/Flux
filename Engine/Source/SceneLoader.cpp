@@ -108,7 +108,7 @@ namespace Flux {
             path[numChars] = 0;
             inFile.read(path, numChars * sizeof(char));
             std::cout << "Reading skysphere: " << path << std::endl;
-            scene.skySphere = TextureLoader::loadTexture(Path(path), HDR, CLAMP, SamplingConfig(NEAREST, NEAREST, NONE));
+            scene.skySphere = TextureLoader::loadTexture(Path(path), HDR, REPEAT, SamplingConfig(NEAREST, NEAREST, NONE));
             delete path;
         }
 
