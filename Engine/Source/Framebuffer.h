@@ -14,7 +14,11 @@
 namespace Flux {
     class Framebuffer {
     public:
-        Framebuffer()
+        Framebuffer() :
+            handle(0),
+            currentDrawBuffer(0),
+            colorTexture(MAX_COLOR_ATTACHMENTS),
+            depthTexture(0)
         {
 
         }
@@ -57,7 +61,11 @@ namespace Flux {
             return *colorTexture[attachment];
         }
 
-        void addColorTexture(int colorAttachment, Texture* texture) {
+        void addColorTexture(unsigned int colorAttachment, Texture* texture) {
+            if (colorAttachment > MAX_COLOR_ATTACHMENTS) {
+                Log::error("Tried to add color attachment with index greater than 8.");
+                return;
+            }
             colorTexture[colorAttachment] = texture;
             GLint attachment = GL_COLOR_ATTACHMENT0 + colorAttachment;
             setTexture(attachment, *texture);
@@ -92,6 +100,15 @@ namespace Flux {
 
         unsigned int getDrawBuffer() {
             return currentDrawBuffer;
+        }
+
+        void setDrawBuffer(unsigned int colorAttachment) {
+            if (colorAttachment > MAX_COLOR_ATTACHMENTS) {
+                Log::error("Tried to set color attachment with index greater than 8 as draw buffer.");
+                return;
+            }
+            currentDrawBuffer = colorAttachment;
+            glDrawBuffer(GL_COLOR_ATTACHMENT0 + colorAttachment);
         }
 
         void enableColor(int target) {
@@ -129,9 +146,11 @@ namespace Flux {
             }
         }
     private:
+        const unsigned int MAX_COLOR_ATTACHMENTS = 8;
+
         GLuint handle;
 
-        Texture* colorTexture[8];
+        std::vector<Texture*> colorTexture;
         Texture* depthTexture;
 
         unsigned int currentDrawBuffer;
