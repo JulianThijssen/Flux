@@ -156,17 +156,17 @@ namespace Flux {
         blurShader.bind();
         blurShader.uniform2i("windowSize", windowSize.width, windowSize.height);
 
-        buffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
+        buffer.getTexture().bind(TextureUnit::TEXTURE);
         blurShader.uniform1i("tex", TextureUnit::TEXTURE);
 
         renderState.drawQuad();
         nvtxRangePop();
 
         // Multiply
-        glViewport(0, 0, windowSize.width, windowSize.height);
         sourceFramebuffer->bind();
+        glViewport(0, 0, windowSize.width, windowSize.height);
 
-        std::vector<Texture> sources{ sourceFramebuffer->getColorTexture(1), buffer.getColorTexture(0) };
+        std::vector<Texture> sources{ *source, buffer.getTexture() };
         multiplyPass.SetTextures(sources);
         multiplyPass.render(renderState, scene);
 

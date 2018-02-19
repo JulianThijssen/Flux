@@ -42,13 +42,13 @@ namespace Flux {
         renderState.drawQuad();
 
         // Blur the buffer
-        blurPass.SetSource(&buffer.getColorTexture(0));
+        blurPass.SetSource(&buffer.getTexture());
         blurPass.render(renderState, scene);
 
         // Add the bloom to the HDR buffer
         sourceFramebuffer->bind();
 
-        std::vector<Texture> sources{ sourceFramebuffer->getColorTexture(0), buffer.getColorTexture(0) };
+        std::vector<Texture> sources{ *source, buffer.getTexture() };
         std::vector<float> weights{ 1, 0.5f };
         addPass.SetTextures(sources);
         addPass.SetWeights(weights);
