@@ -81,6 +81,10 @@ namespace Flux {
             setTexture(GL_DEPTH_ATTACHMENT, *texture);
         }
 
+        void addDepthStencilTexture(Texture* texture) {
+            setTexture(GL_DEPTH_STENCIL_ATTACHMENT, *texture);
+        }
+
         void setTexture(GLuint attachment, Texture& texture) {
             glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture.handle, 0);
         }
