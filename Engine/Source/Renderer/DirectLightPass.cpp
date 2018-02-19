@@ -43,8 +43,10 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
-        shader.bind();
+        const Framebuffer* sourceFramebuffer = RenderState::currentFramebuffer;
 
+        shader.bind();
+        
         renderState.enable(BLENDING);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glDepthFunc(GL_LEQUAL);
@@ -127,5 +129,11 @@ namespace Flux {
         renderState.disable(BLENDING);
 
         nvtxRangePop();
+        // Add the direct light to the original buffer
+        std::vector<Texture> sources{ sourceFramebuffer->getTexture(), *source };
+        std::vector<float> weights{ 1, 1 };
+        addPass.SetTextures(sources);
+        addPass.SetWeights(weights);
+        addPass.render(renderState, scene);
     }
 }

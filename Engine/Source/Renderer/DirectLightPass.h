@@ -4,6 +4,7 @@
 
 #include "RenderPhase.h"
 
+#include "AddPass.h"
 #include "Shader.h"
 #include "Renderer/GBuffer.h"
 
@@ -31,6 +32,8 @@ namespace Flux
 
         const Texture* ampTex;
         const Texture* matTex;
+
+        AddPass addPass;
     };
 }
 
