@@ -12,7 +12,8 @@ namespace Flux {
     SkyPass::SkyPass() : RenderPhase("Sky")
     {
         skyboxShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
-        skysphereShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag");
+        skysphereShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
+        skyShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag");
     }
 
     void SkyPass::Resize(const Size& windowSize)
@@ -39,7 +40,10 @@ namespace Flux {
         cameraBasis[10] = -1;
         cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
-        Shader& shader = scene.skybox ? skyboxShader : skysphereShader;
+        Shader& shader = skyShader;
+        if (scene.skybox) { shader = skyboxShader; }
+        else if (scene.skySphere) { shader = skysphereShader; }
+
         if (scene.skybox) {
             shader.bind();
             scene.skybox->bind(TextureUnit::TEXTURE);
@@ -59,7 +63,15 @@ namespace Flux {
             }
         }
         else {
-            return;
+            shader.bind();
+
+            for (Entity* entity : scene.lights) {
+                DirectionalLight* sun = entity->getComponent<DirectionalLight>();
+                if (sun) {
+                    sun->direction.normalise();
+                    shader.uniform3f("sun", sun->direction);
+                }
+            }
         }
 
         nvtxRangePushA(getPassName().c_str());
