@@ -60,7 +60,7 @@ namespace Flux {
             addDrawBuffer(attachment);
         }
 
-        void addDepthTexture() {
+        void addDepthTexture(unsigned int width, unsigned int height) {
             depthTexture = TextureLoader::create(width, height, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, CLAMP);
             setTexture(GL_DEPTH_ATTACHMENT, *depthTexture);
         }
@@ -121,8 +121,6 @@ namespace Flux {
             }
         }
     private:
-        unsigned int width;
-        unsigned int height;
         GLuint handle;
 
         Texture* colorTexture[8];
