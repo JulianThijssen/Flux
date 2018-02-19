@@ -49,6 +49,10 @@ namespace Flux {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
+        const Texture& getTexture() const {
+            return *colorTexture[currentDrawBuffer];
+        }
+
         const Texture& getColorTexture(int attachment) const {
             return *colorTexture[attachment];
         }
@@ -84,6 +88,10 @@ namespace Flux {
         void addDrawBuffer(GLenum target) {
             drawBuffers.push_back(target);
             glDrawBuffers((GLsizei) drawBuffers.size(), drawBuffers.data());
+        }
+
+        unsigned int getDrawBuffer() {
+            return currentDrawBuffer;
         }
 
         void enableColor(int target) {
@@ -126,6 +134,7 @@ namespace Flux {
         Texture* colorTexture[8];
         Texture* depthTexture;
 
+        unsigned int currentDrawBuffer;
         std::vector<GLenum> drawBuffers;
     };
 }
