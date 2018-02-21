@@ -24,7 +24,7 @@ vec3 toLinear(vec3 gammaColor) {
 
 vec3 ApproximateSpecularIBL(vec3 SpecularColor, float Roughness, vec3 N, vec3 V)
 {
-    float NdotV = clamp(dot(N, V), 0, 1);
+    float NdotV = max(0, dot(N, V));
     vec3 R = reflect(-V, N);
 
     vec3 PrefilteredColor = textureLod(prefilterEnvmap, R, Roughness * 5).rgb;

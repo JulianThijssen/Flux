@@ -72,7 +72,7 @@ vec3 PrefilterEnvMap(float Roughness, vec3 R)
         vec3 H = ImportanceSampleGGX(Xi, Roughness, N);
         vec3 L = normalize(reflect(-V, H));
         
-        float NdotL = clamp(dot(N, L), 0.0, 1.0);
+        float NdotL = max(0, dot(N, L));
         
         if (NdotL > 0)
         {
