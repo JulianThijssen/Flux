@@ -30,10 +30,9 @@ namespace Flux {
         void destroy() {
             glDeleteFramebuffers(1, &handle);
 
-            for (int i = 0; i < 8; i++) {
-                delete colorTexture[i];
-            }
-            delete depthTexture;
+            // NOTE: Don't destroy textures, because we may not own them
+            // Sometimes we have a texture we want to draw to and need
+            // a temporary framebuffer to do so.
         }
 
         void bind() const {
