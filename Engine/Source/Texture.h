@@ -7,6 +7,12 @@
 typedef unsigned int uint;
 
 namespace Flux {
+    enum Wrapping {
+        CLAMP = GL_CLAMP_TO_EDGE,
+        REPEAT = GL_REPEAT,
+        BORDER = GL_CLAMP_TO_BORDER
+    };
+
     class Texture {
     public:
         Texture(GLenum target)
@@ -89,6 +95,11 @@ namespace Flux {
             glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, data);
         }
 
+        void setWrapping(Wrapping sWrapping, Wrapping tWrapping) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sWrapping);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tWrapping);
+        }
+
         uint getWidth() const {
             return width;
         }
@@ -112,6 +123,12 @@ namespace Flux {
 
         void setData(GLint internalFormat, GLenum format, GLenum type, const void* data) override {
             glTexImage3D(target, 0, internalFormat, width, height, depth, 0, format, type, data);
+        }
+
+        void setWrapping(Wrapping sWrapping, Wrapping tWrapping, Wrapping rWrapping) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sWrapping);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tWrapping);
+            glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, rWrapping);
         }
 
         uint getWidth() const {
