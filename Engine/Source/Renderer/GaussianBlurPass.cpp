@@ -46,7 +46,7 @@ namespace Flux {
 
         shader.uniform2f("direction", 1, 0);
         for (unsigned int i = 0; i < blurBuffers.size(); i += 2) {
-            const Texture& texture = blurBuffers[i].getColorTexture(0);
+            const Texture2D& texture = blurBuffers[i].getTexture();
             int width = texture.getWidth();
             int height = texture.getHeight();
             glViewport(0, 0, width, height);
@@ -58,7 +58,7 @@ namespace Flux {
         }
         shader.uniform2f("direction", 0, 1);
         for (unsigned int i = 1; i < blurBuffers.size(); i += 2) {
-            const Texture& texture = blurBuffers[i-1].getColorTexture(0);
+            const Texture2D& texture = blurBuffers[i-1].getTexture();
             texture.bind(TextureUnit::TEXTURE);
             int width = texture.getWidth();
             int height = texture.getHeight();
@@ -75,10 +75,10 @@ namespace Flux {
 
         glViewport(0, 0, windowSize.width, windowSize.height);
 
-        std::vector<Texture> v = {
-            blurBuffers[1].getColorTexture(0),
-            blurBuffers[3].getColorTexture(0),
-            blurBuffers[5].getColorTexture(0),
+        std::vector<Texture2D> v = {
+            blurBuffers[1].getTexture(),
+            blurBuffers[3].getTexture(),
+            blurBuffers[5].getTexture(),
         };
         std::vector<float> weights{ 0.33f, 0.33f, 0.34f };
         averagePass.SetTextures(v);

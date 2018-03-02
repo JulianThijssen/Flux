@@ -1,5 +1,6 @@
 #include "TextureLoader.h"
 
+#include "TextureUnit.h"
 #include "Util/Path.h"
 #include "Util/Log.h"
 
@@ -10,7 +11,7 @@
 #include <vector>
 
 namespace Flux {
-    Texture* TextureLoader::loadTexture(Path path, TextureType type, Wrapping wrapping, SamplingConfig sampling) {
+    Texture2D* TextureLoader::loadTexture(Path path, TextureType type, Wrapping wrapping, SamplingConfig sampling) {
         int width, height, bpp;
 
         void* data;
@@ -19,7 +20,7 @@ namespace Flux {
 
         if (!success) return nullptr;
 
-        Texture* texture = nullptr;
+        Texture2D* texture = nullptr;
         switch (type) {
         case COLOR: texture = create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, wrapping, sampling, data); break;
         case GREYSCALE: texture = create(width, height, GL_R8, GL_RED, GL_UNSIGNED_BYTE, wrapping, sampling, data); break;
@@ -31,7 +32,7 @@ namespace Flux {
         return texture;
     }
 
-    Texture* TextureLoader::loadColorAndAlpha(Path color, Path alpha, Wrapping wrapping, SamplingConfig sampling) {
+    Texture2D* TextureLoader::loadColorAndAlpha(Path color, Path alpha, Wrapping wrapping, SamplingConfig sampling) {
         int colorWidth, colorHeight, colorBPP;
         int alphaWidth, alphaHeight, alphaBPP;
 
@@ -52,7 +53,7 @@ namespace Flux {
             data[i * 4 + 3] = alphaData[i * alphaBPP + 0];
         }
 
-        Texture* texture = create(colorWidth, colorHeight, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, wrapping, sampling);
+        Texture2D* texture = create(colorWidth, colorHeight, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, wrapping, sampling);
 
         return texture;
     }
@@ -73,11 +74,11 @@ namespace Flux {
         return texture;
     }
 
-    Texture* TextureLoader::create(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Wrapping wrapping, SamplingConfig sampling, const void* data, Isotropy isotropy) {
-        GLuint handle;
-        glGenTextures(1, &handle);
+    Texture2D* TextureLoader::create(const int width, const int height, GLint internalFormat, GLenum format, GLenum type, Wrapping wrapping, SamplingConfig sampling, const void* data, Isotropy isotropy) {
+        Texture2D* texture = new Texture2D(width, height); // FIXME: Doesn't have to be a pointer
 
-        glBindTexture(GL_TEXTURE_2D, handle);
+        texture->create();
+        texture->bind(TextureUnit::TEXTURE0);
 
         switch (sampling.magFilter) {
         case NEAREST: glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); break;
@@ -123,20 +124,20 @@ namespace Flux {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
         }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+        texture->setData(internalFormat, format, type, data);
 
         if (sampling.mipFilter != NONE) glGenerateMipmap(GL_TEXTURE_2D);
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        texture->release();
 
-        return new Texture(handle, width, height);
+        return texture;
     }
 
-    Texture* TextureLoader::createShadowMap(const int width, const int height) {
-        GLuint handle;
-        glGenTextures(1, &handle);
+    Texture2D* TextureLoader::createShadowMap(const int width, const int height) {
+        Texture2D* texture = new Texture2D(width, height);
 
-        glBindTexture(GL_TEXTURE_2D, handle);
+        texture->create();
+        texture->bind(TextureUnit::TEXTURE0);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -154,7 +155,7 @@ namespace Flux {
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        return new Texture(handle, width, height);
+        return texture;
     }
 
     Texture3D* TextureLoader::create3DTexture(const int width, const int height, const int depth, const int bpp, const unsigned char* data, Sampling sampling) {

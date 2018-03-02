@@ -13,7 +13,7 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Add.frag");
     }
 
-    void AddPass::SetTextures(std::vector<Texture> textures)
+    void AddPass::SetTextures(std::vector<Texture2D> textures)
     {
         this->textures = textures;
 

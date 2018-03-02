@@ -10,7 +10,7 @@
 
 namespace Flux
 {
-    class Texture;
+    class Texture2D;
 
     class GammaCorrectionPass : public RenderPhase
     {

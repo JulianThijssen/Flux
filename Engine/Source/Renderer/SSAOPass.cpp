@@ -69,13 +69,12 @@ namespace Flux {
             noise.push_back(v);
         }
 
-        GLuint noiseHandle;
-        glGenTextures(1, &noiseHandle);
-        glBindTexture(GL_TEXTURE_2D, noiseHandle);
+        noiseTexture = new Texture2D(NOISE_SIZE, NOISE_SIZE);
+        noiseTexture->create();
+        noiseTexture->bind(TextureUnit::TEXTURE0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, NOISE_SIZE, NOISE_SIZE, 0, GL_RGB, GL_FLOAT, noise.data());
-        noiseTexture = new Texture(noiseHandle, NOISE_SIZE, NOISE_SIZE);
+        noiseTexture->setData(GL_RGB8, GL_RGB, GL_FLOAT, noise.data());
     }
 
     void SSAOPass::SetGBuffer(const GBuffer* gBuffer)
@@ -166,7 +165,7 @@ namespace Flux {
         sourceFramebuffer->bind();
         glViewport(0, 0, windowSize.width, windowSize.height);
 
-        std::vector<Texture> sources{ *source, buffer.getTexture() };
+        std::vector<Texture2D> sources{ *source, buffer.getTexture() };
         multiplyPass.SetTextures(sources);
         multiplyPass.render(renderState, scene);
 

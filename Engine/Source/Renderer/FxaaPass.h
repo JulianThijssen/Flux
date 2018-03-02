@@ -11,7 +11,7 @@
 
 namespace Flux
 {
-    class Texture;
+    class Texture2D;
     class Size;
 
     class FxaaPass : public RenderPhase

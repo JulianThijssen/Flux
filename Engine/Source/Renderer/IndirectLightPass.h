@@ -12,7 +12,7 @@
 
 namespace Flux
 {
-    class Texture;
+    class Texture2D;
 
     class IndirectLightPass : public RenderPhase
     {

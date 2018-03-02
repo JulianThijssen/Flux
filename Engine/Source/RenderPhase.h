@@ -26,7 +26,7 @@ namespace Flux {
             return name;
         }
 
-        void SetSource(const Texture* source) {
+        void SetSource(const Texture2D* source) {
             this->source = source;
         }
 
@@ -46,7 +46,7 @@ namespace Flux {
         virtual void render(RenderState& renderState, const Scene& scene) = 0;
 
     protected:
-        const Texture* source;
+        const Texture2D* source;
 
     private:
         String name;

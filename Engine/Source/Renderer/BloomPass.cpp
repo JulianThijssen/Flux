@@ -48,7 +48,7 @@ namespace Flux {
         // Add the bloom to the HDR buffer
         sourceFramebuffer->bind();
 
-        std::vector<Texture> sources{ *source, buffer.getTexture() };
+        std::vector<Texture2D> sources{ *source, buffer.getTexture() };
         std::vector<float> weights{ 1, 0.5f };
         addPass.SetTextures(sources);
         addPass.SetWeights(weights);

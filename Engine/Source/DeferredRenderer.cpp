@@ -340,7 +340,7 @@ namespace Flux {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         textureShader.bind();
-        framebuffer.getColorTexture(0).bind(TextureUnit::TEXTURE);
+        framebuffer.getTexture().bind(TextureUnit::TEXTURE);
         textureShader.uniform1i("tex", TextureUnit::TEXTURE);
         renderState.drawQuad();
     }

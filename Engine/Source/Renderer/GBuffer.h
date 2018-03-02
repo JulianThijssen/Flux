@@ -32,10 +32,10 @@ namespace Flux {
             buffer.bind();
         }
 
-        Texture* albedoTex;
-        Texture* normalTex;
-        Texture* positionTex;
-        Texture* depthTex;
+        Texture2D* albedoTex;
+        Texture2D* normalTex;
+        Texture2D* positionTex;
+        Texture2D* depthTex;
 
         Framebuffer buffer;
     };

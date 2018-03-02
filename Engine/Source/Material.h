@@ -24,12 +24,12 @@ namespace Flux {
 
         }
 
-        Texture* diffuseTex;
-        Texture* normalTex;
-        Texture* metalTex;
-        Texture* roughnessTex;
-        Texture* stencilTex;
-        Texture* emissionTex;
+        Texture2D* diffuseTex;
+        Texture2D* normalTex;
+        Texture2D* metalTex;
+        Texture2D* roughnessTex;
+        Texture2D* stencilTex;
+        Texture2D* emissionTex;
         Vector3f emission;
         float tilingX, tilingY;
 

@@ -12,7 +12,7 @@
 
 namespace Flux
 {
-    class Texture;
+    class Texture2D;
     class Size;
 
     class SSAOPass : public RenderPhase
@@ -42,7 +42,7 @@ namespace Flux
 
         std::vector<Vector3f> kernel;
         std::vector<Vector3f> noise;
-        Texture* noiseTexture;
+        Texture2D* noiseTexture;
     };
 }
 

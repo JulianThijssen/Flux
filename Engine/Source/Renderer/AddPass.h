@@ -10,14 +10,14 @@
 
 namespace Flux
 {
-    class Texture;
+    class Texture2D;
 
     class AddPass : public RenderPhase
     {
     public:
         AddPass();
 
-        void SetTextures(std::vector<Texture>);
+        void SetTextures(std::vector<Texture2D>);
         void SetWeights(std::vector<float>);
 
         void Resize(const Size& windowSize) override;
@@ -29,7 +29,7 @@ namespace Flux
 
         Shader shader;
 
-        std::vector<Texture> textures;
+        std::vector<Texture2D> textures;
         std::vector<float> weights;
 
         std::vector<int> units;

@@ -13,7 +13,7 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Multiply.frag");
     }
 
-    void MultiplyPass::SetTextures(std::vector<Texture> textures)
+    void MultiplyPass::SetTextures(std::vector<Texture2D> textures)
     {
         this->textures = textures;
 

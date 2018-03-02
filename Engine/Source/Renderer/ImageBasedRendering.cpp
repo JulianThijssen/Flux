@@ -109,7 +109,7 @@ namespace Flux
     }
 
     ScaleBiasTexture::ScaleBiasTexture()
-        : Texture(0, 256, 256)
+        : Texture2D(256, 256)
     {
         glGenTextures(1, &handle);
 
@@ -152,7 +152,7 @@ namespace Flux
         framebuffer.release();
     }
 
-    void IblSceneInfo::PrecomputeEnvironmentData(const Texture& environmentTex) {
+    void IblSceneInfo::PrecomputeEnvironmentData(const Texture2D& environmentTex) {
         irradianceMap = new IrradianceMap(&environmentTex);
         irradianceMap->generate(32);
 

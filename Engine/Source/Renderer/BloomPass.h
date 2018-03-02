@@ -11,7 +11,7 @@
 #include <memory>
 
 namespace Flux {
-    class Texture;
+    class Texture2D;
     class Framebuffer;
 
     class BloomPass : public RenderPhase

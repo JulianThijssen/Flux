@@ -11,7 +11,7 @@
 
 namespace Flux
 {
-    class Texture;
+    class Texture2D;
 
     class LtcLightPass : public RenderPhase
     {
@@ -29,8 +29,8 @@ namespace Flux
         const GBuffer* gBuffer;
         const Framebuffer* target;
 
-        const Texture* ampTex;
-        const Texture* matTex;
+        const Texture2D* ampTex;
+        const Texture2D* matTex;
     };
 }
 

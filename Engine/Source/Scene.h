@@ -57,7 +57,7 @@ namespace Flux {
         }
 
         Skybox* skybox;
-        Texture* skySphere;
+        Texture2D* skySphere;
 
         std::vector<Material*> materials;
         std::vector<Entity*> entities;

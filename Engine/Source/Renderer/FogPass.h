@@ -10,7 +10,7 @@
 
 namespace Flux
 {
-    class Texture;
+    class Texture2D;
     class Texture3D;
 
     class FogPass : public RenderPhase
@@ -18,7 +18,7 @@ namespace Flux
     public:
         FogPass();
 
-        void SetDepthMap(const Texture* depthMap);
+        void SetDepthMap(const Texture2D* depthMap);
         void SetFogColor(const Vector3f fogColor);
 
         void Resize(const Size& windowSize) override;
@@ -28,7 +28,7 @@ namespace Flux
     private:
         Shader shader;
 
-        const Texture* depthMap;
+        const Texture2D* depthMap;
 
         Vector3f fogColor;
     };

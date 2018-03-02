@@ -24,17 +24,17 @@ namespace Flux
     class PrefilterEnvmap : public Cubemap
     {
     public:
-        PrefilterEnvmap(const Texture* environmentTex) : envTex(environmentTex), envMap(nullptr), skybox(false) {}
+        PrefilterEnvmap(const Texture2D* environmentTex) : envTex(environmentTex), envMap(nullptr), skybox(false) {}
         PrefilterEnvmap(const Skybox* environmentMap) : envMap(environmentMap), envTex(nullptr), skybox(true) {}
 
         void generate();
     private:
         const Cubemap* envMap;
-        const Texture* envTex;
+        const Texture2D* envTex;
         bool skybox;
     };
 
-    class ScaleBiasTexture : public Texture
+    class ScaleBiasTexture : public Texture2D
     {
     public:
         ScaleBiasTexture();
@@ -45,7 +45,7 @@ namespace Flux
     class IblSceneInfo
     {
     public:
-        void PrecomputeEnvironmentData(const Texture& environmentTex);
+        void PrecomputeEnvironmentData(const Texture2D& environmentTex);
         void PrecomputeEnvironmentData(const Skybox& skybox);
 
         IrradianceMap* irradianceMap;

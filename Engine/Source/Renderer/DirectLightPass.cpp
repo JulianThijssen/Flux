@@ -130,7 +130,7 @@ namespace Flux {
 
         nvtxRangePop();
         // Add the direct light to the original buffer
-        std::vector<Texture> sources{ sourceFramebuffer->getTexture(), *source };
+        std::vector<Texture2D> sources{ sourceFramebuffer->getTexture(), *source };
         std::vector<float> weights{ 1, 1 };
         addPass.SetTextures(sources);
         addPass.SetWeights(weights);

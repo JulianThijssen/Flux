@@ -12,7 +12,7 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Fog.frag");
     }
 
-    void FogPass::SetDepthMap(const Texture* depthMap)
+    void FogPass::SetDepthMap(const Texture2D* depthMap)
     {
         this->depthMap = depthMap;
     }
