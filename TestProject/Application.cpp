@@ -37,6 +37,10 @@ namespace Flux {
     void Application::startGame() {
         std::cout << "Flux version " << Flux_VERSION_MAJOR << "." << Flux_VERSION_MINOR << std::endl;
 
+        bool created = window.create();
+        if (!created)
+            return;
+
         bool loaded = SceneLoader::loadScene(Path("res/Helmet.scene"), currentScene);
         if (!loaded)
             return;
@@ -46,7 +50,7 @@ namespace Flux {
 #else
         renderer = std::make_unique<ForwardRenderer>();
 #endif
-        bool created = renderer->create(currentScene, Size(window.getWidth(), window.getHeight()));
+        created = renderer->create(currentScene, Size(window.getWidth(), window.getHeight()));
         if (!created)
             return;
 
