@@ -27,9 +27,7 @@ using json = nlohmann::json;
 
 namespace Flux {
     namespace Editor {
-        using Status = SceneImporter::Status;
-
-        Status SceneImporter::loadScene(const Path path, SceneDesc& scene) {
+        SceneImporter::Status SceneImporter::loadScene(const Path path, SceneDesc& scene) {
             clock_t clockStart, clockEnd, clockMid;
             clockStart = clock();
             double elapsed;
