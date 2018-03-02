@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SCENE_CONVERTER_H
-#define SCENE_CONVERTER_H
+#ifndef SCENE_EXPORTER_H
+#define SCENE_EXPORTER_H
 
 #include "MaterialDesc.h"
 
@@ -18,9 +18,13 @@ namespace Flux {
             int pos = 0;
         } typedef Buffer;
 
-        class SceneConverter {
+        class SceneExporter {
         public:
-            static void convert(const SceneDesc& scene, Path outputPath);
+            enum class Status {
+                Success, Failure
+            };
+
+            static Status exportScene(const SceneDesc& scene, Path outputPath);
         private:
             static void writeSkybox(Editor::Skybox* skybox, Buffer& buffer);
             static void writeSkysphere(Skysphere* skysphere, Buffer& buffer);
@@ -29,5 +33,4 @@ namespace Flux {
         };
     }
 }
-
-#endif /* SCENE_CONVERTER_H */
+#endif /* SCENE_EXPORTER_H */

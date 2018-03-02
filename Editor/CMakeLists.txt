@@ -6,7 +6,7 @@ set(EDITOR_HEADERS
     ${DIR}/Mesh.h
     ${DIR}/Model.h
     ${DIR}/ModelImporter.h
-    ${DIR}/SceneConverter.h
+    ${DIR}/SceneExporter.h
     ${DIR}/SceneDesc.h
     ${DIR}/SceneImporter.h
     ${DIR}/Sky.h
@@ -18,7 +18,7 @@ set(EDITOR_HEADERS
 set(EDITOR_SOURCES
     ${DIR}/Model.cpp
     ${DIR}/ModelImporter.cpp
-    ${DIR}/SceneConverter.cpp
+    ${DIR}/SceneExporter.cpp
     ${DIR}/SceneImporter.cpp
     PARENT_SCOPE
 )

@@ -1,4 +1,4 @@
-#include "SceneConverter.h"
+#include "SceneExporter.h"
 
 #include "SceneDesc.h"
 #include "Skybox.h"
@@ -42,7 +42,7 @@ namespace Flux {
             buffer.pos += size;
         }
 
-        void SceneConverter::convert(const SceneDesc& scene, Path outputPath) {
+        SceneExporter::Status SceneExporter::exportScene(const SceneDesc& scene, Path outputPath) {
             clock_t startTime = clock();
 
             Buffer buffer;
@@ -88,9 +88,11 @@ namespace Flux {
             double elapsed = double(endTime - startTime) / CLOCKS_PER_SEC;
             double entityElapsed = double(endTime - entityTime) / CLOCKS_PER_SEC;
             std::cout << "Converting scene took: " << elapsed << " " << entityElapsed << " seconds." << std::endl;
+
+            return Status::Success;
         }
 
-        void SceneConverter::writeSkybox(Editor::Skybox* skybox, Buffer& buffer) {
+        void SceneExporter::writeSkybox(Editor::Skybox* skybox, Buffer& buffer) {
             const std::string* paths = skybox->getPaths();
 
             for (int i = 0; i < 6; i++) {
@@ -101,7 +103,7 @@ namespace Flux {
             }
         }
 
-        void SceneConverter::writeSkysphere(Skysphere* skysphere, Buffer& buffer) {
+        void SceneExporter::writeSkysphere(Skysphere* skysphere, Buffer& buffer) {
             std::cout << "SKYSPHERE" << std::endl;
             const std::string path = skysphere->getPath();
             const uint32_t pathLen = (uint32_t)path.length();
@@ -110,7 +112,7 @@ namespace Flux {
             copy(buffer, cpath, sizeof(char) * pathLen);
         }
 
-        void SceneConverter::writeMaterial(const uint32_t id, MaterialDesc* material, Buffer& buffer) {
+        void SceneExporter::writeMaterial(const uint32_t id, MaterialDesc* material, Buffer& buffer) {
             std::cout << "Writing material" << std::endl;
             copy(buffer, id);
 
@@ -121,7 +123,7 @@ namespace Flux {
             copy(buffer, path, sizeof(char) * pathLen);
         }
 
-        void SceneConverter::writeEntity(const SceneDesc& scene, Entity* e, Buffer& buffer) {
+        void SceneExporter::writeEntity(const SceneDesc& scene, Entity* e, Buffer& buffer) {
             const uint32_t id = (uint32_t)e->getId();
             copy(buffer, id);
 
