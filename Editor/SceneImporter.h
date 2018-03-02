@@ -10,7 +10,11 @@ namespace Flux {
 
         class SceneImporter {
         public:
-            static void loadScene(const Path path, SceneDesc& scene);
+            enum class Status {
+                Success, FileNotFound, Failure
+            };
+
+            static Status loadScene(const Path path, SceneDesc& scene);
         };
     }
 }

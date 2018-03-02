@@ -27,12 +27,20 @@ using json = nlohmann::json;
 
 namespace Flux {
     namespace Editor {
-        void SceneImporter::loadScene(const Path path, SceneDesc& scene) {
+        using Status = SceneImporter::Status;
+
+        Status SceneImporter::loadScene(const Path path, SceneDesc& scene) {
             clock_t clockStart, clockEnd, clockMid;
             clockStart = clock();
             double elapsed;
 
-            String contents = File::loadFile(path.str().c_str());
+            String contents;
+            try {
+                contents = File::loadFile(path.str().c_str());
+            }
+            catch (const std::invalid_argument& e) {
+                return Status::FileNotFound;
+            }
 
             const char* cont = contents.c_str();
 
@@ -229,6 +237,8 @@ namespace Flux {
             elapsed = double(clockEnd - clockStart) / CLOCKS_PER_SEC;
 
             std::cout << "Scene importing took: " << elapsed << " seconds." << std::endl;
+
+            return Status::Success;
         }
     }
 }

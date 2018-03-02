@@ -19,18 +19,26 @@
 #define DEFERRED
 
 namespace Flux {
-    void Application::startGame() {
-        std::cout << "Flux version " << Flux_VERSION_MAJOR << "." << Flux_VERSION_MINOR << std::endl;
+    using namespace Editor;
 
-        //Editor::SceneDesc scene;
-        //Editor::SceneImporter::loadScene(Path("res/Temple.json"), scene);
+    void Application::exportScene() {
+        SceneDesc scene;
+        SceneImporter::Status status = SceneImporter::loadScene(Path("res/Helmet.json"), scene);
+        if (status == SceneImporter::Status::FileNotFound) {
+            std::cout << "Failed to find scene file.";
+            return;
+        }
 
-        //Editor::SceneConverter::convert(scene, Path("res/Temple.scene"));
+        SceneConverter::convert(scene, Path("res/Helmet.scene"));
         bool created = window.create();
         if (!created)
             return;
+    }
 
-        bool loaded = SceneLoader::loadScene(Path("res/Temple.scene"), currentScene);
+    void Application::startGame() {
+        std::cout << "Flux version " << Flux_VERSION_MAJOR << "." << Flux_VERSION_MINOR << std::endl;
+
+        bool loaded = SceneLoader::loadScene(Path("res/Helmet.scene"), currentScene);
         if (!loaded)
             return;
 
@@ -39,7 +47,7 @@ namespace Flux {
 #else
         renderer = std::make_unique<ForwardRenderer>();
 #endif
-        created = renderer->create(currentScene, Size(window.getWidth(), window.getHeight()));
+        bool created = renderer->create(currentScene, Size(window.getWidth(), window.getHeight()));
         if (!created)
             return;
 
@@ -83,5 +91,6 @@ namespace Flux {
 
 int main() {
     Flux::Application app;
+    app.exportScene();
     app.startGame();
 }
