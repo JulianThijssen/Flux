@@ -99,6 +99,35 @@ namespace Flux {
     private:
         uint width, height;
     };
+
+    class Texture3D : public Texture {
+    public:
+        Texture3D(uint width, uint height, uint depth)
+            :
+            Texture(GL_TEXTURE_2D),
+            width(width),
+            height(height),
+            depth(depth)
+        { }
+
+        void setData(GLint internalFormat, GLenum format, GLenum type, const void* data) override {
+            glTexImage3D(target, 0, internalFormat, width, height, depth, 0, format, type, data);
+        }
+
+        uint getWidth() const {
+            return width;
+        }
+
+        uint getHeight() const {
+            return height;
+        }
+
+        uint getDepth() const {
+            return depth;
+        }
+    private:
+        uint width, height, depth;
+    };
 }
 
 #endif /* TEXTURE_H */

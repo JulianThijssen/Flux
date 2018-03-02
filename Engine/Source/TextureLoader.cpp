@@ -159,10 +159,10 @@ namespace Flux {
     }
 
     Texture3D* TextureLoader::create3DTexture(const int width, const int height, const int depth, const int bpp, const unsigned char* data, Sampling sampling) {
-        GLuint handle;
-        glGenTextures(1, &handle);
+        Texture3D* texture = new Texture3D(width, height, depth);
+        texture->create();
 
-        glBindTexture(GL_TEXTURE_3D, handle);
+        texture->bind(TextureUnit::TEXTURE0);
 
         if (sampling == Sampling::NEAREST) {
             glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -199,9 +199,9 @@ namespace Flux {
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_BASE_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_LEVEL, 0);
 
-        glBindTexture(GL_TEXTURE_3D, 0);
+        texture->release();
 
-        return new Texture3D(handle, width, height, depth);
+        return texture;
     }
 
     bool TextureLoader::loadTextureFromFile(Path path, int& width, int& height, TextureType type, void** data) {

@@ -4,7 +4,6 @@
 
 #include "TextureUnit.h"
 #include "Texture.h"
-#include "Texture3D.h"
 #include "Framebuffer.h"
 
 #include "TextureLoader.h"

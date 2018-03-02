@@ -3,7 +3,6 @@
 #define TEXTURE_LOADER_H
 
 #include "Texture.h"
-#include "Texture3D.h"
 
 enum TextureType {
     COLOR, GREYSCALE, HDR

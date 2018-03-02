@@ -24,7 +24,6 @@ set(BASE
     ${DIR}/Skybox.h
     ${DIR}/Skybox.cpp
     ${DIR}/Texture.h
-    ${DIR}/Texture3D.h
     ${DIR}/TextureUnit.h
     ${DIR}/Window.h
     ${DIR}/Window.cpp
