@@ -11,6 +11,7 @@ using namespace std;
 namespace Flux {
     class String {
     public:
+        String() { }
         String(string s) : s(s) { }
 
         vector<String> split(char delimiter) {
