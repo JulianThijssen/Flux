@@ -32,8 +32,7 @@ namespace Flux {
         static String loadFile(const char* path) {
             ifstream file(path);
             if (file.fail() || !file.is_open()) {
-                Log::error("No such file: " + string(path));
-                return String("");
+                throw std::invalid_argument("No such file: " + string(path));
             }
 
             string source;
