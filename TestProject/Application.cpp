@@ -2,7 +2,7 @@
 
 #include "FluxConfig.h"
 
-#include <Editor/SceneConverter.h>
+#include <Editor/SceneExporter.h>
 #include <Editor/SceneImporter.h>
 #include <Editor/SceneDesc.h>
 
@@ -19,20 +19,19 @@
 #define DEFERRED
 
 namespace Flux {
-    using namespace Editor;
-
     void Application::exportScene() {
-        SceneDesc scene;
-        SceneImporter::Status status = SceneImporter::loadScene(Path("res/Helmet.json"), scene);
-        if (status == SceneImporter::Status::FileNotFound) {
+        Editor::SceneDesc scene;
+        Editor::SceneImporter::Status importStatus = Editor::SceneImporter::loadScene(Path("res/Helmet.json"), scene);
+        if (importStatus == Editor::SceneImporter::Status::FileNotFound) {
             std::cout << "Failed to find scene file.";
             return;
         }
 
-        SceneConverter::convert(scene, Path("res/Helmet.scene"));
-        bool created = window.create();
-        if (!created)
+        Editor::SceneExporter::Status exportStatus = Editor::SceneExporter::exportScene(scene, Path("res/Helmet.scene"));
+        if (exportStatus == Editor::SceneExporter::Status::Failure) {
+            std::cout << "Failed to export scene file.";
             return;
+        }
     }
 
     void Application::startGame() {
