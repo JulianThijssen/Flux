@@ -3,9 +3,8 @@
 #define FRAMEBUFFER_H
 
 #include "Renderer/RenderState.h"
+#include "TextureFactory.h"
 #include "Texture.h"
-#include "TextureLoader.h"
-#include "Cubemap.h"
 #include "Util/Log.h"
 
 #include <glad/glad.h>
@@ -17,8 +16,7 @@ namespace Flux {
         Framebuffer() :
             handle(0),
             currentDrawBuffer(0),
-            colorTexture(MAX_COLOR_ATTACHMENTS),
-            depthTexture(0)
+            colorTexture(MAX_COLOR_ATTACHMENTS)
         {
 
         }
@@ -53,43 +51,43 @@ namespace Flux {
         }
 
         const Texture2D& getTexture() const {
-            return *colorTexture[currentDrawBuffer];
+            return colorTexture[currentDrawBuffer];
         }
 
         const Texture2D& getColorTexture(int attachment) const {
-            return *colorTexture[attachment];
+            return colorTexture[attachment];
         }
 
-        void addColorTexture(unsigned int colorAttachment, Texture2D* texture) {
+        void addColorTexture(unsigned int colorAttachment, Texture2D texture) {
             if (colorAttachment > MAX_COLOR_ATTACHMENTS) {
                 Log::error("Tried to add color attachment with index greater than 8.");
                 return;
             }
             colorTexture[colorAttachment] = texture;
             GLint attachment = GL_COLOR_ATTACHMENT0 + colorAttachment;
-            setTexture(attachment, *texture);
+            setTexture(attachment, texture);
             addDrawBuffer(attachment);
         }
 
         void addDepthTexture(unsigned int width, unsigned int height) {
-            depthTexture = TextureLoader::create(width, height, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, CLAMP);
-            setTexture(GL_DEPTH_ATTACHMENT, *depthTexture);
+            depthTexture = createEmptyDepthMap(width, height);
+            setTexture(GL_DEPTH_ATTACHMENT, depthTexture);
         }
 
-        void addDepthTexture(Texture2D* texture) {
-            setTexture(GL_DEPTH_ATTACHMENT, *texture);
+        void addDepthTexture(Texture2D texture) {
+            setTexture(GL_DEPTH_ATTACHMENT, texture);
         }
 
-        void addDepthStencilTexture(Texture2D* texture) {
-            setTexture(GL_DEPTH_STENCIL_ATTACHMENT, *texture);
+        void addDepthStencilTexture(Texture2D texture) {
+            setTexture(GL_DEPTH_STENCIL_ATTACHMENT, texture);
         }
 
         void setTexture(GLuint attachment, Texture& texture) {
             glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture.getHandle(), 0);
         }
 
-        void setDepthCubemap(Cubemap* cubemap, unsigned int face, int mipmapLevel) {
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cubemap->getHandle(), mipmapLevel);
+        void setDepthCubemap(Cubemap cubemap, unsigned int face, int mipmapLevel) {
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cubemap.getHandle(), mipmapLevel);
         }
 
         void setCubemap(GLuint texture, unsigned int face, int mipmapLevel) {
@@ -153,8 +151,8 @@ namespace Flux {
 
         GLuint handle;
 
-        std::vector<Texture2D*> colorTexture;
-        Texture2D* depthTexture;
+        std::vector<Texture2D> colorTexture;
+        Texture2D depthTexture;
 
         unsigned int currentDrawBuffer;
         std::vector<GLenum> drawBuffers;
