@@ -1,6 +1,5 @@
 #include "SceneLoader.h"
 #include "MaterialLoader.h"
-#include "TextureLoader.h"
 
 #include "Util/Path.h"
 #include "Scene.h"
@@ -90,14 +89,15 @@ namespace Flux {
         uint32_t skyType = readUnsignedInt(inFile);
         std::cout << "Sky type: " << skyType << std::endl;
         if (skyType == 1) {
-            char* paths[6];
+            std::vector<Path> paths;
             for (int i = 0; i < 6; i++) {
-                uint32_t numChars = readUnsignedInt(inFile);
+                const uint32_t numChars = readUnsignedInt(inFile);
 
-                paths[i] = new char[numChars + 1];
-                paths[i][numChars] = 0;
-                inFile.read(paths[i], numChars * sizeof(char));
-                std::cout << paths[i] << std::endl;
+                std::vector<char> p(numChars + 1);
+                p[numChars] = 0;
+                inFile.read(p.data(), numChars * sizeof(char));
+                //std::cout << paths[i].c_str() << std::endl;
+                paths.push_back(Path(p.data()));
             }
             scene.skybox = new Skybox(paths);
         }
@@ -108,7 +108,10 @@ namespace Flux {
             path[numChars] = 0;
             inFile.read(path, numChars * sizeof(char));
             std::cout << "Reading skysphere: " << path << std::endl;
-            scene.skySphere = TextureLoader::loadTexture(Path(path), HDR, REPEAT, SamplingConfig(NEAREST, NEAREST, NONE));
+            scene.skySphere = new Texture2D();
+            scene.skySphere->loadFromFile(Path(path), HDR);
+            scene.skySphere->setSampling(NEAREST, NEAREST, NONE);
+            scene.skySphere->setWrapping(REPEAT, REPEAT);
             delete path;
         }
 
