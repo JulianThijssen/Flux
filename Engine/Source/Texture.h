@@ -7,6 +7,16 @@
 typedef unsigned int uint;
 
 namespace Flux {
+    enum TextureType {
+        COLOR, GREYSCALE, HDR
+    };
+
+    enum Sampling {
+        NONE,
+        NEAREST,
+        LINEAR
+    };
+
     enum Wrapping {
         CLAMP = GL_CLAMP_TO_EDGE,
         REPEAT = GL_REPEAT,
@@ -15,10 +25,7 @@ namespace Flux {
 
     class Texture {
     public:
-        Texture(GLenum target)
-        :
-            target(target)
-        { }
+        Texture(GLenum target);
 
         /**
         * Initializes the use of OpenGL functions in this context and
@@ -26,43 +33,29 @@ namespace Flux {
         * should be called before doing any other texture operations
         * and only when an OpenGL context is current and active.
         */
-        void create() {
-            glGenTextures(1, &handle);
-
-            created = true;
-        }
+        void create();
 
         /**
         * Deletes the OpenGL texture ID and invalidates this texture
         * until create() is called again.
         */
-        void destroy()
-        {
-            if (!created) { return; }
-            glDeleteTextures(1, &handle);
-
-            created = false;
-        }
+        void destroy();
 
         /**
         * Binds the texture to the active texture unit.
         */
-        void bind(const uint textureUnit) const {
-            if (!created) { return; }
-            if (textureUnit > MAX_TEXTURE_UNITS - 1) { return; }
-
-            glActiveTexture(GL_TEXTURE0 + textureUnit);
-            glBindTexture(target, handle);
-        }
+        void bind(const uint textureUnit) const;
 
         /**
         * Unbinds the texture by binding the default (0) texture.
         */
-        void release() const {
-            glBindTexture(target, 0);
-        }
+        void release() const;
 
-        virtual void setData(GLint internalFormat, GLenum format, GLenum type, const void* data) = 0;
+        void setSampling(Sampling minFilter, Sampling magFilter, Sampling mipFilter = NONE);
+
+        void setMaxMipmapLevel(uint level);
+
+        void generateMipmaps();
 
         /**
         * Return the raw OpenGL texture ID.
@@ -72,11 +65,16 @@ namespace Flux {
             return handle;
         }
 
+        bool isCreated() const
+        {
+            return created;
+        }
+
     protected:
         // OpenGL 3.3 specifies that at least 16 texture units must be supported per stage.
         static const unsigned int MAX_TEXTURE_UNITS = 16;
 
-        bool created;
+        bool created = false;
 
         GLuint handle;
         GLenum target;
