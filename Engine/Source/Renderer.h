@@ -21,8 +21,6 @@ namespace Flux {
     class Renderer {
     public:
         Renderer() :
-            currentFramebuffer(0),
-            currentHdrFramebuffer(0),
             windowSize(800, 600)
         {
             
@@ -38,12 +36,6 @@ namespace Flux {
         void enable(Capability capability);
         void disable(Capability capability);
 
-        const Framebuffer& getCurrentFramebuffer();
-        const Framebuffer& getCurrentHdrFramebuffer();
-        const Framebuffer& getOtherFramebuffer();
-        const Framebuffer& getOtherHdrFramebuffer();
-        void switchBuffers();
-        void switchHdrBuffers();
     protected:
         RenderState renderState;
 
@@ -51,8 +43,6 @@ namespace Flux {
 
         std::vector<Framebuffer> backBuffers;
         std::vector<Framebuffer> hdrBackBuffers;
-        unsigned int currentFramebuffer;
-        unsigned int currentHdrFramebuffer;
     private:
         std::queue<RenderPhase*> renderPhases;
     };

@@ -94,24 +94,6 @@ namespace Flux {
         ldrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
         ldrBuffer.validate();
         ldrBuffer.release();
-
-        for (int i = 0; i < 2; i++) {
-            Framebuffer framebuffer;
-            framebuffer.bind();
-            // Textures are linearly sampled for first step of gaussian bloom blur
-            framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
-            framebuffer.validate();
-            framebuffer.release();
-            hdrBackBuffers.push_back(framebuffer);
-        }
-        for (int i = 0; i < 2; i++) {
-            Framebuffer framebuffer;
-            framebuffer.bind();
-            framebuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
-            framebuffer.validate();
-            framebuffer.release();
-            backBuffers.push_back(framebuffer);
-        }
     }
 
     void DeferredRenderer::createShadowMaps(const Scene& scene) {
