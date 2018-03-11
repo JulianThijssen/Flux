@@ -4,6 +4,8 @@
 
 #include <glad/glad.h>
 
+#include <vector>
+
 typedef unsigned int uint;
 
 namespace Flux {
@@ -125,6 +127,25 @@ namespace Flux {
         }
     private:
         uint width, height, depth;
+    };
+
+    class Cubemap : public Texture {
+    public:
+        Cubemap();
+
+        bool loadFromFiles(std::vector<Path> paths);
+
+        void setData(uint resolution, GLint internalFormat, GLenum format, GLenum type, const void* data);
+        void setFace(uint face);
+        void setWrapping(Wrapping sWrapping, Wrapping tWrapping, Wrapping rWrapping);
+
+        uint getResolution() const {
+            return resolution;
+        }
+    private:
+        uint resolution;
+
+        uint face;
     };
 }
 
