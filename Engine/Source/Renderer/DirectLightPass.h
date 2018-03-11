@@ -30,8 +30,8 @@ namespace Flux
 
         const GBuffer* gBuffer;
 
-        const Texture2D* ampTex;
-        const Texture2D* matTex;
+        const Texture2D ampTex;
+        const Texture2D matTex;
 
         AddPass addPass;
     };

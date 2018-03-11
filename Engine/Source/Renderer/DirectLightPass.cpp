@@ -12,21 +12,49 @@
 #include "AreaLight.h"
 
 namespace Flux {
-    DirectLightPass::DirectLightPass() : RenderPhase("Direct Lighting")
+    namespace
     {
-        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
+        const Texture2D createAmplitudeTex()
+        {
+            Texture2D ampTex;
+            ampTex.create();
+            ampTex.bind(TextureUnit::TEXTURE0);
+            ampTex.setData(32, 32, GL_RG32F, GL_RG, GL_FLOAT, amp.data());
+            ampTex.setWrapping(CLAMP, CLAMP);
+            ampTex.setSampling(LINEAR, LINEAR);
 
-        ampTex = TextureLoader::create(32, 32, GL_RG32F, GL_RG, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE), amp.data());
-        std::vector<float> data;
-        data.reserve(a.size() + b.size() + c.size() + d.size());
-        for (int i = 0; i < 64 * 64; i++) {
-            data.push_back(a[i]);
-            data.push_back(b[i]);
-            data.push_back(c[i]);
-            data.push_back(d[i]);
+            return ampTex;
         }
 
-        matTex = TextureLoader::create(64, 64, GL_RGBA32F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE), data.data());
+        const Texture2D createMatrixTex()
+        {
+            std::vector<float> data;
+            data.reserve(a.size() + b.size() + c.size() + d.size());
+            for (int i = 0; i < 64 * 64; i++) {
+                data.push_back(a[i]);
+                data.push_back(b[i]);
+                data.push_back(c[i]);
+                data.push_back(d[i]);
+            }
+
+            Texture2D matTex;
+            matTex.create();
+            matTex.bind(TextureUnit::TEXTURE0);
+            matTex.setData(64, 64, GL_RGBA32F, GL_RGBA, GL_FLOAT, data.data());
+            matTex.setWrapping(CLAMP, CLAMP);
+            matTex.setSampling(LINEAR, LINEAR);
+
+            return matTex;
+        }
+    }
+
+    DirectLightPass::DirectLightPass()
+        :
+        RenderPhase("Direct Lighting"),
+        ampTex(createAmplitudeTex()),
+        matTex(createMatrixTex())
+    {
+        shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
     }
 
     void DirectLightPass::SetGBuffer(const GBuffer* gBuffer)
@@ -56,11 +84,11 @@ namespace Flux {
 
         shader.uniform3f("camPos", ct->position);
 
-        gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
+        gBuffer->albedoTex.bind(TextureUnit::ALBEDO);
         shader.uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBuffer->normalTex->bind(TextureUnit::NORMAL);
+        gBuffer->normalTex.bind(TextureUnit::NORMAL);
         shader.uniform1i("normalMap", TextureUnit::NORMAL);
-        gBuffer->positionTex->bind(TextureUnit::POSITION);
+        gBuffer->positionTex.bind(TextureUnit::POSITION);
         shader.uniform1i("positionMap", TextureUnit::POSITION);
         
         for (Entity* light : scene.lights) {
@@ -81,7 +109,7 @@ namespace Flux {
                 shader.uniform1i("isDirLight", true);
                 shader.uniform1i("isPointLight", false);
                 shader.uniform1i("isAreaLight", false);
-                directionalLight->shadowMap->bind(TextureUnit::SHADOW);
+                directionalLight->shadowMap.bind(TextureUnit::SHADOW);
                 shader.uniform1i("dirLight.shadowMap", TextureUnit::SHADOW);
                 shader.uniformMatrix4f("dirLight.shadowMatrix", directionalLight->shadowSpace);
             }
@@ -91,12 +119,12 @@ namespace Flux {
                 shader.uniform1i("isPointLight", true);
                 shader.uniform1i("isDirLight", false);
                 shader.uniform1i("isAreaLight", false);
-                pointLight->shadowMap->bind(TextureUnit::TEXTURE7);
+                pointLight->shadowMap.bind(TextureUnit::TEXTURE7);
                 shader.uniform1i("pointLight.shadowMap", TextureUnit::TEXTURE7);
             }
             else if (areaLight) {
-                ampTex->bind(TextureUnit::TEXTURE3);
-                matTex->bind(TextureUnit::TEXTURE4);
+                ampTex.bind(TextureUnit::TEXTURE3);
+                matTex.bind(TextureUnit::TEXTURE4);
                 shader.uniform1i("areaLight.ampTex", TextureUnit::TEXTURE3);
                 shader.uniform1i("areaLight.matTex", TextureUnit::TEXTURE4);
 
