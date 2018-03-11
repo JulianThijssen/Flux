@@ -42,7 +42,7 @@ namespace Flux
 
         std::vector<Vector3f> kernel;
         std::vector<Vector3f> noise;
-        Texture2D* noiseTexture;
+        Texture2D noiseTexture;
     };
 }
 

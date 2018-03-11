@@ -20,9 +20,22 @@ namespace Flux {
     const unsigned int NUM_SAMPLES = 13;
     const unsigned int NOISE_SIZE = 4;
 
-    float random(float low, float high)
-    {
-        return low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
+    namespace {
+        Texture2D createRenderTexture(const Size& windowSize)
+        {
+            Texture2D renderTexture;
+            renderTexture.create();
+            renderTexture.bind(TextureUnit::TEXTURE0);
+            renderTexture.setData(windowSize.width / 2, windowSize.height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            renderTexture.setWrapping(CLAMP, CLAMP);
+            renderTexture.release();
+            return renderTexture;
+        }
+
+        float random(float low, float high)
+        {
+            return low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
+        }
     }
 
     SSAOPass::SSAOPass() : RenderPhase("SSAO"), windowSize(1, 1)
@@ -69,12 +82,11 @@ namespace Flux {
             noise.push_back(v);
         }
 
-        noiseTexture = new Texture2D(NOISE_SIZE, NOISE_SIZE);
-        noiseTexture->create();
-        noiseTexture->bind(TextureUnit::TEXTURE0);
+        noiseTexture.create();
+        noiseTexture.bind(TextureUnit::TEXTURE0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-        noiseTexture->setData(GL_RGB8, GL_RGB, GL_FLOAT, noise.data());
+        noiseTexture.setData(NOISE_SIZE, NOISE_SIZE, GL_RGB8, GL_RGB, GL_FLOAT, noise.data());
     }
 
     void SSAOPass::SetGBuffer(const GBuffer* gBuffer)
@@ -86,15 +98,11 @@ namespace Flux {
     {
         this->windowSize = windowSize;
 
-        // Generate half sized framebuffers for low-resolution SSAO rendering
-        //buffers.resize(2);
-        //for (int i = 0; i < 2; i++) {
-            buffer.create();
-            buffer.bind();
-            buffer.addColorTexture(0, TextureLoader::create(windowSize.width / 2, windowSize.height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
-            buffer.validate();
-            buffer.release();
-        //}
+        buffer.create();
+        buffer.bind();
+        buffer.addColorTexture(0, createRenderTexture(windowSize));
+        buffer.validate();
+        buffer.release();
     }
 
     void SSAOPass::render(RenderState& renderState, const Scene& scene)
@@ -131,16 +139,16 @@ namespace Flux {
 
         glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
 
-        gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
+        gBuffer->albedoTex.bind(TextureUnit::ALBEDO);
         ssaoShader.uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBuffer->normalTex->bind(TextureUnit::NORMAL);
+        gBuffer->normalTex.bind(TextureUnit::NORMAL);
         ssaoShader.uniform1i("normalMap", TextureUnit::NORMAL);
-        gBuffer->positionTex->bind(TextureUnit::POSITION);
+        gBuffer->positionTex.bind(TextureUnit::POSITION);
         ssaoShader.uniform1i("positionMap", TextureUnit::POSITION);
-        gBuffer->depthTex->bind(TextureUnit::DEPTH);
+        gBuffer->depthTex.bind(TextureUnit::DEPTH);
         ssaoShader.uniform1i("depthMap", TextureUnit::DEPTH);
 
-        noiseTexture->bind(TextureUnit::NOISE);
+        noiseTexture.bind(TextureUnit::NOISE);
         ssaoShader.uniform1i("noiseMap", TextureUnit::NOISE);
         ssaoShader.uniform3fv("kernel", (int)kernel.size(), kernel.data());
         ssaoShader.uniform1i("kernelSize", (int)kernel.size());
