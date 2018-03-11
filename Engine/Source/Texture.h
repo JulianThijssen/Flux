@@ -104,23 +104,13 @@ namespace Flux {
 
     class Texture3D : public Texture {
     public:
-        Texture3D(uint width, uint height, uint depth)
-            :
-            Texture(GL_TEXTURE_2D),
-            width(width),
-            height(height),
-            depth(depth)
-        { }
+        Texture3D();
 
-        void setData(GLint internalFormat, GLenum format, GLenum type, const void* data) override {
-            glTexImage3D(target, 0, internalFormat, width, height, depth, 0, format, type, data);
-        }
+        bool loadFromFile(Path path, TextureType type);
 
-        void setWrapping(Wrapping sWrapping, Wrapping tWrapping, Wrapping rWrapping) {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sWrapping);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tWrapping);
-            glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, rWrapping);
-        }
+        void setData(uint width, uint height, uint depth, 
+            GLint internalFormat, GLenum format, GLenum type, const void* data);
+        void setWrapping(Wrapping sWrapping, Wrapping tWrapping, Wrapping rWrapping);
 
         uint getWidth() const {
             return width;
