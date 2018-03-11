@@ -4,7 +4,7 @@
 
 #include "Renderer.h"
 
-#include "Cubemap.h"
+#include "Texture.h"
 #include "Renderer/ImageBasedRendering.h"
 
 #include "Texture.h"

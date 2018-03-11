@@ -21,8 +21,9 @@ namespace Flux {
         };
 
         PointLight()
-        :   energy(DEFAULT_ENERGY)
-        ,   color(1, 1, 1)
+            :
+            energy(DEFAULT_ENERGY),
+            color(1, 1, 1)
         { }
 
         const float DEFAULT_ENERGY = 1.0f;
@@ -30,7 +31,7 @@ namespace Flux {
         Vector3f color;
         float energy;
 
-        Cubemap* shadowMap;
+        Cubemap shadowMap;
         Framebuffer shadowBuffer;
     };
 }

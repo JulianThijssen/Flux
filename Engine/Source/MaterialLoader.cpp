@@ -4,7 +4,6 @@
 #include "Util/String.h"
 #include "Util/File.h"
 
-#include "TextureLoader.h"
 #include "Util/Path.h"
 
 #include <vector>
@@ -26,32 +25,44 @@ namespace Flux {
             if (key == "DiffuseTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->diffuseTex = TextureLoader::loadTexture(Path(path), COLOR, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
+                material->diffuseTex.loadFromFile(Path(path), COLOR);
+                material->diffuseTex.setWrapping(REPEAT, REPEAT);
+                material->diffuseTex.setSampling(LINEAR, LINEAR, LINEAR);
             }
             if (key == "NormalTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->normalTex = TextureLoader::loadTexture(Path(path), COLOR, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
+                material->normalTex.loadFromFile(Path(path), COLOR);
+                material->normalTex.setWrapping(REPEAT, REPEAT);
+                material->normalTex.setSampling(LINEAR, LINEAR, LINEAR);
             }
             if (key == "MetalTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->metalTex = TextureLoader::loadTexture(Path(path), GREYSCALE, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
+                material->metalTex.loadFromFile(Path(path), GREYSCALE);
+                material->metalTex.setWrapping(REPEAT, REPEAT);
+                material->metalTex.setSampling(LINEAR, LINEAR, LINEAR);
             }
             if (key == "RoughnessTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->roughnessTex = TextureLoader::loadTexture(Path(path), GREYSCALE, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
+                material->roughnessTex.loadFromFile(Path(path), GREYSCALE);
+                material->roughnessTex.setWrapping(REPEAT, REPEAT);
+                material->roughnessTex.setSampling(LINEAR, LINEAR, LINEAR);
             }
             if (key == "StencilTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->stencilTex = TextureLoader::loadTexture(Path(path), GREYSCALE, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
+                material->stencilTex.loadFromFile(Path(path), GREYSCALE);
+                material->stencilTex.setWrapping(REPEAT, REPEAT);
+                material->stencilTex.setSampling(LINEAR, LINEAR, LINEAR);
             }
             if (key == "EmissionTex") {
                 Log::debug(value.c_str());
                 String path = value;
-                material->emissionTex = TextureLoader::loadTexture(Path(path), COLOR, REPEAT, SamplingConfig(LINEAR, LINEAR, LINEAR));
+                material->emissionTex.loadFromFile(Path(path), COLOR);
+                material->emissionTex.setWrapping(REPEAT, REPEAT);
+                material->emissionTex.setSampling(LINEAR, LINEAR, LINEAR);
             }
             if (key == "Emission") {
                 material->emission = Vector3f(std::stof(tokens[1].c_str()), std::stof(tokens[2].c_str()), std::stof(tokens[3].c_str()));

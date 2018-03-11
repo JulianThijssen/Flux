@@ -24,7 +24,7 @@ namespace Flux {
         Vector3f direction;
         Vector3f color;
 
-        Texture2D* shadowMap;
+        Texture2D shadowMap;
         Matrix4f shadowSpace;
         Framebuffer shadowBuffer;
     };

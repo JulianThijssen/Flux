@@ -5,8 +5,6 @@
 #include "Renderer.h"
 #include "Renderer/GBuffer.h"
 
-#include "Cubemap.h"
-
 #include "Texture.h"
 
 #include <memory>

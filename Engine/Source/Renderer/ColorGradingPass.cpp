@@ -6,14 +6,15 @@
 #include "Texture.h"
 #include "Framebuffer.h"
 
-#include "TextureLoader.h"
 #include "Util/Path.h"
 
 namespace Flux {
     ColorGradingPass::ColorGradingPass() : RenderPhase("Color Grading")
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/ColorGrading.frag");
-        lut = TextureLoader::loadTexture3D(Path("res/reinhart_grading.png"));
+        lut.loadFromFile(Path("res/reinhart_grading.png"), COLOR);
+        lut.setWrapping(CLAMP, CLAMP, CLAMP);
+        lut.setSampling(LINEAR, LINEAR, NONE);
     }
 
     void ColorGradingPass::Resize(const Size& windowSize)
@@ -29,7 +30,7 @@ namespace Flux {
 
         source->bind(TextureUnit::TEXTURE0);
         shader.uniform1i("tex", TextureUnit::TEXTURE0);
-        lut->bind(TextureUnit::TEXTURE1);
+        lut.bind(TextureUnit::TEXTURE1);
         shader.uniform1i("lut", TextureUnit::TEXTURE1);
 
         renderState.drawQuad();

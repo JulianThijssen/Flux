@@ -51,13 +51,13 @@ namespace Flux {
         Transform* ct = scene.getMainCamera()->getComponent<Transform>();
         shader.uniform3f("camPos", ct->position);
 
-        gBuffer->albedoTex->bind(TextureUnit::ALBEDO);
+        gBuffer->albedoTex.bind(TextureUnit::ALBEDO);
         shader.uniform1i("albedoMap", TextureUnit::ALBEDO);
-        gBuffer->normalTex->bind(TextureUnit::NORMAL);
+        gBuffer->normalTex.bind(TextureUnit::NORMAL);
         shader.uniform1i("normalMap", TextureUnit::NORMAL);
-        gBuffer->positionTex->bind(TextureUnit::POSITION);
+        gBuffer->positionTex.bind(TextureUnit::POSITION);
         shader.uniform1i("positionMap", TextureUnit::POSITION);
-        gBuffer->depthTex->bind(TextureUnit::DEPTH);
+        gBuffer->depthTex.bind(TextureUnit::DEPTH);
         shader.uniform1i("depthMap", TextureUnit::DEPTH);
 
         iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);

@@ -23,9 +23,17 @@ namespace Flux {
                 blurWidth = blurWidth >> 1; blurHeight = blurHeight >> 1;
             }
 
+            Texture2D blurTexture;
+            blurTexture.create();
+            blurTexture.bind(TextureUnit::TEXTURE0);
+            blurTexture.setData(blurWidth, blurHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
+            blurTexture.setWrapping(CLAMP, CLAMP);
+            blurTexture.setSampling(LINEAR, LINEAR);
+            blurTexture.release();
+
             blurBuffers[i].create();
             blurBuffers[i].bind();
-            blurBuffers[i].addColorTexture(0, TextureLoader::create(blurWidth, blurHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, NONE)));
+            blurBuffers[i].addColorTexture(0, blurTexture);
             blurBuffers[i].validate();
             blurBuffers[i].release();
         }

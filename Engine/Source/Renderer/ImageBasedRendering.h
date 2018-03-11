@@ -3,7 +3,6 @@
 #define IMAGE_BASED_RENDERING_H
 
 #include "Skybox.h"
-#include "Cubemap.h"
 #include "Texture.h"
 
 namespace Flux
@@ -11,10 +10,20 @@ namespace Flux
     class IrradianceMap : public Cubemap
     {
     public:
-        IrradianceMap(const Texture* environmentTex) : envTex(environmentTex), envMap(nullptr), skybox(false) {}
-        IrradianceMap(const Skybox* environmentMap) : envMap(environmentMap), envTex(nullptr), skybox(true) {}
+        IrradianceMap(const Texture* environmentTex)
+            :
+            envTex(environmentTex),
+            envMap(nullptr),
+            skybox(false)
+        { }
+        IrradianceMap(const Skybox* environmentMap)
+            :
+            envMap(environmentMap),
+            envTex(nullptr),
+            skybox(true)
+        { }
 
-        void generate(const unsigned int textureSize);
+        void generate(const uint resolution);
     private:
         const Cubemap* envMap;
         const Texture* envTex;
@@ -24,10 +33,20 @@ namespace Flux
     class PrefilterEnvmap : public Cubemap
     {
     public:
-        PrefilterEnvmap(const Texture2D* environmentTex) : envTex(environmentTex), envMap(nullptr), skybox(false) {}
-        PrefilterEnvmap(const Skybox* environmentMap) : envMap(environmentMap), envTex(nullptr), skybox(true) {}
+        PrefilterEnvmap(const Texture2D* environmentTex)
+            :
+            envTex(environmentTex),
+            envMap(nullptr),
+            skybox(false)
+        { }
+        PrefilterEnvmap(const Skybox* environmentMap)
+            :
+            envMap(environmentMap),
+            envTex(nullptr),
+            skybox(true)
+        { }
 
-        void generate();
+        void generate(const uint resolution);
     private:
         const Cubemap* envMap;
         const Texture2D* envTex;

@@ -84,14 +84,16 @@ namespace Flux {
     void DeferredRenderer::createBackBuffers(const unsigned int width, const unsigned int height) {
         hdrBuffer.create();
         hdrBuffer.bind();
-        hdrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP));
-        hdrBuffer.addDepthTexture(gBuffer.depthTex);
+        hdrBuffer.addColorTexture(0, createHdrTexture(width, height));
+        hdrBuffer.addColorTexture(1, createHdrTexture(width, height));
+        hdrBuffer.addDepthStencilTexture(gBuffer.depthTex);
         hdrBuffer.validate();
         hdrBuffer.release();
 
         ldrBuffer.create();
         ldrBuffer.bind();
-        ldrBuffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, CLAMP));
+        ldrBuffer.addColorTexture(0, createLdrTexture(width, height));
+        ldrBuffer.addColorTexture(1, createLdrTexture(width, height));
         ldrBuffer.validate();
         ldrBuffer.release();
     }
@@ -108,15 +110,15 @@ namespace Flux {
                 dirLight->shadowBuffer.bind();
                 dirLight->shadowBuffer.disableColor();
                 dirLight->shadowBuffer.release();
-                dirLight->shadowMap = TextureLoader::createShadowMap(4096, 4096);
+                dirLight->shadowMap = createShadowMap(4096, 4096);
             }
             if (pointLight) {
                 pointLight->shadowBuffer.create();
                 pointLight->shadowBuffer.bind();
                 pointLight->shadowBuffer.disableColor();
                 pointLight->shadowBuffer.release();
-                pointLight->shadowMap = new Cubemap();
-                pointLight->shadowMap->createShadowMap(512);
+
+                pointLight->shadowMap = createShadowCubemap(512);
             }
         }
     }
@@ -271,7 +273,7 @@ namespace Flux {
 
                 dirLight->shadowBuffer.bind();
                 dirLight->shadowBuffer.addDepthTexture(dirLight->shadowMap);
-                glViewport(0, 0, dirLight->shadowMap->getWidth(), dirLight->shadowMap->getHeight());
+                glViewport(0, 0, dirLight->shadowMap.getWidth(), dirLight->shadowMap.getHeight());
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -287,7 +289,7 @@ namespace Flux {
                 glClearDepth(1);
 
                 // Set the viewport to the size of the shadow map
-                glViewport(0, 0, pointLight->shadowMap->getResolution(), pointLight->shadowMap->getResolution());
+                glViewport(0, 0, pointLight->shadowMap.getResolution(), pointLight->shadowMap.getResolution());
 
                 for (int i = 0; i < 6; i++) {
                     Vector3f rotation = pointLight->transforms[i];

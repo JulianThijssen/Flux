@@ -3,13 +3,15 @@
 #include "Framebuffer.h"
 #include "Shader.h"
 #include "Renderer/RenderState.h"
+#include "Texture.h"
+#include "TextureUnit.h"
 
 #include <glad/glad.h>
 #include <iostream>
 
 namespace Flux
 {
-    void IrradianceMap::generate(const unsigned int textureSize)
+    void IrradianceMap::generate(const uint resolution)
     {
         Shader shader;
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Irradiance.frag");
@@ -23,24 +25,36 @@ namespace Flux
 
         shader.bind();
 
-        if (skybox) {
-            createEmpty(textureSize, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, REPEAT, false);
+        create();
+        bind(TextureUnit::TEXTURE0);
+        setWrapping(REPEAT, REPEAT, REPEAT);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-            envMap->bind(0);
-            shader.uniform1i("EnvMap", 0);
+        if (skybox) {
+            for (int i = 0; i < 6; i++) {
+                setFace(i);
+                setData(resolution, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            }
+            glBindTexture(GL_TEXTURE_2D, 0);
+            envMap->bind(TextureUnit::TEXTURE0);
+            shader.uniform1i("EnvMap", TextureUnit::TEXTURE0);
         }
         else {
-            createEmpty(textureSize, GL_RGBA16F, GL_RGBA, GL_FLOAT, REPEAT, false);
+            for (int i = 0; i < 6; i++) {
+                setFace(i);
+                setData(resolution, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
+            }
 
-            envTex->bind(0);
-            shader.uniform1i("EnvTex", 0);
+            envTex->bind(TextureUnit::TEXTURE0);
+            shader.uniform1i("EnvTex", TextureUnit::TEXTURE0);
         }
 
         shader.uniform1i("Skybox", skybox);
         // Should be resolution of environment map for perfect accuracy, but this is good enough
-        shader.uniform1i("textureSize", textureSize * 4);
+        shader.uniform1i("textureSize", resolution * 4);
 
-        glViewport(0, 0, textureSize, textureSize);
+        glViewport(0, 0, resolution, resolution);
 
         for (int i = 0; i < 6; i++)
         {
@@ -52,15 +66,13 @@ namespace Flux
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
         framebuffer.release();
+        framebuffer.destroy();
     }
 
-    void PrefilterEnvmap::generate()
+    void PrefilterEnvmap::generate(const uint resolution)
     {
         Shader shader;
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/PrefilterEnvmap.frag");
-
-        // Should be resolution of environment map for perfect accuracy, but this is good enough
-        const unsigned int resolution = 512;
 
         Framebuffer framebuffer;
         framebuffer.create();
@@ -70,18 +82,32 @@ namespace Flux
         glClearColor(1, 0, 0, 1);
 
         shader.bind();
+        
+        create();
+        bind(TextureUnit::TEXTURE0);
+        setWrapping(REPEAT, REPEAT, REPEAT);
+
+        setMaxMipmapLevel(5);
+        setSampling(LINEAR, LINEAR, LINEAR);
 
         if (skybox) {
-            createEmpty(resolution, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, REPEAT, true);
-
-            envMap->bind(0);
-            shader.uniform1i("EnvMap", 0);
+            for (int i = 0; i < 6; i++) {
+                setFace(i);
+                setData(resolution, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            }
+            generateMipmaps();
+            glBindTexture(GL_TEXTURE_2D, 0);
+            envMap->bind(TextureUnit::TEXTURE0);
+            shader.uniform1i("EnvMap", TextureUnit::TEXTURE0);
         }
         else {
-            createEmpty(resolution, GL_RGBA16F, GL_RGBA, GL_FLOAT, REPEAT, true);
-
-            envTex->bind(0);
-            shader.uniform1i("EnvTex", 0);
+            for (int i = 0; i < 6; i++) {
+                setFace(i);
+                setData(resolution, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
+            }
+            generateMipmaps();
+            envTex->bind(TextureUnit::TEXTURE0);
+            shader.uniform1i("EnvTex", TextureUnit::TEXTURE0);
         }
 
         shader.uniform1i("Skybox", skybox);
@@ -109,21 +135,19 @@ namespace Flux
     }
 
     ScaleBiasTexture::ScaleBiasTexture()
-        : Texture2D(256, 256)
     {
-        glGenTextures(1, &handle);
+        create();
 
-        glBindTexture(GL_TEXTURE_2D, handle);
+        bind(TextureUnit::TEXTURE0);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        setWrapping(CLAMP, CLAMP);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        setData(256, 256, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        release();
     }
 
     void ScaleBiasTexture::generate()
@@ -157,7 +181,7 @@ namespace Flux
         irradianceMap->generate(32);
 
         prefilterEnvmap = new PrefilterEnvmap(&environmentTex);
-        prefilterEnvmap->generate();
+        prefilterEnvmap->generate(512);
 
         scaleBiasTexture = new ScaleBiasTexture();
         scaleBiasTexture->generate();
@@ -168,7 +192,7 @@ namespace Flux
         irradianceMap->generate(32);
 
         prefilterEnvmap = new PrefilterEnvmap(&skybox);
-        prefilterEnvmap->generate();
+        prefilterEnvmap->generate(512);
 
         scaleBiasTexture = new ScaleBiasTexture();
         scaleBiasTexture->generate();

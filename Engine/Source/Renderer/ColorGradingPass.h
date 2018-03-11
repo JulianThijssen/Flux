@@ -25,7 +25,7 @@ namespace Flux
     private:
         Shader shader;
 
-        Texture3D* lut;
+        Texture3D lut;
     };
 }
 

@@ -14,10 +14,18 @@ namespace Flux {
 
     void BloomPass::Resize(const Size& windowSize)
     {
+        Texture2D bloomTex;
+        bloomTex.create();
+        bloomTex.bind(TextureUnit::TEXTURE0);
+        bloomTex.setData(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
+        bloomTex.setWrapping(CLAMP, CLAMP);
+        bloomTex.setSampling(LINEAR, LINEAR, LINEAR);
+        bloomTex.release();
+
         buffer.create();
         buffer.bind();
         // Textures are linearly sampled for first step of gaussian bloom blur
-        buffer.addColorTexture(0, TextureLoader::create(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, CLAMP, SamplingConfig(LINEAR, LINEAR, LINEAR)));
+        buffer.addColorTexture(0, bloomTex);
         buffer.validate();
         buffer.release();
 

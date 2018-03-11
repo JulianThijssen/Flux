@@ -2,12 +2,16 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
-#include "Cubemap.h"
+#include "Texture.h"
+
+#include <vector>
 
 namespace Flux {
+    class Path;
+
     class Skybox : public Cubemap {
     public:
-        Skybox(char* const paths[6]);
+        Skybox(std::vector<Path> paths);
 
         void render();
     private:

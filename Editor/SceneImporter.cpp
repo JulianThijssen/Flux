@@ -15,8 +15,6 @@
 #include "Util/Path.h"
 #include "Util/File.h"
 
-#include "TextureLoader.h"
-
 #include "json.hpp"
 #include <fstream>
 #include <string>

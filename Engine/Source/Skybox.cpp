@@ -3,13 +3,14 @@
 #include "Util/Vector3f.h"
 
 #include "Transform.h"
+#include "Util/Path.h"
 #include "Util/Matrix4f.h"
 
 #include <glad/glad.h>
 
 namespace Flux {
-    Skybox::Skybox(char* const paths[6]) {
-        create(paths, false);
+    Skybox::Skybox(std::vector<Path> paths) {
+        loadFromFiles(paths);
     }
 
     void Skybox::render() {
