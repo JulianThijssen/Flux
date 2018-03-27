@@ -3,7 +3,6 @@ set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(BASE
     ${DIR}/AssetManager.h
     ${DIR}/AssetManager.cpp
-    ${DIR}/Cubemap.h
     ${DIR}/DeferredRenderer.h
     ${DIR}/DeferredRenderer.cpp
     ${DIR}/Entity.h
@@ -116,8 +115,6 @@ set(RENDERING
     ${DIR}/Renderer/FogPass.h
     ${DIR}/Renderer/FogPass.cpp
     ${DIR}/Renderer/GGX.h
-    ${DIR}/Renderer/LtcLightPass.h
-    ${DIR}/Renderer/LtcLightPass.cpp
     PARENT_SCOPE
 )
 
@@ -126,8 +123,6 @@ set (LOADERS
     ${DIR}/MaterialLoader.cpp
     ${DIR}/SceneLoader.h
     ${DIR}/SceneLoader.cpp
-    ${DIR}/TextureLoader.h
-    ${DIR}/TextureLoader.cpp
     PARENT_SCOPE
 )
 
