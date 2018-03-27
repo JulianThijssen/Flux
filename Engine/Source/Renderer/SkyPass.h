@@ -22,6 +22,7 @@ namespace Flux {
         Shader skyboxShader;
         Shader skysphereShader;
         Shader skyShader;
+        Shader texShader;
     };
 }
 

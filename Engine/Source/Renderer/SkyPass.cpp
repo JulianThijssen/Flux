@@ -14,6 +14,7 @@ namespace Flux {
         skyboxShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Skybox.frag");
         skysphereShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
         skyShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag");
+        texShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
     }
 
     void SkyPass::Resize(const Size& windowSize)
@@ -23,6 +24,8 @@ namespace Flux {
 
     void SkyPass::render(RenderState& renderState, const Scene& scene)
     {
+        glStencilFunc(GL_EQUAL, 0, 0xFF);
+
         Transform* transform = scene.mainCamera->getComponent<Transform>();
         Camera* cam = scene.mainCamera->getComponent<Camera>();
 
@@ -85,6 +88,19 @@ namespace Flux {
         glDepthFunc(GL_LESS);
 
         glDepthMask(GL_FALSE);
+
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0); // FIXME
+
+
+        // Draw source
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
+
+        texShader.bind();
+
+        source->bind(TextureUnit::TEXTURE0);
+        texShader.uniform1i("tex", TextureUnit::TEXTURE0);
+
+        renderState.drawQuad();
 
         nvtxRangePop();
     }
