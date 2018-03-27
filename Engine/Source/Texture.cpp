@@ -3,6 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "Renderer/RenderState.h"
 #include "TextureUnit.h"
 #include "Util/Path.h"
 #include "Util/Log.h"
@@ -51,38 +52,50 @@ namespace Flux {
         if (!created) { return; }
         if (textureUnit > MAX_TEXTURE_UNITS - 1) { return; }
 
-        glActiveTexture(GL_TEXTURE0 + textureUnit);
-        glBindTexture(target, handle);
+        RenderState::setActiveTexture(textureUnit);
+        RenderState::bindTexture(target, handle);
+        lastBoundUnit = textureUnit;
     }
 
     void Texture::release() const
     {
-        glBindTexture(target, 0);
+        RenderState::bindTexture(target, 0);
     }
 
     void Texture::setSampling(Sampling minFilter, Sampling magFilter, Sampling mipFilter)
     {
+        if (!isBound()) { bind(lastBoundUnit); }
+
         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter == NEAREST ? GL_NEAREST : GL_LINEAR);
 
         if (mipFilter == NONE) {
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter == NEAREST ? GL_NEAREST : GL_LINEAR);
         }
-        else if (mipFilter == GL_NEAREST) {
+        else if (mipFilter == NEAREST) {
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter == NEAREST ? GL_NEAREST_MIPMAP_NEAREST : GL_LINEAR_MIPMAP_NEAREST);
         }
-        else if (mipFilter == GL_LINEAR) {
+        else if (mipFilter == LINEAR) {
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter == NEAREST ? GL_NEAREST_MIPMAP_LINEAR : GL_LINEAR_MIPMAP_LINEAR);
         }
     }
 
     void Texture::setMaxMipmapLevel(uint level)
     {
+        if (!isBound()) { bind(lastBoundUnit); }
+
         glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, level);
     }
 
     void Texture::generateMipmaps()
     {
+        if (!isBound()) { bind(lastBoundUnit); }
+        Log::debug("GENERATING MIPMAPS: " + std::to_string(lastBoundUnit));
         glGenerateMipmap(target);
+    }
+
+    bool Texture::isBound() const
+    {
+        return RenderState::getActiveTexture() == handle;
     }
 
 
@@ -125,6 +138,8 @@ namespace Flux {
 
     void Texture2D::setWrapping(Wrapping sWrapping, Wrapping tWrapping)
     {
+        if (!isBound()) { bind(lastBoundUnit); }
+
         glTexParameteri(target, GL_TEXTURE_WRAP_S, sWrapping);
         glTexParameteri(target, GL_TEXTURE_WRAP_T, tWrapping);
     }
@@ -170,6 +185,8 @@ namespace Flux {
 
     void Texture3D::setWrapping(Wrapping sWrapping, Wrapping tWrapping, Wrapping rWrapping)
     {
+        if (!isBound()) { bind(lastBoundUnit); }
+
         glTexParameteri(target, GL_TEXTURE_WRAP_S, sWrapping);
         glTexParameteri(target, GL_TEXTURE_WRAP_T, tWrapping);
         glTexParameteri(target, GL_TEXTURE_WRAP_R, rWrapping);
@@ -193,6 +210,7 @@ namespace Flux {
         if (paths.size() != 6) { return false; }
 
         create();
+        bind(TextureUnit::TEXTURE0);
 
         for (int i = 0; i < 6; i++)
         {
@@ -202,11 +220,10 @@ namespace Flux {
 
             if (!loaded) { destroy(); return false; }
 
-            bind(TextureUnit::TEXTURE0);
             setFace(face);
             setData(width, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            release();
         }
+        release();
 
         return true;
     }
@@ -218,9 +235,10 @@ namespace Flux {
 
     void Cubemap::setWrapping(Wrapping sWrapping, Wrapping tWrapping, Wrapping rWrapping)
     {
+        if (!isBound()) { bind(lastBoundUnit); }
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sWrapping);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tWrapping);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, rWrapping);
     }
-
 }
