@@ -5,9 +5,13 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "Camera.h"
+#include "Texture.h"
 
 namespace Flux {
     GLuint RenderState::quadVao = 0;
+
+    std::vector<uint> RenderState::textureUnits(Texture::MAX_TEXTURE_UNITS);
+    uint RenderState::activeTextureUnit = 0;
 
     const Framebuffer* RenderState::currentFramebuffer = 0;
 
@@ -49,5 +53,24 @@ namespace Flux {
         shader.uniformMatrix4f("viewMatrix", viewMatrix);
         shader.uniform1f("zNear", cam.getZNear());
         shader.uniform1f("zFar", cam.getZFar());
+    }
+
+    GLuint RenderState::getActiveTexture()
+    {
+        return textureUnits[activeTextureUnit];
+    }
+
+    void RenderState::setActiveTexture(unsigned int textureUnit)
+    {
+        activeTextureUnit = textureUnit;
+
+        glActiveTexture(GL_TEXTURE0 + textureUnit);
+    }
+
+    void RenderState::bindTexture(GLenum target, GLuint texture)
+    {
+        glBindTexture(target, texture);
+
+        textureUnits[activeTextureUnit] = texture;
     }
 }

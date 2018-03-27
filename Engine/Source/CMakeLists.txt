@@ -24,7 +24,10 @@ set(BASE
     ${DIR}/Skybox.h
     ${DIR}/Skybox.cpp
     ${DIR}/Texture.h
+    ${DIR}/Texture.cpp
     ${DIR}/TextureUnit.h
+    ${DIR}/TextureFactory.h
+    ${DIR}/TextureFactory.cpp
     ${DIR}/Window.h
     ${DIR}/Window.cpp
     ${DIR}/glad.c

@@ -7,6 +7,8 @@
 
 #include <glad/glad.h>
 
+#include <vector>
+
 namespace Flux {
     class Framebuffer;
     class Shader;
@@ -48,8 +50,17 @@ namespace Flux {
         static GLuint quadVao;
 
         static const Framebuffer* currentFramebuffer;
+
+        static GLuint getActiveTexture();
+        static void setActiveTexture(unsigned int textureUnit);
+        static void bindTexture(GLenum target, GLuint texture);
+
+        static std::vector<unsigned int> textureUnits;
+        
     private:
         Vector3f clearColor;
+
+        static unsigned int activeTextureUnit;
     };
 }
 

@@ -2,6 +2,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include "TextureUnit.h"
+
 #include <glad/glad.h>
 
 #include <vector>
@@ -74,11 +76,15 @@ namespace Flux {
             return created;
         }
 
-    protected:
+        bool isBound() const;
+
         // OpenGL 3.3 specifies that at least 16 texture units must be supported per stage.
         static const unsigned int MAX_TEXTURE_UNITS = 16;
 
+    protected:
         bool created = false;
+
+        mutable uint lastBoundUnit = 0;
 
         GLuint handle;
         GLenum target;
