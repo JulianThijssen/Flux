@@ -20,6 +20,7 @@ namespace Flux {
         bloomTex.setData(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
         bloomTex.setWrapping(CLAMP, CLAMP);
         bloomTex.setSampling(LINEAR, LINEAR, LINEAR);
+        bloomTex.generateMipmaps();
         bloomTex.release();
 
         buffer.create();
