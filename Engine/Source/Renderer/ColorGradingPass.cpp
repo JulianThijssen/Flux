@@ -14,7 +14,7 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/ColorGrading.frag");
         lut.loadFromFile(Path("res/reinhart_grading.png"), COLOR);
         lut.setWrapping(CLAMP, CLAMP, CLAMP);
-        lut.setSampling(LINEAR, LINEAR, NONE);
+        lut.setSampling(LINEAR, LINEAR);
     }
 
     void ColorGradingPass::Resize(const Size& windowSize)

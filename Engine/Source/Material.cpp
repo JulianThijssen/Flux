@@ -15,15 +15,15 @@ namespace Flux {
             shader.uniform1i("material.normalMap", TextureUnit::NORMAL);
             shader.uniform1i("material.hasNormalMap", 1);
         }
-        if (metalTex.isCreated()) {
-            metalTex.bind(TextureUnit::METALNESS);
-            shader.uniform1i("material.metalMap", TextureUnit::METALNESS);
-            shader.uniform1i("material.hasMetalMap", 1);
-        }
         if (roughnessTex.isCreated()) {
             roughnessTex.bind(TextureUnit::ROUGHNESS);
             shader.uniform1i("material.roughnessMap", TextureUnit::ROUGHNESS);
             shader.uniform1i("material.hasRoughnessMap", 1);
+        }
+        if (metalTex.isCreated()) {
+            metalTex.bind(TextureUnit::METALNESS);
+            shader.uniform1i("material.metalMap", TextureUnit::METALNESS);
+            shader.uniform1i("material.hasMetalMap", 1);
         }
         if (stencilTex.isCreated()) {
             stencilTex.bind(TextureUnit::STENCIL);

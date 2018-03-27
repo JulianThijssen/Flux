@@ -28,8 +28,7 @@ namespace Flux
         create();
         bind(TextureUnit::TEXTURE0);
         setWrapping(REPEAT, REPEAT, REPEAT);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        setSampling(LINEAR, LINEAR);
 
         if (skybox) {
             for (int i = 0; i < 6; i++) {
@@ -140,10 +139,8 @@ namespace Flux
 
         bind(TextureUnit::TEXTURE0);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
         setWrapping(CLAMP, CLAMP);
+        setSampling(LINEAR, LINEAR);
 
         setData(256, 256, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
@@ -164,7 +161,7 @@ namespace Flux
 
         shader.bind();
 
-        glViewport(0, 0, 256, 256);
+        glViewport(0, 0, getWidth(), getHeight());
 
         framebuffer.setTexture(GL_COLOR_ATTACHMENT0, *this);
         framebuffer.validate();

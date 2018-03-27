@@ -3,7 +3,6 @@
 uniform sampler2D albedoMap;
 uniform sampler2D normalMap;
 uniform sampler2D positionMap;
-uniform sampler2D depthMap;
 
 uniform samplerCube irradianceMap;
 uniform samplerCube prefilterEnvmap;
@@ -36,12 +35,12 @@ vec3 ApproximateSpecularIBL(vec3 SpecularColor, float Roughness, vec3 N, vec3 V)
 void main() {
     vec4 arMap = texture(albedoMap, pass_texCoords);
     vec4 nmMap = texture(normalMap, pass_texCoords);
+    vec3 P = texture(positionMap, pass_texCoords).rgb;
 
     vec3 BaseColor = toLinear(arMap.rgb);
     float Roughness = arMap.w;
     vec3 N = normalize(nmMap.rgb * 2 - 1);
     float Metalness = nmMap.w;
-    vec3 P = texture(positionMap, pass_texCoords).rgb;
 
     vec3 V = normalize(camPos - P);
     vec3 R = normalize(reflect(-V, N));

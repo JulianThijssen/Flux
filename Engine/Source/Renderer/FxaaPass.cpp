@@ -17,7 +17,7 @@ namespace Flux {
         this->windowSize = windowSize;
     }
 
-    void FxaaPass::render(RenderState& renderState, const Scene& scene)
+    void FxaaPass::render(RenderState& renderState, const Scene&)
     {
         nvtxRangePushA(getPassName().c_str());
 

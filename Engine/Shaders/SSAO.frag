@@ -1,6 +1,5 @@
 #version 150 core
 
-uniform sampler2D albedoMap;
 uniform sampler2D normalMap;
 uniform sampler2D positionMap;
 uniform sampler2D depthMap;

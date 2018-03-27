@@ -139,8 +139,6 @@ namespace Flux {
 
         glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
 
-        gBuffer->albedoTex.bind(TextureUnit::ALBEDO);
-        ssaoShader.uniform1i("albedoMap", TextureUnit::ALBEDO);
         gBuffer->normalTex.bind(TextureUnit::NORMAL);
         ssaoShader.uniform1i("normalMap", TextureUnit::NORMAL);
         gBuffer->positionTex.bind(TextureUnit::POSITION);
