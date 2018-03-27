@@ -36,6 +36,7 @@ in vec3 pass_worldPos;
 out vec4 fragColor;
 out vec4 fragNormal;
 out vec4 fragPosition;
+out vec4 fragEmission;
 
 /* Samples a tiled texture */
 vec4 sampleTiled(sampler2D tex, vec2 texCoords) {
@@ -88,14 +89,12 @@ void main() {
     
     // Emission
     vec3 Emission = vec3(0);
-    if (length(material.emission) > 0.001) {
-        BaseColor = normalize(material.emission);
-    }
     if (material.hasEmissionMap) {
-        Emission = sampleTiled(material.emissionMap, pass_texCoords).rgb;
+        Emission = sampleTiled(material.emissionMap, pass_texCoords).rgb * material.emission.r;
     }
     
-    fragColor = vec4(BaseColor + Emission, Roughness);
+    fragColor = vec4(BaseColor, Roughness);
     fragNormal = vec4(N * 0.5 + 0.5, Metalness);
-    fragPosition = vec4(P, length(Emission * 2));
+    fragPosition = vec4(P, 0);
+    fragEmission = vec4(Emission, 0);
 }

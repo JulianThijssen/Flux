@@ -29,6 +29,7 @@ struct AreaLight {
 uniform sampler2D albedoMap;
 uniform sampler2D normalMap;
 uniform sampler2D positionMap;
+uniform sampler2D emissionMap;
 
 uniform mat4 modelMatrix;
 
@@ -177,13 +178,13 @@ void main() {
     vec4 arMap = texture(albedoMap, pass_texCoords);
     vec4 nmMap = texture(normalMap, pass_texCoords);
     vec4 peMap = texture(positionMap, pass_texCoords);
+    vec3 Emission = texture(emissionMap, pass_texCoords).rgb;
     
     vec3 BaseColor = toLinear(arMap.rgb);
     float Roughness = arMap.w;
     vec3 N = normalize(nmMap.rgb * 2 - 1);
     float Metalness = nmMap.w;
     vec3 P = peMap.rgb;
-    float Emission = peMap.w;
     
     vec3 V = normalize(camPos - P);
     vec3 R = normalize(reflect(-V, N));
@@ -254,5 +255,5 @@ void main() {
         Radiance += vec3(Rad);
     }
 
-    fragColor = vec4(Emission * BaseColor + Radiance * visibility, 1.0);
+    fragColor = vec4(Emission + Radiance * visibility, 1.0);
 }

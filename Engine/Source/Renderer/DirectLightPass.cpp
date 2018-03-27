@@ -90,6 +90,8 @@ namespace Flux {
         shader.uniform1i("normalMap", TextureUnit::NORMAL);
         gBuffer->positionTex.bind(TextureUnit::POSITION);
         shader.uniform1i("positionMap", TextureUnit::POSITION);
+        gBuffer->emissionTex.bind(TextureUnit::EMISSION);
+        shader.uniform1i("emissionMap", TextureUnit::EMISSION);
         
         for (Entity* light : scene.lights) {
             DirectionalLight* directionalLight = light->getComponent<DirectionalLight>();
@@ -157,6 +159,7 @@ namespace Flux {
         renderState.disable(BLENDING);
 
         nvtxRangePop();
+
         // Add the direct light to the original buffer
         std::vector<Texture2D> sources{ sourceFramebuffer->getTexture(), *source };
         std::vector<float> weights{ 1, 1 };

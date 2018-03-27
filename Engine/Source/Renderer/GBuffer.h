@@ -15,6 +15,7 @@ namespace Flux {
             albedoTex = createAlbedoTex(width, height);
             normalTex = createNormalTex(width, height);
             positionTex = createPositionTex(width, height);
+            emissionTex = createEmissionTex(width, height);
             depthTex = createDepthTex(width, height);
 
             buffer.create();
@@ -22,6 +23,7 @@ namespace Flux {
             buffer.addColorTexture(0, albedoTex);
             buffer.addColorTexture(1, normalTex);
             buffer.addColorTexture(2, positionTex);
+            buffer.addColorTexture(3, emissionTex);
             buffer.addDepthStencilTexture(depthTex);
             buffer.validate();
             buffer.release();
@@ -34,6 +36,7 @@ namespace Flux {
         Texture2D albedoTex;
         Texture2D normalTex;
         Texture2D positionTex;
+        Texture2D emissionTex;
         Texture2D depthTex;
 
         Framebuffer buffer;
@@ -70,6 +73,17 @@ namespace Flux {
             positionTex.setWrapping(CLAMP, CLAMP);
             positionTex.setSampling(NEAREST, NEAREST);
             return positionTex;
+        }
+
+        Texture2D createEmissionTex(const uint width, const uint height)
+        {
+            Texture2D emissionTex;
+            emissionTex.create();
+            emissionTex.bind(TextureUnit::TEXTURE0);
+            emissionTex.setData(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
+            emissionTex.setWrapping(CLAMP, CLAMP);
+            emissionTex.setSampling(NEAREST, NEAREST);
+            return emissionTex;
         }
 
         Texture2D createDepthTex(const uint width, const uint height)
