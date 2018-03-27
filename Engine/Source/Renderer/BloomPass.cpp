@@ -37,6 +37,8 @@ namespace Flux {
     {
         nvtxRangePushA(getPassName().c_str());
 
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+
         const Framebuffer* sourceFramebuffer = RenderState::currentFramebuffer;
 
         shader.bind();

@@ -42,6 +42,7 @@ namespace Flux {
         renderState.setClearColor(0, 0, 0, 1);
 
         glClear(GL_COLOR_BUFFER_BIT);
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
         if (!sky) {
             return;
         }

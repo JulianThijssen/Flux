@@ -77,7 +77,7 @@ namespace Flux {
         
         renderState.enable(BLENDING);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
-        glDepthFunc(GL_LEQUAL);
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
 
         Entity* camera = scene.getMainCamera();
         Transform* ct = camera->getComponent<Transform>();

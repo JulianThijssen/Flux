@@ -136,6 +136,7 @@ namespace Flux {
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
 
         glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
 

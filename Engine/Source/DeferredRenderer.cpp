@@ -150,13 +150,18 @@ namespace Flux {
         LOG("Rendering GBuffer");
         gBuffer.bind();
         gBufferShader.bind();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_STENCIL_TEST);
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         renderState.setCamera(gBufferShader, *scene.getMainCamera());
         nvtxRangePushA("GBuffer");
         renderScene(scene, gBufferShader);
         nvtxRangePop();
         LOG("Finished GBuffer");
-
+        glStencilMask(0x00);
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
         glDepthMask(GL_FALSE);
 
         // HDR Rendering
@@ -167,6 +172,8 @@ namespace Flux {
 
             renderPass->render(renderState, scene);
         }
+
+        glDisable(GL_STENCIL_TEST);
 
         // LDR Rendering
         ldrBuffer.bind();
