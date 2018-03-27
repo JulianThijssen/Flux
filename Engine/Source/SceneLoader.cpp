@@ -110,11 +110,12 @@ namespace Flux {
             std::cout << "Reading skysphere: " << path << std::endl;
             scene.skySphere = new Texture2D();
             scene.skySphere->loadFromFile(Path(path), HDR);
-            scene.skySphere->setSampling(NEAREST, NEAREST, NONE);
+            scene.skySphere->setSampling(LINEAR, LINEAR);
             scene.skySphere->setWrapping(REPEAT, REPEAT);
+
             delete path;
         }
-
+        
         uint32_t numMaterials = readUnsignedInt(inFile);
         std::cout << "NUM MATERIALS: " << numMaterials << std::endl;
 
