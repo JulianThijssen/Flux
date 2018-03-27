@@ -57,8 +57,6 @@ namespace Flux {
         shader.uniform1i("normalMap", TextureUnit::NORMAL);
         gBuffer->positionTex.bind(TextureUnit::POSITION);
         shader.uniform1i("positionMap", TextureUnit::POSITION);
-        gBuffer->depthTex.bind(TextureUnit::DEPTH);
-        shader.uniform1i("depthMap", TextureUnit::DEPTH);
 
         iblSceneInfo.irradianceMap->bind(TextureUnit::IRRADIANCE);
         shader.uniform1i("irradianceMap", TextureUnit::IRRADIANCE);
