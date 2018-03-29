@@ -33,8 +33,6 @@ namespace Flux {
         virtual void renderMesh(const Scene& scene, Shader& shader, Entity* entity) = 0;
 
         void addRenderPhase(RenderPhase* phase);
-        void enable(Capability capability);
-        void disable(Capability capability);
 
     protected:
         RenderState renderState;

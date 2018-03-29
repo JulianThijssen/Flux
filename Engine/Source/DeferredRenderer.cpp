@@ -75,8 +75,8 @@ namespace Flux {
         ldrPasses.push_back(fxaaPass);
         ldrPasses.push_back(colorGradingPass);
 
-        enable(DEPTH_TEST);
-        enable(FACE_CULLING);
+        renderState.enable(FACE_CULLING);
+
 
         return true;
     }
@@ -144,9 +144,12 @@ namespace Flux {
         if (scene.getMainCamera() == nullptr)
             return;
 
+        renderState.enable(DEPTH_TEST);
+
         glDepthMask(GL_TRUE);
         renderShadowMaps(scene);
         glViewport(0, 0, windowSize.width, windowSize.height);
+
         LOG("Rendering GBuffer");
         gBuffer.bind();
         gBufferShader.bind();
@@ -163,6 +166,8 @@ namespace Flux {
         glStencilMask(0x00);
         glStencilFunc(GL_EQUAL, 1, 0xFF);
         glDepthMask(GL_FALSE);
+
+        renderState.disable(DEPTH_TEST);
 
         // HDR Rendering
         hdrBuffer.bind();
@@ -220,7 +225,7 @@ namespace Flux {
         Mesh* mesh = e->getComponent<Mesh>();
 
         renderState.modelMatrix.setIdentity();
-
+        
         if (e->hasComponent<AttachedTo>()) {
             Entity* parent = scene.getEntityById(e->getComponent<AttachedTo>()->parentId);
 
@@ -245,7 +250,7 @@ namespace Flux {
         glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
         nvtxRangePop();
     }
-
+    
     void DeferredRenderer::renderDepth(const Scene& scene) {
         nvtxRangePushA("Depth");
 
@@ -270,7 +275,7 @@ namespace Flux {
         glColorMask(false, false, false, false);
 
         glPolygonOffset(2.5f, 10.0f);
-        enable(POLYGON_OFFSET);
+        renderState.enable(POLYGON_OFFSET);
 
         for (Entity* entity : scene.lights) {
             Transform* t = entity->getComponent<Transform>();
@@ -320,7 +325,7 @@ namespace Flux {
                 }
             }
         }
-        disable(POLYGON_OFFSET);
+        renderState.disable(POLYGON_OFFSET);
 
         glColorMask(true, true, true, true);
 
