@@ -43,10 +43,10 @@ namespace Flux
                 setFace(i);
                 setData(resolution, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
             }
-
             envTex->bind(TextureUnit::TEXTURE0);
             shader.uniform1i("EnvTex", TextureUnit::TEXTURE0);
         }
+        release();
 
         shader.uniform1i("Skybox", skybox);
         // Should be resolution of environment map for perfect accuracy, but this is good enough
@@ -80,21 +80,18 @@ namespace Flux
         glClearColor(1, 0, 0, 1);
 
         shader.bind();
-        
-        create();
-        bind(TextureUnit::TEXTURE0);
-        setWrapping(REPEAT, REPEAT, REPEAT);
 
-        setMaxMipmapLevel(5);
+        create();
+        bind(TextureUnit::PREFILTER);
+        setWrapping(REPEAT, REPEAT, REPEAT);
         setSampling(LINEAR, LINEAR, LINEAR);
+        setMaxMipmapLevel(5);
 
         if (skybox) {
             for (int i = 0; i < 6; i++) {
                 setFace(i);
                 setData(resolution, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
             }
-            generateMipmaps();
-            glBindTexture(GL_TEXTURE_2D, 0);
             envMap->bind(TextureUnit::TEXTURE0);
             shader.uniform1i("EnvMap", TextureUnit::TEXTURE0);
         }
@@ -103,19 +100,20 @@ namespace Flux
                 setFace(i);
                 setData(resolution, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
             }
-            generateMipmaps();
             envTex->bind(TextureUnit::TEXTURE0);
             shader.uniform1i("EnvTex", TextureUnit::TEXTURE0);
         }
+        generateMipmaps();
+        release();
 
         shader.uniform1i("Skybox", skybox);
 
-        const unsigned int MIP_MAP_LEVELS = 6;
-        for (int level = 0; level < MIP_MAP_LEVELS; level++)
+        const unsigned int MIP_MAP_LEVELS = 5;
+        for (int level = 0; level <= MIP_MAP_LEVELS; level++)
         {
             unsigned int mipmapSize = resolution >> level;
             glViewport(0, 0, mipmapSize, mipmapSize);
-            float Roughness = (float)level / (MIP_MAP_LEVELS - 1);
+            float Roughness = (float)level / (MIP_MAP_LEVELS);
             std::cout << "Roughness: " << Roughness << std::endl;
             shader.uniform1f("Roughness", Roughness);
 
@@ -130,6 +128,7 @@ namespace Flux
         }
 
         framebuffer.release();
+        framebuffer.destroy();
     }
 
     ScaleBiasTexture::ScaleBiasTexture()
