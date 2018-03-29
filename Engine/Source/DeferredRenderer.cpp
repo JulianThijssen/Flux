@@ -168,7 +168,8 @@ namespace Flux {
         hdrBuffer.bind();
 
         for (RenderPhase* renderPass : hdrPasses) {
-            renderPass->SetSource(&hdrBuffer.getColorTexture(0));
+            renderPass->SetSource(&hdrBuffer.getTexture());
+            hdrBuffer.setDrawBuffer(1 - hdrBuffer.getDrawBuffer());
 
             renderPass->render(renderState, scene);
         }
@@ -177,11 +178,15 @@ namespace Flux {
 
         // LDR Rendering
         ldrBuffer.bind();
-        toneMapPass->SetSource(&hdrBuffer.getColorTexture(0));
+        toneMapPass->SetSource(&hdrBuffer.getTexture());
         toneMapPass->render(renderState, scene);
 
-        GLenum error = glGetError();
-        std::cout << "ERROR: " << error << std::endl;
+        for (RenderPhase* renderPass : ldrPasses) {
+            renderPass->SetSource(&ldrBuffer.getTexture());
+            ldrBuffer.setDrawBuffer(1 - ldrBuffer.getDrawBuffer());
+
+            renderPass->render(renderState, scene);
+        }
 
         renderFramebuffer(ldrBuffer);
         LOG("Done updating");
