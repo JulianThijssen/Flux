@@ -37,10 +37,6 @@ namespace Flux {
         GBuffer gBuffer;
         Framebuffer hdrBuffer;
         Framebuffer ldrBuffer;
-
-        std::vector<RenderPhase*> hdrPasses;
-        std::vector<RenderPhase*> ldrPasses;
-        RenderPhase* toneMapPass;
     };
 }
 

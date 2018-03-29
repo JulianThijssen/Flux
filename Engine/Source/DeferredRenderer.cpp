@@ -59,21 +59,23 @@ namespace Flux {
         FxaaPass* fxaaPass = new FxaaPass();
         ColorGradingPass* colorGradingPass = new ColorGradingPass();
         FogPass* fogPass = new FogPass();
-        toneMapPass = new TonemapPass();
+        TonemapPass* toneMapPass = new TonemapPass();
 
         indirectLightPass->SetGBuffer(&gBuffer);
         directLightPass->SetGBuffer(&gBuffer);
         ssaoPass->SetGBuffer(&gBuffer);
 
-        hdrPasses.push_back(indirectLightPass);
-        hdrPasses.push_back(ssaoPass);
-        hdrPasses.push_back(directLightPass);
-        hdrPasses.push_back(skyPass);
-        hdrPasses.push_back(bloomPass);
+        addHdrPass(indirectLightPass);
+        addHdrPass(ssaoPass);
+        addHdrPass(directLightPass);
+        addHdrPass(skyPass);
+        addHdrPass(bloomPass);
 
-        ldrPasses.push_back(gammaCorrectionPass);
-        ldrPasses.push_back(fxaaPass);
-        ldrPasses.push_back(colorGradingPass);
+        setToneMapPass(toneMapPass);
+
+        addLdrPass(gammaCorrectionPass);
+        addLdrPass(fxaaPass);
+        addLdrPass(colorGradingPass);
 
         renderState.enable(FACE_CULLING);
 
@@ -129,10 +131,10 @@ namespace Flux {
         gBuffer.create(windowSize.width, windowSize.height);
         createBackBuffers(windowSize.width, windowSize.height);
 
-        for (RenderPhase* renderPass : hdrPasses) {
+        for (RenderPhase* renderPass : getHdrPasses()) {
             renderPass->Resize(windowSize);
         }
-        for (RenderPhase* renderPass : ldrPasses) {
+        for (RenderPhase* renderPass : getLdrPasses()) {
             renderPass->Resize(windowSize);
         }
     }
@@ -172,7 +174,7 @@ namespace Flux {
         // HDR Rendering
         hdrBuffer.bind();
 
-        for (RenderPhase* renderPass : hdrPasses) {
+        for (RenderPhase* renderPass : getHdrPasses()) {
             renderPass->SetSource(&hdrBuffer.getTexture());
             hdrBuffer.setDrawBuffer(1 - hdrBuffer.getDrawBuffer());
 
@@ -183,10 +185,10 @@ namespace Flux {
 
         // LDR Rendering
         ldrBuffer.bind();
-        toneMapPass->SetSource(&hdrBuffer.getTexture());
-        toneMapPass->render(renderState, scene);
+        getToneMapPass()->SetSource(&hdrBuffer.getTexture());
+        getToneMapPass()->render(renderState, scene);
 
-        for (RenderPhase* renderPass : ldrPasses) {
+        for (RenderPhase* renderPass : getLdrPasses()) {
             renderPass->SetSource(&ldrBuffer.getTexture());
             ldrBuffer.setDrawBuffer(1 - ldrBuffer.getDrawBuffer());
 

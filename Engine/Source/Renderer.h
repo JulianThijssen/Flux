@@ -32,7 +32,13 @@ namespace Flux {
         virtual void renderScene(const Scene& scene, Shader& shader) = 0;
         virtual void renderMesh(const Scene& scene, Shader& shader, Entity* entity) = 0;
 
-        void addRenderPhase(RenderPhase* phase);
+        const std::vector<RenderPhase*> getHdrPasses();
+        const std::vector<RenderPhase*> getLdrPasses();
+        RenderPhase* getToneMapPass();
+
+        void addHdrPass(RenderPhase* hdrPass);
+        void addLdrPass(RenderPhase* ldrPass);
+        void setToneMapPass(RenderPhase* tonemapPass);
 
     protected:
         RenderState renderState;
@@ -42,7 +48,9 @@ namespace Flux {
         std::vector<Framebuffer> backBuffers;
         std::vector<Framebuffer> hdrBackBuffers;
     private:
-        std::queue<RenderPhase*> renderPhases;
+        std::vector<RenderPhase*> hdrPasses;
+        std::vector<RenderPhase*> ldrPasses;
+        RenderPhase* toneMapPass;
     };
 }
 
