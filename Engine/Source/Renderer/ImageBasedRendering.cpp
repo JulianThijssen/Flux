@@ -35,7 +35,6 @@ namespace Flux
                 setFace(i);
                 setData(resolution, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
             }
-            glBindTexture(GL_TEXTURE_2D, 0);
             envMap->bind(TextureUnit::TEXTURE0);
             shader.uniform1i("EnvMap", TextureUnit::TEXTURE0);
         }

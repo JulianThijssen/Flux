@@ -89,8 +89,6 @@ namespace Flux {
 
         glDepthMask(GL_FALSE);
 
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0); // FIXME
-
 
         // Draw source
         glStencilFunc(GL_EQUAL, 1, 0xFF);
