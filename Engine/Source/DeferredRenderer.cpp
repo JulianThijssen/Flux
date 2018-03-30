@@ -2,19 +2,6 @@
 
 #include <glad/glad.h>
 
-#include "Renderer/MultiplyPass.h"
-#include "Renderer/SSAOPass.h"
-#include "Renderer/SkyPass.h"
-#include "Renderer/BloomPass.h"
-#include "Renderer/GaussianBlurPass.h"
-#include "Renderer/TonemapPass.h"
-#include "Renderer/IndirectLightPass.h"
-#include "Renderer/DirectLightPass.h"
-#include "Renderer/GammaCorrectionPass.h"
-#include "Renderer/FxaaPass.h"
-#include "Renderer/ColorGradingPass.h"
-#include "Renderer/FogPass.h"
-
 #include "Transform.h"
 #include "Camera.h"
 #include "AttachedTo.h"
@@ -22,6 +9,10 @@
 #include "AssetManager.h"
 #include "TextureLoader.h"
 #include "TextureUnit.h"
+#include "Renderer/TonemapPass.h"
+#include "Renderer/IndirectLightPass.h"
+#include "Renderer/SSAOPass.h"
+#include "Renderer/DirectLightPass.h"
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -49,33 +40,20 @@ namespace Flux {
 
         createShadowMaps(scene);
 
-        SSAOPass* ssaoPass = new SSAOPass();
-        SkyPass* skyPass = new SkyPass();
-        BloomPass* bloomPass = new BloomPass();
-        TonemapPass* tonemapPass = new TonemapPass();
-        IndirectLightPass* indirectLightPass = new IndirectLightPass(scene);
-        DirectLightPass* directLightPass = new DirectLightPass();
-        GammaCorrectionPass* gammaCorrectionPass = new GammaCorrectionPass();
-        FxaaPass* fxaaPass = new FxaaPass();
-        ColorGradingPass* colorGradingPass = new ColorGradingPass();
-        FogPass* fogPass = new FogPass();
         TonemapPass* toneMapPass = new TonemapPass();
+        IndirectLightPass* indirectLightPass = new IndirectLightPass(scene);
+        SSAOPass* ssaoPass = new SSAOPass();
+        DirectLightPass* directLightPass = new DirectLightPass();
 
         indirectLightPass->SetGBuffer(&gBuffer);
-        directLightPass->SetGBuffer(&gBuffer);
         ssaoPass->SetGBuffer(&gBuffer);
+        directLightPass->SetGBuffer(&gBuffer);
 
         addHdrPass(indirectLightPass);
         addHdrPass(ssaoPass);
         addHdrPass(directLightPass);
-        addHdrPass(skyPass);
-        addHdrPass(bloomPass);
 
         setToneMapPass(toneMapPass);
-
-        addLdrPass(gammaCorrectionPass);
-        addLdrPass(fxaaPass);
-        addLdrPass(colorGradingPass);
 
         renderState.enable(FACE_CULLING);
 

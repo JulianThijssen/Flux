@@ -13,6 +13,13 @@
 #include "Util/Path.h"
 #include "Util/Size.h"
 
+#include "Renderer/SkyPass.h"
+#include "Renderer/BloomPass.h"
+#include "Renderer/GammaCorrectionPass.h"
+#include "Renderer/FxaaPass.h"
+#include "Renderer/ColorGradingPass.h"
+#include "Renderer/FogPass.h"
+
 #include <ctime>
 #include <iostream>
 
@@ -53,6 +60,22 @@ namespace Flux {
         created = renderer->create(currentScene, Size(window.getWidth(), window.getHeight()));
         if (!created)
             return;
+
+
+        SkyPass* skyPass = new SkyPass();
+        BloomPass* bloomPass = new BloomPass();
+
+        GammaCorrectionPass* gammaCorrectionPass = new GammaCorrectionPass();
+        FxaaPass* fxaaPass = new FxaaPass();
+        ColorGradingPass* colorGradingPass = new ColorGradingPass();
+        FogPass* fogPass = new FogPass();
+
+        renderer->addHdrPass(skyPass);
+        renderer->addHdrPass(bloomPass);
+
+        renderer->addLdrPass(gammaCorrectionPass);
+        renderer->addLdrPass(fxaaPass);
+        renderer->addLdrPass(colorGradingPass);
 
         renderer->onResize(Size(window.getWidth(), window.getHeight()));
 
