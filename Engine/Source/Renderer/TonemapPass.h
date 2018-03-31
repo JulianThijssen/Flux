@@ -10,12 +10,20 @@
 
 namespace Flux
 {
-    class Texture2D;
+    enum Tonemapper
+    {
+        REINHARD = 0,
+        FILMIC = 1
+    };
 
     class TonemapPass : public RenderPhase
     {
     public:
         TonemapPass();
+
+        void setTonemapper(Tonemapper tonemapper);
+
+        void setExposure(float exposure);
 
         void Resize(const Size& windowSize) override;
 
@@ -23,6 +31,9 @@ namespace Flux
 
     private:
         Shader shader;
+
+        Tonemapper tonemapper = REINHARD;
+        float exposure = 1.0f;
     };
 }
 

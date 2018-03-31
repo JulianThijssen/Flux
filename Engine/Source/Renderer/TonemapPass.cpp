@@ -12,6 +12,16 @@ namespace Flux {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
     }
 
+    void TonemapPass::setTonemapper(Tonemapper tonemapper)
+    {
+        this->tonemapper = tonemapper;
+    }
+
+    void TonemapPass::setExposure(float exposure)
+    {
+        this->exposure = exposure;
+    }
+
     void TonemapPass::Resize(const Size& windowSize)
     {
 
@@ -24,7 +34,10 @@ namespace Flux {
         shader.bind();
 
         source->bind(TextureUnit::TEXTURE);
-        shader.uniform1i("tex", TextureUnit::TEXTURE);
+        shader.uniform1i("source", TextureUnit::TEXTURE);
+
+        shader.uniform1i("tonemapper", tonemapper);
+        shader.uniform1f("exposure", exposure);
 
         renderState.drawQuad();
 
