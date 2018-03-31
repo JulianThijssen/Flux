@@ -7,8 +7,9 @@
 #include "AttachedTo.h"
 #include "MeshRenderer.h"
 #include "AssetManager.h"
-#include "TextureLoader.h"
 #include "TextureUnit.h"
+#include "TextureFactory.h"
+
 #include "Renderer/TonemapPass.h"
 #include "Renderer/IndirectLightPass.h"
 #include "Renderer/SSAOPass.h"
@@ -321,9 +322,9 @@ namespace Flux {
         LOG("Rendering framebuffer");
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+        glDrawBuffer(GL_BACK);
         glClearColor(0.5, 1, 0, 1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
         
         textureShader.bind();
         framebuffer.getTexture().bind(TextureUnit::TEXTURE);
