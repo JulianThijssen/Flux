@@ -10,7 +10,6 @@
 #include "TextureUnit.h"
 #include "TextureFactory.h"
 
-#include "Renderer/TonemapPass.h"
 #include "Renderer/IndirectLightPass.h"
 #include "Renderer/SSAOPass.h"
 #include "Renderer/DirectLightPass.h"

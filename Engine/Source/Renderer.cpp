@@ -13,7 +13,7 @@ namespace Flux {
         return ldrPasses;
     }
 
-    RenderPhase* Renderer::getToneMapPass()
+    TonemapPass* Renderer::getToneMapPass()
     {
         return toneMapPass;
     }
@@ -28,7 +28,7 @@ namespace Flux {
         ldrPasses.push_back(ldrPass);
     }
 
-    void Renderer::setToneMapPass(RenderPhase* toneMapPass)
+    void Renderer::setToneMapPass(TonemapPass* toneMapPass)
     {
         this->toneMapPass = toneMapPass;
     }

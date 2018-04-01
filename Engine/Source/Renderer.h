@@ -8,6 +8,8 @@
 #include "Skybox.h"
 
 #include "RenderPhase.h"
+#include "Renderer/TonemapPass.h"
+
 #include "Framebuffer.h"
 #include "Texture.h"
 #include "Util/Size.h"
@@ -34,11 +36,11 @@ namespace Flux {
 
         const std::vector<RenderPhase*> getHdrPasses();
         const std::vector<RenderPhase*> getLdrPasses();
-        RenderPhase* getToneMapPass();
+        TonemapPass* getToneMapPass();
 
         void addHdrPass(RenderPhase* hdrPass);
         void addLdrPass(RenderPhase* ldrPass);
-        void setToneMapPass(RenderPhase* tonemapPass);
+        void setToneMapPass(TonemapPass* tonemapPass);
 
     protected:
         RenderState renderState;
@@ -50,7 +52,7 @@ namespace Flux {
     private:
         std::vector<RenderPhase*> hdrPasses;
         std::vector<RenderPhase*> ldrPasses;
-        RenderPhase* toneMapPass;
+        TonemapPass* toneMapPass;
     };
 }
 
