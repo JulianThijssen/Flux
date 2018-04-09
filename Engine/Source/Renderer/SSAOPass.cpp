@@ -28,6 +28,7 @@ namespace Flux {
             renderTexture.bind(TextureUnit::TEXTURE0);
             renderTexture.setData(windowSize.width / 2, windowSize.height / 2, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
             renderTexture.setWrapping(CLAMP, CLAMP);
+            renderTexture.setSampling(LINEAR, LINEAR);
             renderTexture.release();
             return renderTexture;
         }
@@ -101,6 +102,7 @@ namespace Flux {
         buffer.create();
         buffer.bind();
         buffer.addColorTexture(0, createRenderTexture(windowSize));
+        buffer.addColorTexture(1, createRenderTexture(windowSize));
         buffer.validate();
         buffer.release();
     }
@@ -134,12 +136,6 @@ namespace Flux {
         ssaoShader.uniform1f("zFar", cam->getZFar());
         ///
 
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glStencilFunc(GL_EQUAL, 1, 0xFF);
-
-        glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
-
         gBuffer->normalTex.bind(TextureUnit::NORMAL);
         ssaoShader.uniform1i("normalMap", TextureUnit::NORMAL);
         gBuffer->positionTex.bind(TextureUnit::POSITION);
@@ -155,6 +151,11 @@ namespace Flux {
         ssaoShader.uniform2i("windowSize", windowSize.width / 2, windowSize.height / 2);
 
         buffer.bind();
+        buffer.setDrawBuffer(0);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
+        glViewport(0, 0, windowSize.width / 2, windowSize.height / 2);
         renderState.drawQuad();
 
         // Blur
@@ -165,6 +166,9 @@ namespace Flux {
         buffer.getTexture().bind(TextureUnit::TEXTURE);
         blurShader.uniform1i("tex", TextureUnit::TEXTURE);
 
+        buffer.setDrawBuffer(1);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
         renderState.drawQuad();
         nvtxRangePop();
 
