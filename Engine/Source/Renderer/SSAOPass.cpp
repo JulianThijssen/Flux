@@ -9,6 +9,7 @@
 #include "Camera.h"
 
 #include "Util/Matrix4f.h"
+#include "Util/Vector2f.h"
 #include "Util/Size.h"
 
 #include <glad/glad.h>
@@ -17,7 +18,6 @@
 #include "nvToolsExt.h"
 
 namespace Flux {
-    const unsigned int NUM_SAMPLES = 13;
     const unsigned int NOISE_SIZE = 4;
 
     namespace {
@@ -37,6 +37,69 @@ namespace Flux {
         {
             return low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
         }
+
+        float lerp(float a, float b, float t)
+        {
+            return (1 - t) * a + t * b;
+        }
+
+        float RadicalInverse(uint bits) {
+            bits = (bits << 16u) | (bits >> 16u);
+            bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+            bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+            bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+            bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+            return float(bits) * 2.3283064365386963e-10; // / 0x100000000
+        }
+
+        Vector2f Hammersley(uint i, uint NumSamples) {
+            return Vector2f(float(i) / float(NumSamples), RadicalInverse(i));
+        }
+
+        Vector3f ImportanceSampleGGX(Vector2f Xi, float Roughness, Vector3f N) {
+            float a = Roughness * Roughness;
+
+            float Phi = 2 * 3.14159265f * Xi.x;
+
+            float CosTheta = sqrt((1 - Xi.y) / (1 + (a*a - 1) * Xi.y));
+            float SinTheta = sqrt(1 - CosTheta * CosTheta);
+
+            Vector3f H(SinTheta * cos(Phi), SinTheta * sin(Phi), CosTheta);
+
+            return H;
+        }
+
+        std::vector<Vector3f> GenerateKernel(int NumSamples) {
+            std::vector<Vector3f> kernel(NumSamples);
+
+            for (int i = 0; i < NumSamples; i++) {
+                kernel[i].set(random(-1, 1), random(-1, 1), random(0, 1));
+                kernel[i].normalise();
+            }
+
+            for (int i = 0; i < NumSamples; i++) {
+                float scale = (float)i / NumSamples;
+                scale = lerp(0.1f, 1.0f, scale * scale);
+
+                kernel[i] *= scale;
+            }
+
+            return kernel;
+        }
+
+        std::vector<Vector3f> GenerateKernelGGX(int NumSamples) {
+            std::vector<Vector3f> kernel(NumSamples);
+            kernel.resize(NumSamples);
+
+            for (int i = 0; i < NumSamples; i++) {
+                Vector2f Xi = Hammersley(i, NumSamples);
+                Vector3f H = ImportanceSampleGGX(Xi, 1, Vector3f(0, 0, 1));
+                float R = RadicalInverse(i) * 1.0 + 0.1f;
+                kernel[i].set(H * R);
+            }
+
+            return kernel;
+        }
     }
 
     SSAOPass::SSAOPass() : RenderPhase("SSAO"), windowSize(1, 1)
@@ -49,30 +112,7 @@ namespace Flux {
 
     void SSAOPass::generate()
     {
-        // Generate a hemispherical kernel
-        srand(0);
-        kernel.resize(NUM_SAMPLES);
-
-        kernel[0].set(0.0f, -0.92388f, 0.38268f);
-        kernel[1].set(0.92388f, 0.0f, 0.38268f);
-        kernel[2].set(0.0f, 0.92388f, 0.38268f);
-        kernel[3].set(-0.92388f, 0.0f, 0.2f);
-        kernel[4].set(0.5f, -0.5f, 0.70711f);
-        kernel[5].set(0.5f, 0.5f, 0.70711f);
-        kernel[6].set(-0.5f, 0.5f, 0.70711f);
-        kernel[7].set(-0.5f, -0.5f, 0.70711f);
-        kernel[8].set(0.0f, -0.38268f, 0.92388f);
-        kernel[9].set(0.38268f, 0.0f, 0.92388f);
-        kernel[10].set(0.0f, 0.38268f, 0.92388f);
-        kernel[11].set(-0.38268f, 0.0f, 0.92388f);
-        kernel[12].set(0.0f, 0.0f, 1.0f);
-
-        for (int i = 0; i < NUM_SAMPLES; i++) {
-            float scale = (float)i / NUM_SAMPLES;
-            scale = (1 - scale*scale) * 0.1f + scale*scale;
-
-            kernel[i] *= scale;
-        }
+        kernel = GenerateKernelGGX(32);
 
         // Generate a noise texture
         noise.reserve(NOISE_SIZE*NOISE_SIZE);
@@ -132,8 +172,6 @@ namespace Flux {
         ssaoShader.uniform3f("camPos", ct->position);
         ssaoShader.uniformMatrix4f("projMatrix", projMatrix);
         ssaoShader.uniformMatrix4f("viewMatrix", viewMatrix);
-        ssaoShader.uniform1f("zNear", cam->getZNear());
-        ssaoShader.uniform1f("zFar", cam->getZFar());
         ///
 
         gBuffer->normalTex.bind(TextureUnit::NORMAL);
