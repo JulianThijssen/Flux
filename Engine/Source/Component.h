@@ -10,17 +10,10 @@
 ** -------------------------------------------------------------------------*/
 
 #pragma once
-#ifndef COMPONENT_H
-#define COMPONENT_H
-
-//#include <nim/engine/Entity.hpp>
 
 namespace Flux {
     class Component {
     public:
         virtual ~Component() { }
-        //Entity owner;
     };
 }
-
-#endif /* COMPONENT_H */
