@@ -49,8 +49,8 @@ namespace Flux {
 
     void Texture::bind(const uint textureUnit) const
     {
-        if (!created) { return; }
-        if (textureUnit > MAX_TEXTURE_UNITS - 1) { return; }
+        if (!created) { Log::error("Tried to bind texture without creating it."); return; }
+        if (textureUnit > MAX_TEXTURE_UNITS - 1) { Log::error("Trying to bind texture on unit that exceeds MAX_TEXTURE_UNITS."); return; }
 
         RenderState::setActiveTexture(textureUnit);
         RenderState::bindTexture(target, handle);
