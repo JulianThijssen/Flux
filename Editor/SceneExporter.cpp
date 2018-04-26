@@ -11,6 +11,7 @@
 #include "Mesh.h"
 #include "MeshRenderer.h"
 #include "AttachedTo.h"
+#include "Camera.h"
 
 #include "PointLight.h"
 #include "DirectionalLight.h"
@@ -132,38 +133,38 @@ namespace Flux {
 
             if (e->hasComponent<Transform>()) {
                 copy(buffer, "t", sizeof(char));
-                Transform* t = e->getComponent<Transform>();
+                Transform& t = e->getComponent<Transform>();
 
-                copy(buffer, &t->position, sizeof(Vector3f));
-                copy(buffer, &t->rotation, sizeof(Vector3f));
-                copy(buffer, &t->scale, sizeof(Vector3f));
+                copy(buffer, &t.position, sizeof(Vector3f));
+                copy(buffer, &t.rotation, sizeof(Vector3f));
+                copy(buffer, &t.scale, sizeof(Vector3f));
             }
             if (e->hasComponent<Mesh>()) {
                 clock_t meshTime = clock();
 
                 copy(buffer, "m", sizeof(char));
-                Mesh* mesh = e->getComponent<Mesh>();
+                Mesh& mesh = e->getComponent<Mesh>();
 
-                const uint32_t numVertices = (uint32_t)mesh->vertices.size();
-                const uint32_t numTexCoords = (uint32_t)mesh->texCoords.size();
-                const uint32_t numNormals = (uint32_t)mesh->normals.size();
-                const uint32_t numTangents = (uint32_t)mesh->tangents.size();
-                const uint32_t numIndices = (uint32_t)mesh->indices.size();
+                const uint32_t numVertices = (uint32_t)mesh.vertices.size();
+                const uint32_t numTexCoords = (uint32_t)mesh.texCoords.size();
+                const uint32_t numNormals = (uint32_t)mesh.normals.size();
+                const uint32_t numTangents = (uint32_t)mesh.tangents.size();
+                const uint32_t numIndices = (uint32_t)mesh.indices.size();
 
                 copy(buffer, numVertices);
-                copy(buffer, &mesh->vertices[0], numVertices * sizeof(Vector3f));
+                copy(buffer, mesh.vertices.data(), numVertices * sizeof(Vector3f));
 
                 copy(buffer, numTexCoords);
-                copy(buffer, &mesh->texCoords[0], numTexCoords * sizeof(Vector2f));
+                copy(buffer, mesh.texCoords.data(), numTexCoords * sizeof(Vector2f));
 
                 copy(buffer, numNormals);
-                copy(buffer, &mesh->normals[0], numNormals * sizeof(Vector3f));
+                copy(buffer, mesh.normals.data(), numNormals * sizeof(Vector3f));
 
                 copy(buffer, numTangents);
-                copy(buffer, &mesh->tangents[0], numTangents * sizeof(Vector3f));
+                copy(buffer, mesh.tangents.data(), numTangents * sizeof(Vector3f));
 
                 copy(buffer, numIndices);
-                copy(buffer, &mesh->indices[0], numIndices * sizeof(unsigned int));
+                copy(buffer, mesh.indices.data(), numIndices * sizeof(unsigned int));
 
                 clock_t endMeshTime = clock();
                 double elapsed = double(endMeshTime - meshTime) / CLOCKS_PER_SEC;
@@ -171,22 +172,22 @@ namespace Flux {
             }
             if (e->hasComponent<MeshRenderer>()) {
                 copy(buffer, "r", sizeof(char));
-                MeshRenderer* mr = e->getComponent<MeshRenderer>();
+                MeshRenderer& mr = e->getComponent<MeshRenderer>();
 
-                copy(buffer, mr->materialID);
+                copy(buffer, mr.materialID);
             }
             if (e->hasComponent<Camera>()) {
                 copy(buffer, "c", sizeof(char));
-                Camera* camera = e->getComponent<Camera>();
+                Camera& camera = e->getComponent<Camera>();
 
-                const bool perspective = camera->isPerspective();
+                const bool perspective = camera.isPerspective();
                 copy(buffer, &perspective, sizeof(bool));
 
                 if (perspective) {
-                    const float fieldOfView = camera->getFovy();
-                    const float aspectRatio = camera->getAspectRatio();
-                    const float zNear = camera->getZNear();
-                    const float zFar = camera->getZFar();
+                    const float fieldOfView = camera.getFovy();
+                    const float aspectRatio = camera.getAspectRatio();
+                    const float zNear = camera.getZNear();
+                    const float zFar = camera.getZFar();
 
                     copy(buffer, &fieldOfView, sizeof(float));
                     copy(buffer, &aspectRatio, sizeof(float));
@@ -194,12 +195,12 @@ namespace Flux {
                     copy(buffer, &zFar, sizeof(float));
                 }
                 else {
-                    const float left = camera->getLeft();
-                    const float right = camera->getRight();
-                    const float bottom = camera->getBottom();
-                    const float top = camera->getTop();
-                    const float zNear = camera->getZNear();
-                    const float zFar = camera->getZFar();
+                    const float left = camera.getLeft();
+                    const float right = camera.getRight();
+                    const float bottom = camera.getBottom();
+                    const float top = camera.getTop();
+                    const float zNear = camera.getZNear();
+                    const float zFar = camera.getZFar();
 
                     copy(buffer, &left, sizeof(float));
                     copy(buffer, &right, sizeof(float));
@@ -211,35 +212,35 @@ namespace Flux {
             }
             if (e->hasComponent<PointLight>()) {
                 copy(buffer, "p", sizeof(char));
-                PointLight* pointLight = e->getComponent<PointLight>();
+                PointLight& pointLight = e->getComponent<PointLight>();
 
-                copy(buffer, &pointLight->color, sizeof(Vector3f));
-                const float energy = pointLight->energy;
+                copy(buffer, &pointLight.color, sizeof(Vector3f));
+                const float energy = pointLight.energy;
                 copy(buffer, &energy, sizeof(float));
             }
             if (e->hasComponent<DirectionalLight>()) {
                 copy(buffer, "d", sizeof(char));
-                DirectionalLight* dirLight = e->getComponent<DirectionalLight>();
+                DirectionalLight& dirLight = e->getComponent<DirectionalLight>();
 
-                copy(buffer, &dirLight->direction, sizeof(Vector3f));
-                copy(buffer, &dirLight->color, sizeof(Vector3f));
+                copy(buffer, &dirLight.direction, sizeof(Vector3f));
+                copy(buffer, &dirLight.color, sizeof(Vector3f));
 
-                const float energy = dirLight->energy;
+                const float energy = dirLight.energy;
                 copy(buffer, &energy, sizeof(float));
             }
             if (e->hasComponent<AreaLight>()) {
                 copy(buffer, "l", sizeof(char));
-                AreaLight* areaLight = e->getComponent<AreaLight>();
+                AreaLight& areaLight = e->getComponent<AreaLight>();
 
-                copy(buffer, &areaLight->color, sizeof(Vector3f));
-                const float energy = areaLight->energy;
+                copy(buffer, &areaLight.color, sizeof(Vector3f));
+                const float energy = areaLight.energy;
                 copy(buffer, &energy, sizeof(float));
             }
             if (e->hasComponent<AttachedTo>()) {
                 copy(buffer, "a", sizeof(char));
-                AttachedTo* attachedTo = e->getComponent<AttachedTo>();
+                AttachedTo& attachedTo = e->getComponent<AttachedTo>();
 
-                Entity* parent = scene.getEntityById(attachedTo->parentId);
+                Entity* parent = scene.getEntityById(attachedTo.parentId);
                 const uint32_t pid = (uint32_t)parent->getId();
                 copy(buffer, pid);
             }
