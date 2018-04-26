@@ -57,6 +57,7 @@ namespace Flux {
 
         renderState.enable(FACE_CULLING);
 
+        renderShadowMaps(scene);
 
         return true;
     }
