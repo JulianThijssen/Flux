@@ -1,8 +1,8 @@
 #pragma once
-#ifndef MODEL_IMPORTER_H
-#define MODEL_IMPORTER_H
 
 #include <assimp/scene.h>
+
+#include <memory>
 
 namespace Flux {
     class Path;
@@ -12,11 +12,9 @@ namespace Flux {
 
         class ModelImporter {
         public:
-            static Model* loadModel(const Path& path);
+            Model ImportFromFile(const Path& path);
         private:
-            static Model* copyModel(const aiScene& scene);
+            Model ReadModelFromScene(const aiScene& scene);
         };
     }
 }
-
-#endif /* MODEL_IMPORTER_H */
