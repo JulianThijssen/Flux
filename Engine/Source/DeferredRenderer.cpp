@@ -135,6 +135,9 @@ namespace Flux {
         renderShadowMaps(scene);
         glViewport(0, 0, windowSize.width, windowSize.height);
 
+        renderState.enable(STENCIL_TEST);
+
+        renderGBuffer(scene);
 
         renderState.disable(DEPTH_TEST);
 
@@ -147,8 +150,7 @@ namespace Flux {
 
             renderPass->render(renderState, scene);
         }
-
-        glDisable(GL_STENCIL_TEST);
+        renderState.disable(STENCIL_TEST);
 
         // LDR Rendering
         ldrBuffer.bind();
