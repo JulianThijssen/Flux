@@ -26,6 +26,7 @@ namespace Flux {
         void createBackBuffers(const unsigned int width, const unsigned int height);
         void createShadowMaps(const Scene& scene);
 
+        void renderGBuffer(const Scene& scene);
         void renderDepth(const Scene& scene);
         void renderShadowMaps(const Scene& scene);
         void renderFramebuffer(const Framebuffer& framebuffer);

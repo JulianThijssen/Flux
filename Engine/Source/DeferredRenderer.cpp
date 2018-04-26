@@ -135,22 +135,6 @@ namespace Flux {
         renderShadowMaps(scene);
         glViewport(0, 0, windowSize.width, windowSize.height);
 
-        LOG("Rendering GBuffer");
-        gBuffer.bind();
-        gBufferShader.bind();
-        glEnable(GL_STENCIL_TEST);
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        renderState.setCamera(gBufferShader, *scene.getMainCamera());
-        nvtxRangePushA("GBuffer");
-        renderScene(scene, gBufferShader);
-        nvtxRangePop();
-        LOG("Finished GBuffer");
-        glStencilMask(0x00);
-        glStencilFunc(GL_EQUAL, 1, 0xFF);
-        glDepthMask(GL_FALSE);
 
         renderState.disable(DEPTH_TEST);
 
@@ -233,6 +217,29 @@ namespace Flux {
         glBindVertexArray(mesh->handle);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
         glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        nvtxRangePop();
+    }
+
+    void DeferredRenderer::renderGBuffer(const Scene& scene)
+    {
+        nvtxRangePushA("GBuffer");
+
+        LOG("Rendering GBuffer");
+        gBuffer.bind();
+        gBufferShader.bind();
+        
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        renderState.setCamera(gBufferShader, *scene.getMainCamera());
+        
+        renderScene(scene, gBufferShader);
+        LOG("Finished GBuffer");
+        glStencilMask(0x00);
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
+        glDepthMask(GL_FALSE);
+
         nvtxRangePop();
     }
     
