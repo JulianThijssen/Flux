@@ -2,8 +2,8 @@
 
 namespace Flux {
     namespace Editor {
-        void Model::addMesh(const Mesh& mesh) {
-            meshes.push_back(mesh);
+        void Model::addMesh(Mesh* const mesh) {
+            meshes.push_back(std::unique_ptr<Mesh>(mesh));
         }
 
         void Model::addMaterial(const Flux::Material& material) {

@@ -6,15 +6,16 @@
 #include "Material.h"
 
 #include <vector>
+#include <memory>
 
 namespace Flux {
     namespace Editor {
         class Model {
         public:
-            std::vector<Mesh> meshes;
+            std::vector<std::unique_ptr<Mesh>> meshes;
             std::vector<Material> materials;
 
-            void addMesh(const Mesh& mesh);
+            void addMesh(Mesh* const mesh);
             void addMaterial(const Material& material);
         };
     }
