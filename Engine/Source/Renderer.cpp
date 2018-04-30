@@ -3,33 +3,33 @@
 #include <glad/glad.h>
 
 namespace Flux {
-    const std::vector<RenderPhase*> Renderer::getHdrPasses()
+    const std::vector<std::unique_ptr<RenderPhase>>& Renderer::getHdrPasses()
     {
         return hdrPasses;
     }
 
-    const std::vector<RenderPhase*> Renderer::getLdrPasses()
+    const std::vector<std::unique_ptr<RenderPhase>>& Renderer::getLdrPasses()
     {
         return ldrPasses;
     }
 
-    TonemapPass* Renderer::getToneMapPass()
+    TonemapPass& Renderer::getToneMapPass()
     {
-        return toneMapPass;
+        return *toneMapPass;
     }
 
-    void Renderer::addHdrPass(RenderPhase* hdrPass)
+    void Renderer::addHdrPass(std::unique_ptr<RenderPhase> hdrPass)
     {
-        hdrPasses.push_back(hdrPass);
+        hdrPasses.push_back(std::move(hdrPass));
     }
 
-    void Renderer::addLdrPass(RenderPhase* ldrPass)
+    void Renderer::addLdrPass(std::unique_ptr<RenderPhase> ldrPass)
     {
-        ldrPasses.push_back(ldrPass);
+        ldrPasses.push_back(std::move(ldrPass));
     }
 
-    void Renderer::setToneMapPass(TonemapPass* toneMapPass)
+    void Renderer::setToneMapPass(std::unique_ptr<TonemapPass> toneMapPass)
     {
-        this->toneMapPass = toneMapPass;
+        this->toneMapPass.reset(toneMapPass.release());
     }
 }

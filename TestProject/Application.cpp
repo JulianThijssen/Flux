@@ -20,6 +20,7 @@
 #include "Renderer/ColorGradingPass.h"
 #include "Renderer/FogPass.h"
 
+#include <memory>
 #include <ctime>
 #include <iostream>
 
@@ -61,21 +62,20 @@ namespace Flux {
         if (!created)
             return;
 
+        std::unique_ptr<SkyPass> skyPass = std::make_unique<SkyPass>();
+        std::unique_ptr<BloomPass> bloomPass = std::make_unique<BloomPass>();
 
-        SkyPass* skyPass = new SkyPass();
-        BloomPass* bloomPass = new BloomPass();
+        std::unique_ptr<GammaCorrectionPass> gammaCorrectionPass = std::make_unique<GammaCorrectionPass>();
+        std::unique_ptr<FxaaPass> fxaaPass = std::make_unique<FxaaPass>();
+        std::unique_ptr<ColorGradingPass> colorGradingPass = std::make_unique<ColorGradingPass>();
+        std::unique_ptr<FogPass> fogPass = std::make_unique<FogPass>();
 
-        GammaCorrectionPass* gammaCorrectionPass = new GammaCorrectionPass();
-        FxaaPass* fxaaPass = new FxaaPass();
-        ColorGradingPass* colorGradingPass = new ColorGradingPass();
-        FogPass* fogPass = new FogPass();
+        renderer->addHdrPass(std::move(skyPass));
+        renderer->addHdrPass(std::move(bloomPass));
 
-        renderer->addHdrPass(skyPass);
-        renderer->addHdrPass(bloomPass);
-
-        renderer->addLdrPass(gammaCorrectionPass);
-        renderer->addLdrPass(fxaaPass);
-        renderer->addLdrPass(colorGradingPass);
+        renderer->addLdrPass(std::move(gammaCorrectionPass));
+        renderer->addLdrPass(std::move(fxaaPass));
+        renderer->addLdrPass(std::move(colorGradingPass));
 
         renderer->onResize(Size(window.getWidth(), window.getHeight()));
 

@@ -1,23 +1,17 @@
 #pragma once
-#ifndef RENDERER_H
-#define RENDERER_H
 
-#include "Shader.h"
-#include "Util/Matrix4f.h"
 #include "Scene.h"
-#include "Skybox.h"
+#include "Shader.h"
 
+#include "Renderer/RenderState.h"
 #include "RenderPhase.h"
 #include "Renderer/TonemapPass.h"
 
 #include "Framebuffer.h"
-#include "Texture.h"
 #include "Util/Size.h"
-#include "Renderer/RenderState.h"
 
 #include <vector>
-#include <unordered_map>
-#include <queue>
+#include <memory>
 
 namespace Flux {
     class Renderer {
@@ -34,13 +28,13 @@ namespace Flux {
         virtual void renderScene(const Scene& scene, Shader& shader) = 0;
         virtual void renderMesh(const Scene& scene, Shader& shader, Entity* entity) = 0;
 
-        const std::vector<RenderPhase*> getHdrPasses();
-        const std::vector<RenderPhase*> getLdrPasses();
-        TonemapPass* getToneMapPass();
+        const std::vector<std::unique_ptr<RenderPhase>>& getHdrPasses();
+        const std::vector<std::unique_ptr<RenderPhase>>& getLdrPasses();
+        TonemapPass& getToneMapPass();
 
-        void addHdrPass(RenderPhase* hdrPass);
-        void addLdrPass(RenderPhase* ldrPass);
-        void setToneMapPass(TonemapPass* tonemapPass);
+        void addHdrPass(std::unique_ptr<RenderPhase> hdrPass);
+        void addLdrPass(std::unique_ptr<RenderPhase> ldrPass);
+        void setToneMapPass(std::unique_ptr<TonemapPass> tonemapPass);
 
     protected:
         RenderState renderState;
@@ -50,10 +44,8 @@ namespace Flux {
         std::vector<Framebuffer> backBuffers;
         std::vector<Framebuffer> hdrBackBuffers;
     private:
-        std::vector<RenderPhase*> hdrPasses;
-        std::vector<RenderPhase*> ldrPasses;
-        TonemapPass* toneMapPass;
+        std::vector<std::unique_ptr<RenderPhase>> hdrPasses;
+        std::vector<std::unique_ptr<RenderPhase>> ldrPasses;
+        std::unique_ptr<TonemapPass> toneMapPass;
     };
 }
-
-#endif /* RENDERER_H */

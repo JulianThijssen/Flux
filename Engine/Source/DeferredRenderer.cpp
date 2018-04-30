@@ -40,20 +40,20 @@ namespace Flux {
 
         createShadowMaps(scene);
 
-        TonemapPass* toneMapPass = new TonemapPass();
-        IndirectLightPass* indirectLightPass = new IndirectLightPass(scene);
-        SSAOPass* ssaoPass = new SSAOPass();
-        DirectLightPass* directLightPass = new DirectLightPass();
+        std::unique_ptr<TonemapPass> toneMapPass = std::make_unique<TonemapPass>();
+        std::unique_ptr<IndirectLightPass> indirectLightPass = std::make_unique<IndirectLightPass>(scene);
+        std::unique_ptr<SSAOPass> ssaoPass = std::make_unique<SSAOPass>();
+        std::unique_ptr<DirectLightPass> directLightPass = std::make_unique<DirectLightPass>();
 
         indirectLightPass->SetGBuffer(&gBuffer);
         ssaoPass->SetGBuffer(&gBuffer);
         directLightPass->SetGBuffer(&gBuffer);
 
-        addHdrPass(indirectLightPass);
-        addHdrPass(ssaoPass);
-        addHdrPass(directLightPass);
+        addHdrPass(std::move(indirectLightPass));
+        addHdrPass(std::move(ssaoPass));
+        addHdrPass(std::move(directLightPass));
 
-        setToneMapPass(toneMapPass);
+        setToneMapPass(std::move(toneMapPass));
 
         renderState.enable(FACE_CULLING);
 
@@ -110,10 +110,10 @@ namespace Flux {
         gBuffer.create(windowSize.width, windowSize.height);
         createBackBuffers(windowSize.width, windowSize.height);
 
-        for (RenderPhase* renderPass : getHdrPasses()) {
+        for (const std::unique_ptr<RenderPhase>& renderPass : getHdrPasses()) {
             renderPass->Resize(windowSize);
         }
-        for (RenderPhase* renderPass : getLdrPasses()) {
+        for (const std::unique_ptr<RenderPhase>& renderPass : getLdrPasses()) {
             renderPass->Resize(windowSize);
         }
     }
@@ -145,7 +145,7 @@ namespace Flux {
         // HDR Rendering
         hdrBuffer.bind();
 
-        for (RenderPhase* renderPass : getHdrPasses()) {
+        for (const std::unique_ptr<RenderPhase>& renderPass : getHdrPasses()) {
             renderPass->SetSource(&hdrBuffer.getTexture());
             hdrBuffer.setDrawBuffer(1 - hdrBuffer.getDrawBuffer());
 
@@ -155,10 +155,10 @@ namespace Flux {
 
         // LDR Rendering
         ldrBuffer.bind();
-        getToneMapPass()->SetSource(&hdrBuffer.getTexture());
-        getToneMapPass()->render(renderState, scene);
+        getToneMapPass().SetSource(&hdrBuffer.getTexture());
+        getToneMapPass().render(renderState, scene);
 
-        for (RenderPhase* renderPass : getLdrPasses()) {
+        for (const std::unique_ptr<RenderPhase>& renderPass : getLdrPasses()) {
             renderPass->SetSource(&ldrBuffer.getTexture());
             ldrBuffer.setDrawBuffer(1 - ldrBuffer.getDrawBuffer());
 
