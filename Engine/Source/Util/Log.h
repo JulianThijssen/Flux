@@ -11,8 +11,6 @@
 ** -------------------------------------------------------------------------*/
 
 #pragma once
-#ifndef LOG_H
-#define LOG_H
 
 #include <string>
 
@@ -24,5 +22,3 @@ namespace Flux {
         static void error(const std::string message);
     };
 }
-
-#endif /* LOG_H */

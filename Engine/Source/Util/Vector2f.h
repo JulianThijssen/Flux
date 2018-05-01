@@ -10,8 +10,6 @@
 ** -------------------------------------------------------------------------*/
 
 #pragma once
-#ifndef VECTOR2F_H
-#define VECTOR2F_H
 
 #include <string>
 
@@ -53,5 +51,3 @@ namespace Flux {
     Vector2f negate(const Vector2f& v);
     Vector2f normalise(const Vector2f& v);
 }
-
-#endif /* VECTOR2F_H */

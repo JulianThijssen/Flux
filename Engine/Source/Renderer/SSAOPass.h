@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SSAO_PASS_H
-#define SSAO_PASS_H
 
 #include "RenderPhase.h"
 #include "MultiplyPass.h"
@@ -45,5 +43,3 @@ namespace Flux
         Texture2D noiseTexture;
     };
 }
-
-#endif /* SSAO_PASS_H */

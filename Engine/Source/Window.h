@@ -11,8 +11,6 @@
 ** -------------------------------------------------------------------------*/
 
 #pragma once
-#ifndef WINDOW_H
-#define WINDOW_H
 
 #include <string>
 
@@ -47,5 +45,3 @@ namespace Flux {
         static void onMouseMove(GLFWwindow* window, double x, double y);
     };
 }
-
-#endif /* WINDOW_H */

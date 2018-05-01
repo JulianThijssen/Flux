@@ -1,6 +1,4 @@
 #pragma once
-#ifndef TEXTURE_UNIT_H
-#define TEXTURE_UNIT_H
 
 namespace Flux {
     class TextureUnit {
@@ -35,6 +33,3 @@ namespace Flux {
         static const unsigned int TEXTURE8 = 8;
     };
 }
-
-
-#endif /* TEXTURE_UNIT_H */

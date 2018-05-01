@@ -1,6 +1,4 @@
 #pragma once
-#ifndef FPS_COUNTER_H
-#define FPS_COUNTER_H
 
 #include "FpsListener.h"
 
@@ -25,5 +23,3 @@ namespace Flux
         int frames;
     };
 }
-
-#endif /* FPS_COUNTER_H */

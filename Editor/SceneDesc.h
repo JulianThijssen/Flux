@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SCENE_DESC_H
-#define SCENE_DESC_H
 
 #include "MaterialDesc.h"
 #include "Skybox.h"
@@ -46,5 +44,3 @@ namespace Flux {
         };
     }
 }
-
-#endif /* SCENE_DESC_H */

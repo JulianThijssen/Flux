@@ -1,6 +1,4 @@
 #pragma once
-#ifndef MESH_H
-#define MESH_H
 
 #include "Component.h"
 #include "Util/Vector3f.h"
@@ -24,5 +22,3 @@ namespace Flux {
         std::string materialName;
     };
 }
-
-#endif /* MESH_H */

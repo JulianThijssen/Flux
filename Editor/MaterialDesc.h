@@ -1,6 +1,4 @@
 #pragma once
-#ifndef MATERIAL_DESC_H
-#define MATERIAL_DESC_H
 
 #include <string>
 
@@ -19,4 +17,3 @@ namespace Flux {
     };
 }
 
-#endif /* MATERIAL_DESC_H */

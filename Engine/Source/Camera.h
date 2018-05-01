@@ -11,8 +11,6 @@
 ** -------------------------------------------------------------------------*/
 
 #pragma once
-#ifndef CAMERA_H
-#define CAMERA_H
 
 #include "Component.h"
 
@@ -69,5 +67,3 @@ namespace Flux {
         float right = DEFAULT_RIGHT;
     };
 }
-
-#endif /* CAMERA_H */

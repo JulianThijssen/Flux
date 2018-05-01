@@ -1,6 +1,4 @@
 #pragma once
-#ifndef COMPONENT_NOT_FOUND_EXCEPTION_H
-#define COMPONENT_NOT_FOUND_EXCEPTION_H
 
 #include <exception>
 #include <stdexcept>
@@ -11,5 +9,3 @@ namespace Flux {
         ComponentNotFoundException() : runtime_error("Component not found") { }
     };
 }
-
-#endif /* COMPONENT_NOT_FOUND_EXCEPTION_H */

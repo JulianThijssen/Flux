@@ -1,6 +1,4 @@
 #pragma once
-#ifndef MATERIAL_H
-#define MATERIAL_H
 
 #include "Texture.h"
 #include "Util/Vector3f.h"
@@ -31,5 +29,3 @@ namespace Flux {
         void release(Shader& shader) const;
     };
 }
-
-#endif /* MATERIAL_H */

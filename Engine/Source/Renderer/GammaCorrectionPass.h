@@ -1,6 +1,4 @@
 #pragma once
-#ifndef GAMMA_CORRECTION_PASS_H
-#define GAMMA_CORRECTION_PASS_H
 
 #include "RenderPhase.h"
 
@@ -25,5 +23,3 @@ namespace Flux
         Shader shader;
     };
 }
-
-#endif /* GAMMA_CORRECTION_PASS_H */

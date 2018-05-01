@@ -1,6 +1,4 @@
 #pragma once
-#ifndef POINT_LIGHT_H
-#define POINT_LIGHT_H
 
 #include "Component.h"
 #include "Util/Vector3f.h"
@@ -35,5 +33,3 @@ namespace Flux {
         Framebuffer shadowBuffer;
     };
 }
-
-#endif /* POINT_LIGHT_H */

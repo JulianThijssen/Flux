@@ -1,6 +1,4 @@
 #pragma once
-#ifndef GAUSSIAN_BLUR_PASS_H
-#define GAUSSIAN_BLUR_PASS_H
 
 #include "RenderPhase.h"
 #include "AddPass.h"
@@ -32,5 +30,3 @@ namespace Flux {
         AddPass averagePass;
     };
 }
-
-#endif /* GAUSSIAN_BLUR_PASS_H */

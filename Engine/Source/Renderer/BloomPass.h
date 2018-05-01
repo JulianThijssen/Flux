@@ -1,6 +1,4 @@
 #pragma once
-#ifndef BLOOM_PASS_H
-#define BLOOM_PASS_H
 
 #include "RenderPhase.h"
 #include "AddPass.h"
@@ -32,5 +30,3 @@ namespace Flux {
         AddPass addPass;
     };
 }
-
-#endif /* BLOOM_PASS_H */

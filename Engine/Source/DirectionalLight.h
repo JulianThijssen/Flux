@@ -1,6 +1,4 @@
 #pragma once
-#ifndef DIRECTIONAL_LIGHT_H
-#define DIRECTIONAL_LIGHT_H
 
 #include "Framebuffer.h"
 #include "Component.h"
@@ -29,5 +27,3 @@ namespace Flux {
         Framebuffer shadowBuffer;
     };
 }
-
-#endif /* DIRECTIONAL_LIGHT_H */

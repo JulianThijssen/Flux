@@ -10,8 +10,6 @@
 ** -------------------------------------------------------------------------*/
 
 #pragma once
-#ifndef MATH_H
-#define MATH_H
 
 namespace Flux {
     class Math {
@@ -22,5 +20,3 @@ namespace Flux {
         static float toRadians(const float degrees);
     };
 }
-
-#endif /* MATH_H */

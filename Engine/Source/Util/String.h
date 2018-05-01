@@ -1,6 +1,4 @@
 #pragma once
-#ifndef STRING_H
-#define STRING_H
 
 #include <string>
 #include <sstream>
@@ -49,5 +47,3 @@ namespace Flux {
         string s;
     };
 }
-
-#endif /* STRING_H */

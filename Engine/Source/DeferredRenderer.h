@@ -1,6 +1,4 @@
 #pragma once
-#ifndef DEFERRED_RENDERER_H
-#define DEFERRED_RENDERER_H
 
 #include "Renderer.h"
 #include "Renderer/GBuffer.h"
@@ -40,5 +38,3 @@ namespace Flux {
         Framebuffer ldrBuffer;
     };
 }
-
-#endif /* DEFERRED_RENDERER_H */

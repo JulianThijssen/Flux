@@ -1,6 +1,4 @@
 #pragma once
-#ifndef ADD_PASS_H
-#define ADD_PASS_H
 
 #include "RenderPhase.h"
 
@@ -35,5 +33,3 @@ namespace Flux
         std::vector<int> units;
     };
 }
-
-#endif /* ADD_PASS_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef FLUX_SIZE_H
-#define FLUX_SIZE_H
 
 namespace Flux {
     class Size {
@@ -16,5 +14,3 @@ namespace Flux {
         unsigned int width, height;
     };
 }
-
-#endif FLUX_SIZE_H

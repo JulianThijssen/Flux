@@ -1,6 +1,4 @@
 #pragma once
-#ifndef TONEMAP_PASS_H
-#define TONEMAP_PASS_H
 
 #include "RenderPhase.h"
 
@@ -36,5 +34,3 @@ namespace Flux
         float exposure = 1.0f;
     };
 }
-
-#endif /* TONEMAP_PASS_H */

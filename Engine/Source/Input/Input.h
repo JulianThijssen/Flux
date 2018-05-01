@@ -1,6 +1,4 @@
 #pragma once
-#ifndef INPUT_H
-#define INPUT_H
 
 #include "Util/Vector2f.h"
 
@@ -24,5 +22,3 @@ namespace Flux {
         static Vector2f deltaMousePos;
     };
 }
-
-#endif /* INPUT_H */

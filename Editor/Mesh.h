@@ -1,6 +1,4 @@
 #pragma once
-#ifndef EDITOR_MESH_H
-#define EDITOR_MESH_H
 
 #include "Component.h"
 #include "Util/Vector3f.h"
@@ -25,4 +23,3 @@ namespace Flux {
     }
 }
 
-#endif /* EDITOR_MESH_H */

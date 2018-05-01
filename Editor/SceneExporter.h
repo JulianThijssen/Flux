@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SCENE_EXPORTER_H
-#define SCENE_EXPORTER_H
 
 #include "MaterialDesc.h"
 
@@ -33,4 +31,3 @@ namespace Flux {
         };
     }
 }
-#endif /* SCENE_EXPORTER_H */

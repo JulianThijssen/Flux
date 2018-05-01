@@ -1,6 +1,4 @@
 #pragma once
-#ifndef GBUFFER_H
-#define GBUFFER_H
 
 #include "Framebuffer.h"
 #include "Texture.h"
@@ -98,5 +96,3 @@ namespace Flux {
         }
     };
 }
-
-#endif /* GBUFFER_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef EDITOR_SKYBOX_H
-#define EDITOR_SKYBOX_H
 
 #include <string>
 
@@ -54,5 +52,3 @@ namespace Flux {
         };
     }
 }
-
-#endif /* EDITOR_SKYBOX_H */

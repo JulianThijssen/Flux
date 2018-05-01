@@ -1,6 +1,4 @@
 #pragma once
-#ifndef FPS_LISTENER_H
-#define FPS_LISTENER_H
 
 namespace Flux
 {
@@ -10,5 +8,3 @@ namespace Flux
         virtual void onFpsUpdated(int framesPerSecond) = 0;
     };
 }
-
-#endif /* FPS_LISTENER_H */

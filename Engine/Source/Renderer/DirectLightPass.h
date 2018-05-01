@@ -1,6 +1,4 @@
 #pragma once
-#ifndef DIRECT_LIGHT_PASS_H
-#define DIRECT_LIGHT_PASS_H
 
 #include "RenderPhase.h"
 
@@ -36,5 +34,3 @@ namespace Flux
         AddPass addPass;
     };
 }
-
-#endif /* DIRECT_LIGHT_PASS_H */

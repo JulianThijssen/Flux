@@ -1,6 +1,4 @@
 #pragma once
-#ifndef FILE_H
-#define FILE_H
 
 #include "Log.h"
 
@@ -44,5 +42,3 @@ namespace Flux {
         }
     };
 }
-
-#endif /* FILE_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef FIRST_PERSON_VIEW_H
-#define FIRST_PERSON_VIEW_H
 
 #include "Script.h"
 #include "Scene.h"
@@ -18,5 +16,3 @@ namespace Flux {
         float storedDX, storedDY;
     };
 }
-
-#endif /* FIRST_PERSON_VIEW_H */

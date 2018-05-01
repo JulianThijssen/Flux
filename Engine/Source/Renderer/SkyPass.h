@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SKY_PASS_H
-#define SKY_PASS_H
 
 #include "RenderPhase.h"
 
@@ -25,5 +23,3 @@ namespace Flux {
         Shader texShader;
     };
 }
-
-#endif /* SKY_PASS_H */

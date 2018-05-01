@@ -1,6 +1,4 @@
 #pragma once
-#ifndef FXAA_PASS_H
-#define FXAA_PASS_H
 
 #include "RenderPhase.h"
 
@@ -29,5 +27,3 @@ namespace Flux
         Size windowSize;
     };
 }
-
-#endif /* FXAA_PASS_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef MODEL_H
-#define MODEL_H
 
 #include "Mesh.h"
 #include "Material.h"
@@ -20,5 +18,3 @@ namespace Flux {
         };
     }
 }
-
-#endif /* MODEL_H */

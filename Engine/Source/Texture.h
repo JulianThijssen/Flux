@@ -1,6 +1,4 @@
 #pragma once
-#ifndef TEXTURE_H
-#define TEXTURE_H
 
 #include "TextureUnit.h"
 
@@ -154,5 +152,3 @@ namespace Flux {
         uint face;
     };
 }
-
-#endif /* TEXTURE_H */

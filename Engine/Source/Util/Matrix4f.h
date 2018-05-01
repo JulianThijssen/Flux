@@ -10,8 +10,6 @@
 ** -------------------------------------------------------------------------*/
 
 #pragma once
-#ifndef MATRIX4F_H
-#define MATRIX4F_H
 
 #include <string>
 
@@ -59,5 +57,3 @@ namespace Flux {
     float determinant(const Matrix4f& m);
     Matrix4f inverse(const Matrix4f& m);
 }
-
-#endif /* MATRIX4F_H */

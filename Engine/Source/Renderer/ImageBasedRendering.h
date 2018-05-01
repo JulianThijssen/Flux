@@ -1,6 +1,4 @@
 #pragma once
-#ifndef IMAGE_BASED_RENDERING_H
-#define IMAGE_BASED_RENDERING_H
 
 #include "Skybox.h"
 #include "Texture.h"
@@ -72,5 +70,3 @@ namespace Flux
         ScaleBiasTexture* scaleBiasTexture;
     };
 }
-
-#endif /* IMAGE_BASED_RENDERING_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef RENDER_PHASE_H
-#define RENDER_PHASE_H
 
 #include "Renderer/RenderState.h"
 #include "Util/String.h"
@@ -53,6 +51,3 @@ namespace Flux {
         bool enabled = true;
     };
 }
-
-
-#endif /* RENDER_PHASE_H */

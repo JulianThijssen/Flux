@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SHADER_H
-#define SHADER_H
 
 #include <glad/glad.h>
 
@@ -44,5 +42,3 @@ namespace Flux {
         std::unordered_map<std::string, int> locationMap;
     };
 }
-
-#endif /* SHADER_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef RENDERER_STATE_H
-#define RENDERER_STATE_H
 
 #include "Util/Matrix4f.h"
 #include "Util/Vector3f.h"
@@ -63,5 +61,3 @@ namespace Flux {
         static unsigned int activeTextureUnit;
     };
 }
-
-#endif /* RENDERER_STATE_H */

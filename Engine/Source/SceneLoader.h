@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SCENE_LOADER_H
-#define SCENE_LOADER_H
 
 namespace Flux {
     class Path;
@@ -11,5 +9,3 @@ namespace Flux {
         static bool loadScene(const Path path, Scene& scene);
     };
 }
-
-#endif /* SCENE_LOADER_H */

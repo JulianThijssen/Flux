@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SCRIPT_H
-#define SCRIPT_H
 
 namespace Flux {
     class Scene;
@@ -11,5 +9,3 @@ namespace Flux {
         virtual void update(Scene& scene) = 0;
     };
 }
-
-#endif /* SCRIPT_H */

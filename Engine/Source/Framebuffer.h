@@ -1,6 +1,4 @@
 #pragma once
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
 
 #include "Renderer/RenderState.h"
 #include "TextureFactory.h"
@@ -158,5 +156,3 @@ namespace Flux {
         std::vector<GLenum> drawBuffers;
     };
 }
-
-#endif /* FRAMEBUFFER_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SCENE_H
-#define SCENE_H
 
 #include "Entity.h"
 #include "Transform.h"
@@ -67,5 +65,3 @@ namespace Flux {
         Entity* mainCamera;
     };
 }
-
-#endif /* SCENE_H */

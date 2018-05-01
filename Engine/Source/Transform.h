@@ -1,6 +1,4 @@
 #pragma once
-#ifndef TRANSFORM_H
-#define TRANSFORM_H
 
 #include "Component.h"
 #include "Util/Vector3f.h"
@@ -21,5 +19,3 @@ namespace Flux {
         Vector3f scale;
     };
 }
-
-#endif /* TRANSFORM_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SKYSPHERE_H
-#define SKYSPHERE_H
 
 #include <string>
 
@@ -20,5 +18,3 @@ namespace Flux {
         string path;
     };
 }
-
-#endif /* SKYSPHERE_H */

@@ -1,6 +1,4 @@
 #pragma once
-#ifndef INDIRECT_LIGHT_PASS_H
-#define INDIRECT_LIGHT_PASS_H
 
 #include "RenderPhase.h"
 
@@ -34,5 +32,3 @@ namespace Flux
         bool sky = true;
     };
 }
-
-#endif /* INDIRECT_LIGHT_PASS_H */

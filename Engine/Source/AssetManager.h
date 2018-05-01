@@ -1,6 +1,4 @@
 #pragma once
-#ifndef ASSET_MANAGER_H
-#define ASSET_MANAGER_H
 
 #include "Material.h"
 #include "Mesh.h"
@@ -21,4 +19,3 @@ namespace Flux {
     };
 }
 
-#endif /* ASSET_MANAGER_H */

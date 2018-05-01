@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SCENE_IMPORTER_H
-#define SCENE_IMPORTER_H
 
 namespace Flux {
     class Path;
@@ -18,5 +16,3 @@ namespace Flux {
         };
     }
 }
-
-#endif /* SCENE_IMPORTER_H */

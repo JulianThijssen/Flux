@@ -1,6 +1,4 @@
 #pragma once
-#ifndef FOG_PASS_H
-#define FOG_PASS_H
 
 #include "RenderPhase.h"
 
@@ -33,5 +31,3 @@ namespace Flux
         Vector3f fogColor;
     };
 }
-
-#endif /* FOG_PASS_H */

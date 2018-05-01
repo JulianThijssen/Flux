@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SKY_H
-#define SKY_H
 
 #include <vector>
 #include <string>
@@ -29,5 +27,3 @@ private:
 
     std::vector<std::string> paths;
 };
-
-#endif /* SKY_H */

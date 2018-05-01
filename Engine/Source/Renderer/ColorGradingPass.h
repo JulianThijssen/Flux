@@ -1,6 +1,4 @@
 #pragma once
-#ifndef COLOR_GRADING_PASS_H
-#define COLOR_GRADING_PASS_H
 
 #include "RenderPhase.h"
 
@@ -28,5 +26,3 @@ namespace Flux
         Texture3D lut;
     };
 }
-
-#endif /* COLOR_GRADING_PASS_H */

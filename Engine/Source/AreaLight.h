@@ -1,6 +1,4 @@
 #pragma once
-#ifndef AREA_LIGHT_H
-#define AREA_LIGHT_H
 
 #include "Component.h"
 #include "Util/Vector3f.h"
@@ -32,5 +30,3 @@ namespace Flux {
         std::unique_ptr<Framebuffer> shadowBuffer;
     };
 }
-
-#endif /* AREA_LIGHT_H */

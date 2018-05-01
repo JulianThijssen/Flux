@@ -1,6 +1,4 @@
 #pragma once
-#ifndef MULTIPLY_PASS_H
-#define MULTIPLY_PASS_H
 
 #include "RenderPhase.h"
 
@@ -33,5 +31,3 @@ namespace Flux
         std::vector<int> units;
     };
 }
-
-#endif /* MULTIPLY_PASS_H */

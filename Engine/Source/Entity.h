@@ -1,6 +1,4 @@
 #pragma once
-#ifndef ENTITY_H
-#define ENTITY_H
 
 #include "Component.h"
 #include "Exceptions/ComponentNotFoundException.h"
@@ -65,5 +63,3 @@ namespace Flux {
         std::vector<Component*> components;
     };
 }
-
-#endif /* ENTITY_H */
