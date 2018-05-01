@@ -218,7 +218,6 @@ namespace Flux {
         shader.uniformMatrix4f("PVM", PVM);
 
         glBindVertexArray(mesh->handle);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
         glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
         nvtxRangePop();
     }
