@@ -38,6 +38,6 @@ void main()
     uv = toUV(vec2(phi, theta));
     
     gl_FragDepth = 1;
-    vec3 color = textureLod(tex, uv, 0).rgb;
+    vec3 color = min(textureLod(tex, uv, 0).rgb, 1000);
     fragColor = vec4(color, 1);
 }

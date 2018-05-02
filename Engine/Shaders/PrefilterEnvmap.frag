@@ -34,11 +34,13 @@ vec3 ImportanceSampleGGX(vec2 Xi, float Roughness, vec3 N) {
     float a = Roughness * Roughness;
     
     float Phi = 2 * PI * Xi.x;
+    
     float CosTheta = sqrt( (1 - Xi.y) / ( 1 + (a*a - 1) * Xi.y ) );
     float SinTheta = sqrt(1 - CosTheta * CosTheta);
     
     vec3 H = vec3(SinTheta * cos(Phi), SinTheta * sin(Phi), CosTheta);
 
+    // Transform H to normal basis
     vec3 UpVector = abs(N.z) < 0.999 ? vec3(0, 0, 1) : vec3(1, 0, 0);
     vec3 TangentX = normalize(cross(N, UpVector));
     vec3 TangentY = cross(N, TangentX);
@@ -65,7 +67,7 @@ vec3 PrefilterEnvMap(float Roughness, vec3 R)
     vec3 Color = vec3(0, 0, 0);
     
     uint NumSamples = 512u;
-    float TotalWeight = 0;
+    float TotalWeight = 0f;
     for (uint i = 0u; i < NumSamples; i++)
     {
         vec2 Xi = Hammersley(i, NumSamples);
@@ -81,7 +83,9 @@ vec3 PrefilterEnvMap(float Roughness, vec3 R)
             }
             else {
                 vec2 uv = toUV(L);
-                Color += textureLod(EnvTex, uv, 0).rgb * NdotL;
+
+                vec3 skySample = min(textureLod(EnvTex, uv, 0).rgb, 1000);
+                Color += skySample * NdotL;
             }
             TotalWeight += NdotL;
         }
