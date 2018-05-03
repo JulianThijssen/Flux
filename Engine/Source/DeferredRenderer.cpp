@@ -125,40 +125,31 @@ namespace Flux {
         }
 
         renderState.setClearColor(1.0, 0.0, 1.0, 1.0);
-        
-        LOG("Updating");
+
         if (scene.getMainCamera() == nullptr)
             return;
 
-        renderState.enable(DEPTH_TEST);
-
-        glDepthMask(GL_TRUE);
         renderShadowMaps(scene);
-        glViewport(0, 0, windowSize.width, windowSize.height);
-
-        renderState.enable(STENCIL_TEST);
 
         renderGBuffer(scene);
-
-        renderState.disable(DEPTH_TEST);
 
         // HDR Rendering
         hdrBuffer.bind();
 
-        for (const std::unique_ptr<RenderPhase>& renderPass : getHdrPasses()) {
+        for (const auto& renderPass : getHdrPasses()) {
             renderPass->SetSource(&hdrBuffer.getTexture());
             hdrBuffer.setDrawBuffer(1 - hdrBuffer.getDrawBuffer());
 
             renderPass->render(renderState, scene);
         }
-        renderState.disable(STENCIL_TEST);
 
-        // LDR Rendering
+        // Tonemap Pass
         ldrBuffer.bind();
         getToneMapPass().SetSource(&hdrBuffer.getTexture());
         getToneMapPass().render(renderState, scene);
 
-        for (const std::unique_ptr<RenderPhase>& renderPass : getLdrPasses()) {
+        // LDR Rendering
+        for (const auto& renderPass : getLdrPasses()) {
             renderPass->SetSource(&ldrBuffer.getTexture());
             ldrBuffer.setDrawBuffer(1 - ldrBuffer.getDrawBuffer());
 
@@ -166,7 +157,6 @@ namespace Flux {
         }
 
         renderFramebuffer(ldrBuffer);
-        LOG("Done updating");
     }
 
     void DeferredRenderer::renderScene(const Scene& scene, Shader& shader) {
@@ -224,7 +214,12 @@ namespace Flux {
 
     void DeferredRenderer::renderGBuffer(const Scene& scene)
     {
+        renderState.enable(STENCIL_TEST);
+        renderState.enable(DEPTH_TEST);
+
         nvtxRangePushA("GBuffer");
+
+        glViewport(0, 0, windowSize.width, windowSize.height);
 
         LOG("Rendering GBuffer");
         gBuffer.bind();
@@ -246,6 +241,8 @@ namespace Flux {
     }
     
     void DeferredRenderer::renderDepth(const Scene& scene) {
+        renderState.enable(DEPTH_TEST);
+
         nvtxRangePushA("Depth");
 
         shadowShader.bind();
@@ -270,6 +267,9 @@ namespace Flux {
 
         glPolygonOffset(2.5f, 10.0f);
         renderState.enable(POLYGON_OFFSET);
+
+        renderState.enable(DEPTH_TEST);
+        glDepthMask(GL_TRUE);
 
         for (Entity* entity : scene.lights) {
             Transform* t = entity->getComponent<Transform>();

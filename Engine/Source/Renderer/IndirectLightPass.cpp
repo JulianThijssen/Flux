@@ -25,6 +25,9 @@ namespace Flux {
         else {
             sky = false;
         }
+
+        requiredSet.addCapability(STENCIL_TEST, true);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void IndirectLightPass::SetGBuffer(const GBuffer* gBuffer)
@@ -39,6 +42,8 @@ namespace Flux {
 
     void IndirectLightPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         renderState.setClearColor(0, 0, 0, 1);
 
         glClear(GL_COLOR_BUFFER_BIT);

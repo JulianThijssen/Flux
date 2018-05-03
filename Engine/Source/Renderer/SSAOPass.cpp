@@ -108,6 +108,9 @@ namespace Flux {
         blurShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/SSAOBlur.frag");
 
         generate();
+
+        requiredSet.addCapability(STENCIL_TEST, true);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void SSAOPass::generate()
@@ -149,6 +152,8 @@ namespace Flux {
 
     void SSAOPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         nvtxRangePushA(getPassName().c_str());
 
         const Framebuffer* sourceFramebuffer = RenderState::currentFramebuffer;

@@ -6,6 +6,7 @@
 #include <glad/glad.h>
 
 #include <vector>
+#include <unordered_map>
 
 namespace Flux {
     class Framebuffer;
@@ -22,16 +23,22 @@ namespace Flux {
         POLYGON_OFFSET = GL_POLYGON_OFFSET_FILL
     };
 
-    class RenderState {
+    struct CapabilitySet
+    {
     public:
-        RenderState() :
-            clearColor(1, 0, 1),
-            projMatrix(),
-            viewMatrix(),
-            modelMatrix()
+        void addCapability(Capability capability, bool enabled)
         {
-            glGenVertexArrays(1, &quadVao);
+            capabilities.push_back(std::pair<Capability, bool>(capability, enabled));
         }
+
+        std::vector<std::pair<Capability, bool>> getSet()
+        {
+            return capabilities;
+        }
+
+    private:
+        std::vector<std::pair<Capability, bool>> capabilities;
+    };
 
     class RenderState {
     public:
@@ -39,6 +46,7 @@ namespace Flux {
 
         void enable(Capability capability);
         void disable(Capability capability);
+        void require(CapabilitySet capabilitySet);
         void setClearColor(float r, float g, float b, float a);
         
         void drawQuad() const;

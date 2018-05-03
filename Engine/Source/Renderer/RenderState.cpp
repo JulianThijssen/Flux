@@ -46,6 +46,13 @@ namespace Flux {
         capabilityMap[capability] = false;
     }
 
+    void RenderState::require(CapabilitySet capabilitySet) {
+        for (auto& pair : capabilitySet.getSet()) {
+            if (pair.second)
+                enable(pair.first);
+            else
+                disable(pair.first);
+        }
     }
 
     void RenderState::setClearColor(float r, float g, float b, float a) {

@@ -10,6 +10,9 @@ namespace Flux {
     BloomPass::BloomPass() : RenderPhase("Bloom")
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Bloom.frag");
+
+        requiredSet.addCapability(STENCIL_TEST, true);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void BloomPass::Resize(const Size& windowSize)
@@ -35,6 +38,7 @@ namespace Flux {
 
     void BloomPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
         nvtxRangePushA(getPassName().c_str());
 
         glStencilFunc(GL_ALWAYS, 0, 0xFF);

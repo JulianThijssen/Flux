@@ -15,6 +15,9 @@ namespace Flux {
         lut.loadFromFile(Path("res/reinhart_grading.png"), COLOR);
         lut.setWrapping(CLAMP, CLAMP, CLAMP);
         lut.setSampling(LINEAR, LINEAR);
+
+        requiredSet.addCapability(STENCIL_TEST, true);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void ColorGradingPass::Resize(const Size& windowSize)
@@ -24,6 +27,8 @@ namespace Flux {
 
     void ColorGradingPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         nvtxRangePushA(getPassName().c_str());
 
         shader.bind();

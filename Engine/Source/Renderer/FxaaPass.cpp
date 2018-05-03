@@ -10,6 +10,9 @@ namespace Flux {
     FxaaPass::FxaaPass() : RenderPhase("FXAA"), windowSize(1, 1)
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/FXAAQuality.frag");
+
+        requiredSet.addCapability(STENCIL_TEST, false);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void FxaaPass::Resize(const Size& windowSize)
@@ -19,6 +22,8 @@ namespace Flux {
 
     void FxaaPass::render(RenderState& renderState, const Scene&)
     {
+        renderState.require(requiredSet);
+
         nvtxRangePushA(getPassName().c_str());
 
         shader.bind();

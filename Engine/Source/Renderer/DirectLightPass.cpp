@@ -55,6 +55,9 @@ namespace Flux {
         matTex(createMatrixTex())
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/DeferredDirect.frag");
+
+        requiredSet.addCapability(STENCIL_TEST, true);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void DirectLightPass::SetGBuffer(const GBuffer* gBuffer)
@@ -69,6 +72,8 @@ namespace Flux {
 
     void DirectLightPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         nvtxRangePushA(getPassName().c_str());
 
         const Framebuffer* sourceFramebuffer = RenderState::currentFramebuffer;

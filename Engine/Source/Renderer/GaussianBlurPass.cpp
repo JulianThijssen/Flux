@@ -10,6 +10,9 @@ namespace Flux {
     GaussianBlurPass::GaussianBlurPass() : RenderPhase("GaussianBlur"), windowSize(1, 1)
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/BlurFast.frag");
+
+        requiredSet.addCapability(STENCIL_TEST, false);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void GaussianBlurPass::Resize(const Size& windowSize) {
@@ -41,6 +44,8 @@ namespace Flux {
 
     void GaussianBlurPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         nvtxRangePushA(getPassName().c_str());
         
         const Framebuffer* sourceFramebuffer = RenderState::currentFramebuffer;

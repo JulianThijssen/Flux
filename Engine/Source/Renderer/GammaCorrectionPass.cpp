@@ -10,6 +10,9 @@ namespace Flux {
     GammaCorrectionPass::GammaCorrectionPass() : RenderPhase("Gamma Correction")
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/GammaCorrection.frag");
+
+        requiredSet.addCapability(STENCIL_TEST, false);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void GammaCorrectionPass::Resize(const Size& windowSize)
@@ -19,6 +22,8 @@ namespace Flux {
 
     void GammaCorrectionPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         nvtxRangePushA(getPassName().c_str());
 
         shader.bind();

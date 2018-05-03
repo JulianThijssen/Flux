@@ -10,6 +10,9 @@ namespace Flux {
     TonemapPass::TonemapPass() : RenderPhase("Tonemap")
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Tonemap.frag");
+
+        requiredSet.addCapability(STENCIL_TEST, false);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void TonemapPass::setTonemapper(Tonemapper tonemapper)
@@ -29,6 +32,8 @@ namespace Flux {
 
     void TonemapPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         nvtxRangePushA(getPassName().c_str());
 
         shader.bind();

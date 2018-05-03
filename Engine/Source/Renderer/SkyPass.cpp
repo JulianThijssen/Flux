@@ -15,6 +15,9 @@ namespace Flux {
         skysphereShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Skysphere.frag");
         skyShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Sky.frag");
         texShader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Texture.frag");
+
+        requiredSet.addCapability(STENCIL_TEST, true);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void SkyPass::Resize(const Size& windowSize)
@@ -24,6 +27,8 @@ namespace Flux {
 
     void SkyPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         glStencilFunc(GL_EQUAL, 0, 0xFF);
 
         Transform* transform = scene.mainCamera->getComponent<Transform>();

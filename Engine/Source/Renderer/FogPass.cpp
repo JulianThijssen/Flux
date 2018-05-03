@@ -10,6 +10,9 @@ namespace Flux {
     FogPass::FogPass() : RenderPhase("Fog")
     {
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Fog.frag");
+
+        requiredSet.addCapability(STENCIL_TEST, false);
+        requiredSet.addCapability(DEPTH_TEST, false);
     }
 
     void FogPass::SetDepthMap(const Texture2D* depthMap)
@@ -29,6 +32,8 @@ namespace Flux {
 
     void FogPass::render(RenderState& renderState, const Scene& scene)
     {
+        renderState.require(requiredSet);
+
         nvtxRangePushA(getPassName().c_str());
 
         shader.bind();

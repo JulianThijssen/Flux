@@ -46,6 +46,8 @@ namespace Flux {
     protected:
         const Texture2D* source;
 
+        CapabilitySet requiredSet;
+
     private:
         String name;
         bool enabled = true;
