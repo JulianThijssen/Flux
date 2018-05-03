@@ -12,6 +12,9 @@
 #include "PointLight.h"
 #include "AreaLight.h"
 #include "MeshRenderer.h"
+#include "Camera.h"
+#include "Transform.h"
+
 #include "Util/Path.h"
 #include "Util/File.h"
 
@@ -29,6 +32,8 @@ namespace Flux {
             clock_t clockStart, clockEnd, clockMid;
             clockStart = clock();
             double elapsed;
+
+            ModelImporter modelImporter;
 
             String contents;
             try {
@@ -137,9 +142,9 @@ namespace Flux {
 
                         std::string path = it.value()["path"].get<std::string>();
 
-                        Model* model = ModelImporter::loadModel(Path(path));
+                        Model model = modelImporter.ImportFromFile(Path(path));
 
-                        for (int i = 0; i < model->meshes.size(); i++) {
+                        for (int i = 0; i < model.meshes.size(); i++) {
                             Entity* child = new Entity();
                             std::cout << "Loading child with id: " << child->getId() << std::endl;
                             Transform* childT = new Transform();
@@ -148,8 +153,8 @@ namespace Flux {
                             AttachedTo* attached = new AttachedTo(e->getId());
                             child->addComponent(attached);
 
-                            Mesh* mesh = &model->meshes[i];
-                            child->addComponent(mesh);
+                            std::unique_ptr<Mesh>& mesh = model.meshes[i];
+                            child->addComponent(mesh.release());
 
                             if (i < meshRenderers.size()) {
                                 child->addComponent(meshRenderers[i]);
@@ -167,7 +172,7 @@ namespace Flux {
 
                         float fov = 60;
                         float aspect = 1;
-                        float zNear = 0.1;
+                        float zNear = 0.1f;
                         float zFar = 400;
 
                         for (json::iterator it = c.begin(); it != c.end(); ++it) {
