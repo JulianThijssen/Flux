@@ -15,12 +15,37 @@ namespace Flux {
 
     const Framebuffer* RenderState::currentFramebuffer = 0;
 
+    RenderState::RenderState() :
+        clearColor(1, 0, 1),
+        projMatrix(),
+        viewMatrix(),
+        modelMatrix()
+    {
+        glGenVertexArrays(1, &quadVao);
+
+        capabilityMap[BLENDING] = false;
+        capabilityMap[FACE_CULLING] = false;
+        capabilityMap[DEPTH_TEST] = false;
+        capabilityMap[STENCIL_TEST] = false;
+        capabilityMap[POLYGON_OFFSET] = false;
+    }
+
     void RenderState::enable(Capability capability) {
+        if (capabilityMap[capability])
+            return;
+
         glEnable(capability);
+        capabilityMap[capability] = true;
     }
 
     void RenderState::disable(Capability capability) {
+        if (!capabilityMap[capability])
+            return;
+
         glDisable(capability);
+        capabilityMap[capability] = false;
+    }
+
     }
 
     void RenderState::setClearColor(float r, float g, float b, float a) {

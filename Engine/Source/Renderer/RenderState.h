@@ -33,6 +33,10 @@ namespace Flux {
             glGenVertexArrays(1, &quadVao);
         }
 
+    class RenderState {
+    public:
+        RenderState();
+
         void enable(Capability capability);
         void disable(Capability capability);
         void setClearColor(float r, float g, float b, float a);
@@ -59,5 +63,7 @@ namespace Flux {
         Vector3f clearColor;
 
         static unsigned int activeTextureUnit;
+
+        std::unordered_map<Capability, bool> capabilityMap;
     };
 }
