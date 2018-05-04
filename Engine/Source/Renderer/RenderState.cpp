@@ -65,10 +65,10 @@ namespace Flux {
     }
 
     void RenderState::setCamera(Shader& shader, Entity& camera) {
-        Transform* ct = camera.getComponent<Transform>();
-        Camera* cam = camera.getComponent<Camera>();
+        Transform& ct = camera.getComponent<Transform>();
+        Camera& cam = camera.getComponent<Camera>();
 
-        setCamera(shader, *ct, *cam);
+        setCamera(shader, ct, cam);
     }
 
     void RenderState::setCamera(Shader& shader, Transform& t, Camera& cam) {

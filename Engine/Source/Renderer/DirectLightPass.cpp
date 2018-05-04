@@ -100,9 +100,9 @@ namespace Flux {
         glStencilFunc(GL_EQUAL, 1, 0xFF);
 
         Entity* camera = scene.getMainCamera();
-        Transform* ct = camera->getComponent<Transform>();
+        Transform& ct = camera->getComponent<Transform>();
 
-        shader.uniform3f("camPos", ct->position);
+        shader.uniform3f("camPos", ct.position);
 
         gBuffer->albedoTex.bind(TextureUnit::ALBEDO);
         shader.uniform1i("albedoMap", TextureUnit::ALBEDO);
@@ -114,37 +114,40 @@ namespace Flux {
         shader.uniform1i("emissionMap", TextureUnit::EMISSION);
         
         for (Entity* light : scene.lights) {
-            DirectionalLight* directionalLight = light->getComponent<DirectionalLight>();
-            PointLight* pointLight = light->getComponent<PointLight>();
-            AreaLight* areaLight = light->getComponent<AreaLight>();
-            Transform* transform = light->getComponent<Transform>();
+            Transform& transform = light->getComponent<Transform>();
 
-            if (directionalLight) {
+            if (light->hasComponent<DirectionalLight>()) {
+                DirectionalLight& directionalLight = light->getComponent<DirectionalLight>();
+
                 Matrix4f pitchMatrix;
-                pitchMatrix.rotate(transform->rotation.x, 1, 0, 0);
+                pitchMatrix.rotate(transform.rotation.x, 1, 0, 0);
                 Matrix4f yawMatrix;
-                yawMatrix.rotate(transform->rotation.y, 0, 1, 0);
+                yawMatrix.rotate(transform.rotation.y, 0, 1, 0);
                 Vector3f direction = (yawMatrix * pitchMatrix * Vector3f(0, 0, -1)).normalise();
 
                 shader.uniform3f("dirLight.direction", direction);
-                shader.uniform3f("dirLight.color", directionalLight->color);
+                shader.uniform3f("dirLight.color", directionalLight.color);
                 shader.uniform1i("isDirLight", true);
                 shader.uniform1i("isPointLight", false);
                 shader.uniform1i("isAreaLight", false);
-                directionalLight->shadowMap.bind(TextureUnit::SHADOW);
+                directionalLight.shadowMap.bind(TextureUnit::SHADOW);
                 shader.uniform1i("dirLight.shadowMap", TextureUnit::SHADOW);
-                shader.uniformMatrix4f("dirLight.shadowMatrix", directionalLight->shadowSpace);
+                shader.uniformMatrix4f("dirLight.shadowMatrix", directionalLight.shadowSpace);
             }
-            else if (pointLight) {
-                shader.uniform3f("pointLight.position", transform->position);
-                shader.uniform3f("pointLight.color", pointLight->color);
+            else if (light->hasComponent<PointLight>()) {
+                PointLight& pointLight = light->getComponent<PointLight>();
+
+                shader.uniform3f("pointLight.position", transform.position);
+                shader.uniform3f("pointLight.color", pointLight.color);
                 shader.uniform1i("isPointLight", true);
                 shader.uniform1i("isDirLight", false);
                 shader.uniform1i("isAreaLight", false);
-                pointLight->shadowMap.bind(TextureUnit::TEXTURE7);
+                pointLight.shadowMap.bind(TextureUnit::TEXTURE7);
                 shader.uniform1i("pointLight.shadowMap", TextureUnit::TEXTURE7);
             }
-            else if (areaLight) {
+            else if (light->hasComponent<AreaLight>()) {
+                AreaLight& areaLight = light->getComponent<AreaLight>();
+
                 ampTex.bind(TextureUnit::TEXTURE3);
                 matTex.bind(TextureUnit::TEXTURE4);
                 shader.uniform1i("areaLight.ampTex", TextureUnit::TEXTURE3);
@@ -153,17 +156,17 @@ namespace Flux {
                 Matrix4f modelMatrix;
                 modelMatrix.setIdentity();
 
-                transform->rotation.z += 0.5f;
-                modelMatrix.translate(transform->position);
-                modelMatrix.rotate(transform->rotation);
-                modelMatrix.scale(transform->scale);
+                transform.rotation.z += 0.5f;
+                modelMatrix.translate(transform.position);
+                modelMatrix.rotate(transform.rotation);
+                modelMatrix.scale(transform.scale);
 
                 std::vector<Vector3f> vertices;
-                for (Vector3f vertex : areaLight->vertices) {
+                for (Vector3f vertex : areaLight.vertices) {
                     vertices.push_back(modelMatrix.transform(vertex, 1));
                 }
 
-                shader.uniform3f("areaLight.color", areaLight->color);
+                shader.uniform3f("areaLight.color", areaLight.color);
                 shader.uniform3fv("areaLight.vertices", vertices.size(), vertices.data());
                 shader.uniform1i("isPointLight", false);
                 shader.uniform1i("isDirLight", false);

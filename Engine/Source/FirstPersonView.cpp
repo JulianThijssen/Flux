@@ -12,12 +12,8 @@ namespace Flux {
 
     void FirstPersonView::update(Scene& scene) {
         Entity* e = scene.getMainCamera();
-        Transform* transform = e->getComponent<Transform>();
-        Camera* camera = e->getComponent<Camera>();
-
-        if (transform == nullptr || camera == nullptr) {
-            return;
-        }
+        Transform& transform = e->getComponent<Transform>();
+        Camera& camera = e->getComponent<Camera>();
 
         // Mouselook
         Vector2f deltaMouse = (Input::getMousePos() - mousePos) * 0.03f;
@@ -28,18 +24,18 @@ namespace Flux {
 
         mousePos = Input::getMousePos();
 
-        transform->rotation.y -= storedDX;
-        transform->rotation.x -= storedDY;
+        transform.rotation.y -= storedDX;
+        transform.rotation.x -= storedDY;
 
-        if (transform->rotation.x < -90) {
-            transform->rotation.x = -90;
+        if (transform.rotation.x < -90) {
+            transform.rotation.x = -90;
         }
-        if (transform->rotation.x > 90) {
-            transform->rotation.x = 90;
+        if (transform.rotation.x > 90) {
+            transform.rotation.x = 90;
         }
 
-        float pitch = transform->rotation.x;
-        float yaw = transform->rotation.y;
+        float pitch = transform.rotation.x;
+        float yaw = transform.rotation.y;
 
         Vector3f direction;
         if (Input::isKeyDown(Input::KEY_W)) {
@@ -65,6 +61,6 @@ namespace Flux {
         direction = pitchMatrix.transform(direction, 0);
         direction = yawMatrix.transform(direction, 0);
 
-        transform->position += direction * 0.2f;
+        transform.position += direction * 0.2f;
     }
 }

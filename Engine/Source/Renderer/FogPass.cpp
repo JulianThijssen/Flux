@@ -43,9 +43,9 @@ namespace Flux {
         depthMap->bind(TextureUnit::TEXTURE1);
         shader.uniform1i("depthMap", TextureUnit::TEXTURE1);
 
-        Camera* camera = scene.getMainCamera()->getComponent<Camera>();
-        shader.uniform1f("zNear", camera->getZNear());
-        shader.uniform1f("zFar", camera->getZFar());
+        Camera& camera = scene.getMainCamera()->getComponent<Camera>();
+        shader.uniform1f("zNear", camera.getZNear());
+        shader.uniform1f("zFar", camera.getZFar());
         shader.uniform3f("fogColor", fogColor);
 
         renderState.drawQuad();

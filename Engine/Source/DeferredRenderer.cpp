@@ -81,25 +81,25 @@ namespace Flux {
 
     void DeferredRenderer::createShadowMaps(const Scene& scene) {
         for (Entity* entity : scene.lights) {
-            Transform* t = entity->getComponent<Transform>();
-            Camera* camera = entity->getComponent<Camera>();
-            DirectionalLight* dirLight = entity->getComponent<DirectionalLight>();
-            PointLight* pointLight = entity->getComponent<PointLight>();
+            Transform& t = entity->getComponent<Transform>();
+            Camera& camera = entity->getComponent<Camera>();
 
-            if (dirLight) {
-                dirLight->shadowBuffer.create();
-                dirLight->shadowBuffer.bind();
-                dirLight->shadowBuffer.disableColor();
-                dirLight->shadowBuffer.release();
-                dirLight->shadowMap = createShadowMap(4096, 4096);
+            if (entity->hasComponent<DirectionalLight>()) {
+                DirectionalLight& dirLight = entity->getComponent<DirectionalLight>();
+                dirLight.shadowBuffer.create();
+                dirLight.shadowBuffer.bind();
+                dirLight.shadowBuffer.disableColor();
+                dirLight.shadowBuffer.release();
+                dirLight.shadowMap = createShadowMap(4096, 4096);
             }
-            if (pointLight) {
-                pointLight->shadowBuffer.create();
-                pointLight->shadowBuffer.bind();
-                pointLight->shadowBuffer.disableColor();
-                pointLight->shadowBuffer.release();
+            if (entity->hasComponent<PointLight>()) {
+                PointLight& pointLight = entity->getComponent<PointLight>();
+                pointLight.shadowBuffer.create();
+                pointLight.shadowBuffer.bind();
+                pointLight.shadowBuffer.disableColor();
+                pointLight.shadowBuffer.release();
 
-                pointLight->shadowMap = createShadowCubemap(512);
+                pointLight.shadowMap = createShadowCubemap(512);
             }
         }
     }
@@ -165,8 +165,8 @@ namespace Flux {
                 continue;
 
             if (e->hasComponent<MeshRenderer>()) {
-                MeshRenderer* mr = e->getComponent<MeshRenderer>();
-                Material* material = scene.materials[mr->materialID];
+                MeshRenderer& mr = e->getComponent<MeshRenderer>();
+                Material* material = scene.materials[mr.materialID];
 
                 if (material) {
                     material->bind(shader);
@@ -183,32 +183,32 @@ namespace Flux {
 
     void DeferredRenderer::renderMesh(const Scene& scene, Shader& shader, Entity* e) {
         nvtxRangePushA("Mesh");
-        Transform* transform = e->getComponent<Transform>();
-        Mesh* mesh = e->getComponent<Mesh>();
+        Transform& transform = e->getComponent<Transform>();
+        Mesh& mesh = e->getComponent<Mesh>();
 
         renderState.modelMatrix.setIdentity();
         
         if (e->hasComponent<AttachedTo>()) {
-            Entity* parent = scene.getEntityById(e->getComponent<AttachedTo>()->parentId);
+            Entity* parent = scene.getEntityById(e->getComponent<AttachedTo>().parentId);
 
             if (parent != nullptr) {
-                Transform* parentT = parent->getComponent<Transform>();
-                renderState.modelMatrix.translate(parentT->position);
-                renderState.modelMatrix.rotate(parentT->rotation);
-                renderState.modelMatrix.scale(parentT->scale);
+                Transform& parentT = parent->getComponent<Transform>();
+                renderState.modelMatrix.translate(parentT.position);
+                renderState.modelMatrix.rotate(parentT.rotation);
+                renderState.modelMatrix.scale(parentT.scale);
             }
         }
 
-        renderState.modelMatrix.translate(transform->position);
-        renderState.modelMatrix.rotate(transform->rotation);
-        renderState.modelMatrix.scale(transform->scale);
+        renderState.modelMatrix.translate(transform.position);
+        renderState.modelMatrix.rotate(transform.rotation);
+        renderState.modelMatrix.scale(transform.scale);
 
         Matrix4f PVM = renderState.projMatrix * renderState.viewMatrix * renderState.modelMatrix;
         shader.uniformMatrix4f("modelMatrix", renderState.modelMatrix);
         shader.uniformMatrix4f("PVM", PVM);
 
-        glBindVertexArray(mesh->handle);
-        glDrawElements(GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(mesh.handle);
+        glDrawElements(GL_TRIANGLES, (GLsizei)mesh.indices.size(), GL_UNSIGNED_INT, 0);
         nvtxRangePop();
     }
 
@@ -272,45 +272,47 @@ namespace Flux {
         glDepthMask(GL_TRUE);
 
         for (Entity* entity : scene.lights) {
-            Transform* t = entity->getComponent<Transform>();
-            Camera* camera = entity->getComponent<Camera>();
-            DirectionalLight* dirLight = entity->getComponent<DirectionalLight>();
-            PointLight* pointLight = entity->getComponent<PointLight>();
+            Transform& t = entity->getComponent<Transform>();
+            Camera& camera = entity->getComponent<Camera>();
+            DirectionalLight& dirLight = entity->getComponent<DirectionalLight>();
+            PointLight& pointLight = entity->getComponent<PointLight>();
 
-            if (dirLight) {
+            if (entity->hasComponent<DirectionalLight>()) {
+                DirectionalLight& dirLight = entity->getComponent<DirectionalLight>();
                 renderState.setCamera(shadowShader, *entity);
 
-                dirLight->shadowSpace = Matrix4f::BIAS * renderState.projMatrix * renderState.viewMatrix;
+                dirLight.shadowSpace = Matrix4f::BIAS * renderState.projMatrix * renderState.viewMatrix;
 
-                dirLight->shadowBuffer.bind();
-                dirLight->shadowBuffer.addDepthTexture(dirLight->shadowMap);
-                glViewport(0, 0, dirLight->shadowMap.getWidth(), dirLight->shadowMap.getHeight());
+                dirLight.shadowBuffer.bind();
+                dirLight.shadowBuffer.addDepthTexture(dirLight.shadowMap);
+                glViewport(0, 0, dirLight.shadowMap.getWidth(), dirLight.shadowMap.getHeight());
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 renderScene(scene, shadowShader);
             }
-            if (pointLight) {
+            if (entity->hasComponent<PointLight>()) {
+                PointLight& pointLight = entity->getComponent<PointLight>();
                 Camera cam(90, 1, 0.1, 100);
 
-                pointLight->shadowBuffer.bind();
-                pointLight->shadowBuffer.disableColor();
+                pointLight.shadowBuffer.bind();
+                pointLight.shadowBuffer.disableColor();
 
                 // Set the clear depth to be the furthest distance possible
                 glClearDepth(1);
 
                 // Set the viewport to the size of the shadow map
-                glViewport(0, 0, pointLight->shadowMap.getResolution(), pointLight->shadowMap.getResolution());
+                glViewport(0, 0, pointLight.shadowMap.getResolution(), pointLight.shadowMap.getResolution());
 
                 for (int i = 0; i < 6; i++) {
-                    Vector3f rotation = pointLight->transforms[i];
-                    t->rotation.set(rotation);
+                    Vector3f rotation = pointLight.transforms[i];
+                    t.rotation.set(rotation);
 
-                    renderState.setCamera(shadowShader, *t, cam);
+                    renderState.setCamera(shadowShader, t, cam);
 
                     // Set up the framebuffer and validate it
-                    pointLight->shadowBuffer.setDepthCubemap(pointLight->shadowMap, i, 0);
-                    pointLight->shadowBuffer.validate();
+                    pointLight.shadowBuffer.setDepthCubemap(pointLight.shadowMap, i, 0);
+                    pointLight.shadowBuffer.validate();
 
                     // Clear the framebuffer and render the scene from the view of the light
                     glClear(GL_DEPTH_BUFFER_BIT);

@@ -31,18 +31,18 @@ namespace Flux {
 
         glStencilFunc(GL_EQUAL, 0, 0xFF);
 
-        Transform* transform = scene.mainCamera->getComponent<Transform>();
-        Camera* cam = scene.mainCamera->getComponent<Camera>();
+        Transform& transform = scene.mainCamera->getComponent<Transform>();
+        Camera& cam = scene.mainCamera->getComponent<Camera>();
 
         // Set the projection matrix from the camera parameters
         Matrix4f projMatrix;
-        cam->loadProjectionMatrix(projMatrix);
+        cam.loadProjectionMatrix(projMatrix);
 
         Matrix4f yawMatrix;
-        yawMatrix.rotate(transform->rotation.y, 0, 1, 0);
+        yawMatrix.rotate(transform.rotation.y, 0, 1, 0);
 
         Matrix4f pitchMatrix;
-        pitchMatrix.rotate(transform->rotation.x, 1, 0, 0);
+        pitchMatrix.rotate(transform.rotation.x, 1, 0, 0);
 
         Matrix4f cameraBasis;
         cameraBasis[10] = -1;
@@ -63,10 +63,11 @@ namespace Flux {
             shader.uniform1i("tex", TextureUnit::TEXTURE);
 
             for (Entity* entity : scene.lights) {
-                DirectionalLight* sun = entity->getComponent<DirectionalLight>();
-                if (sun) {
-                    sun->direction.normalise();
-                    shader.uniform3f("sun", sun->direction);
+                if (entity->hasComponent<DirectionalLight>()) {
+                    DirectionalLight& sun = entity->getComponent<DirectionalLight>();
+
+                    sun.direction.normalise();
+                    shader.uniform3f("sun", sun.direction);
                 }
             }
         }
@@ -74,10 +75,11 @@ namespace Flux {
             shader.bind();
 
             for (Entity* entity : scene.lights) {
-                DirectionalLight* sun = entity->getComponent<DirectionalLight>();
-                if (sun) {
-                    sun->direction.normalise();
-                    shader.uniform3f("sun", sun->direction);
+                if (entity->hasComponent<DirectionalLight>()) {
+                    DirectionalLight& sun = entity->getComponent<DirectionalLight>();
+
+                    sun.direction.normalise();
+                    shader.uniform3f("sun", sun.direction);
                 }
             }
         }

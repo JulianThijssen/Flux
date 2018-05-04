@@ -161,20 +161,20 @@ namespace Flux {
 
         ///
         Entity* camera = scene.getMainCamera();
-        Transform* ct = camera->getComponent<Transform>();
-        Camera* cam = camera->getComponent<Camera>();
+        Transform& ct = camera->getComponent<Transform>();
+        Camera& cam = camera->getComponent<Camera>();
 
         // Set the projection matrix from the camera parameters
         Matrix4f projMatrix;
-        camera->getComponent<Camera>()->loadProjectionMatrix(projMatrix);
+        cam.loadProjectionMatrix(projMatrix);
 
         // Set the view matrix to the camera view
         Matrix4f viewMatrix;
         viewMatrix.setIdentity();
-        viewMatrix.rotate(-ct->rotation);
-        viewMatrix.translate(-ct->position);
+        viewMatrix.rotate(-ct.rotation);
+        viewMatrix.translate(-ct.position);
 
-        ssaoShader.uniform3f("camPos", ct->position);
+        ssaoShader.uniform3f("camPos", ct.position);
         ssaoShader.uniformMatrix4f("projMatrix", projMatrix);
         ssaoShader.uniformMatrix4f("viewMatrix", viewMatrix);
         ///

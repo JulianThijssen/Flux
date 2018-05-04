@@ -54,8 +54,8 @@ namespace Flux {
         nvtxRangePushA(getPassName().c_str());
         shader.bind();
 
-        Transform* ct = scene.getMainCamera()->getComponent<Transform>();
-        shader.uniform3f("camPos", ct->position);
+        Transform& ct = scene.getMainCamera()->getComponent<Transform>();
+        shader.uniform3f("camPos", ct.position);
 
         gBuffer->albedoTex.bind(TextureUnit::ALBEDO);
         shader.uniform1i("albedoMap", TextureUnit::ALBEDO);
