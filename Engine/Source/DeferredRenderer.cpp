@@ -274,8 +274,6 @@ namespace Flux {
         for (Entity* entity : scene.lights) {
             Transform& t = entity->getComponent<Transform>();
             Camera& camera = entity->getComponent<Camera>();
-            DirectionalLight& dirLight = entity->getComponent<DirectionalLight>();
-            PointLight& pointLight = entity->getComponent<PointLight>();
 
             if (entity->hasComponent<DirectionalLight>()) {
                 DirectionalLight& dirLight = entity->getComponent<DirectionalLight>();
