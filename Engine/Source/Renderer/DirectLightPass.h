@@ -5,6 +5,7 @@
 #include "AddPass.h"
 #include "Shader.h"
 #include "Renderer/GBuffer.h"
+#include "Framebuffer.h"
 
 #include <memory>
 
@@ -30,6 +31,9 @@ namespace Flux
 
         const Texture2D ampTex;
         const Texture2D matTex;
+
+        Framebuffer buffer;
+        Texture2D lightTex;
 
         AddPass addPass;
     };

@@ -67,7 +67,18 @@ namespace Flux {
 
     void DirectLightPass::Resize(const Size& windowSize)
     {
+        lightTex.create();
+        lightTex.bind(TextureUnit::TEXTURE0);
+        lightTex.setData(windowSize.width, windowSize.height, GL_RGBA16F, GL_RGBA, GL_FLOAT, nullptr);
+        lightTex.setWrapping(CLAMP, CLAMP);
+        lightTex.setSampling(LINEAR, LINEAR);
+        lightTex.release();
 
+        buffer.create();
+        buffer.bind();
+        buffer.addColorTexture(0, lightTex);
+        buffer.validate();
+        buffer.release();
     }
 
     void DirectLightPass::render(RenderState& renderState, const Scene& scene)
@@ -78,8 +89,12 @@ namespace Flux {
 
         const Framebuffer* sourceFramebuffer = RenderState::currentFramebuffer;
 
+        buffer.bind();
+
         shader.bind();
-        
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
         renderState.enable(BLENDING);
         glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ONE, GL_ZERO);
         glStencilFunc(GL_EQUAL, 1, 0xFF);
@@ -163,13 +178,17 @@ namespace Flux {
 
         renderState.disable(BLENDING);
 
-        nvtxRangePop();
+        buffer.release();
+
+        sourceFramebuffer->bind();
 
         // Add the direct light to the original buffer
-        std::vector<Texture2D> sources{ sourceFramebuffer->getTexture(), *source };
+        std::vector<Texture2D> sources{ lightTex, *source };
         std::vector<float> weights{ 1, 1 };
         addPass.SetTextures(sources);
         addPass.SetWeights(weights);
         addPass.render(renderState, scene);
+
+        nvtxRangePop();
     }
 }
