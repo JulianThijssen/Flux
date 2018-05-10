@@ -28,7 +28,19 @@ namespace Flux
             return degrees * (PI / 180);
         }
 
-    float Math::toRadians(const float degrees) {
-        return degrees * (PI / 180);
+        Vector3f directionFromRotation(Vector3f rotation, Vector3f initialDirection)
+        {
+            Matrix4f yawMatrix;
+            yawMatrix.rotate(rotation.y, 0, 1, 0);
+
+            Matrix4f pitchMatrix;
+            pitchMatrix.rotate(rotation.x, 1, 0, 0);
+
+            Vector3f direction;
+            direction = pitchMatrix.transform(initialDirection, 0);
+            direction = yawMatrix.transform(direction, 0);
+
+            return direction.normalise();
+        }
     }
 }
