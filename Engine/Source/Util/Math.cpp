@@ -9,14 +9,24 @@
 ** Author: Julian Thijssen
 ** -------------------------------------------------------------------------*/
 
-#include "Util/Math.h"
+#include "Math.h"
 
-namespace Flux {
-    const float Math::PI = 3.14159265359f;
+#include "Matrix4f.h"
+#include "Vector3f.h"
 
-    float Math::toDegrees(const float radians) {
-        return radians * (180 / PI);
-    }
+namespace Flux
+{
+    namespace Math
+    {
+        float toDegrees(const float radians)
+        {
+            return radians * (180 / PI);
+        }
+
+        float toRadians(const float degrees)
+        {
+            return degrees * (PI / 180);
+        }
 
     float Math::toRadians(const float degrees) {
         return degrees * (PI / 180);

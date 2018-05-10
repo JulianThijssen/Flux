@@ -11,12 +11,14 @@
 
 #pragma once
 
-namespace Flux {
-    class Math {
-    public:
-        static const float PI;
+namespace Flux
+{
+    class Vector3f;
 
-        static float toDegrees(const float radians);
-        static float toRadians(const float degrees);
-    };
+    namespace Math
+    {
+        const float PI = 3.14159265359f;
+
+        float toDegrees(const float radians);
+        float toRadians(const float degrees);
 }
