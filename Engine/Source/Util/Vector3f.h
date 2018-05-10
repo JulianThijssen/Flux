@@ -41,7 +41,9 @@ namespace Flux {
         Vector3f& operator*=(float scale);
         Vector3f& operator/=(const Vector3f& v);
         Vector3f operator+(const Vector3f& v) const;
+        Vector3f operator+(float f) const;
         Vector3f operator-(const Vector3f& v) const;
+        Vector3f operator-(float f) const;
         Vector3f operator-() const;
         Vector3f operator*(const Vector3f& v) const;
         Vector3f operator*(float scale) const;

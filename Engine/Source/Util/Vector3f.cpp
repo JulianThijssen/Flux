@@ -101,8 +101,16 @@ namespace Flux {
         return Vector3f(x + v.x, y + v.y, z + v.z);
     }
 
+    Vector3f Vector3f::operator+(float f) const {
+        return Vector3f(x + f, y + f, z + f);
+    }
+
     Vector3f Vector3f::operator-(const Vector3f& v) const {
         return Vector3f(x - v.x, y - v.y, z - v.z);
+    }
+
+    Vector3f Vector3f::operator-(float f) const {
+        return Vector3f(x - f, y - f, z - f);
     }
 
     Vector3f Vector3f::operator-() const {
