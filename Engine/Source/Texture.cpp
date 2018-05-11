@@ -116,9 +116,18 @@ namespace Flux {
         bind(TextureUnit::TEXTURE0);
 
         switch (type) {
-        case COLOR: setData(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data); break;
-        case GREYSCALE: setData(width, height, GL_R8, GL_RED, GL_UNSIGNED_BYTE, data); break;
-        case HDR: setData(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, data); break;
+        case COLOR:
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+            setData(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            break;
+        case GREYSCALE:
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            setData(width, height, GL_R8, GL_RED, GL_UNSIGNED_BYTE, data);
+            break;
+        case HDR:
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+            setData(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, data);
+            break;
         }
 
         release();
@@ -163,9 +172,18 @@ namespace Flux {
         bind(TextureUnit::TEXTURE0);
 
         switch (type) {
-        case COLOR: setData(height, height, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data); break;
-        case GREYSCALE: setData(height, height, height, GL_R8, GL_RED, GL_UNSIGNED_BYTE, data); break;
-        case HDR: setData(height, height, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, data); break;
+        case COLOR:
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+            setData(height, height, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            break;
+        case GREYSCALE:
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            setData(height, height, height, GL_R8, GL_RED, GL_UNSIGNED_BYTE, data);
+            break;
+        case HDR:
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+            setData(height, height, height, GL_RGBA16F, GL_RGBA, GL_FLOAT, data);
+            break;
         }
 
         release();
