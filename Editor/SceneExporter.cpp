@@ -222,7 +222,6 @@ namespace Flux {
                 copy(buffer, "d", sizeof(char));
                 DirectionalLight& dirLight = e->getComponent<DirectionalLight>();
 
-                copy(buffer, &dirLight.direction, sizeof(Vector3f));
                 copy(buffer, &dirLight.color, sizeof(Vector3f));
 
                 const float energy = dirLight.energy;

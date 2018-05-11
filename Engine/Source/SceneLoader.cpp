@@ -234,7 +234,6 @@ namespace Flux {
                 if (component == 'd') {
                     DirectionalLight* dirLight = new DirectionalLight();
 
-                    inFile.read((char *)&dirLight->direction, sizeof(Vector3f));
                     inFile.read((char *)&dirLight->color, sizeof(Vector3f));
                     inFile.read((char *)&dirLight->energy, sizeof(float));
                     
