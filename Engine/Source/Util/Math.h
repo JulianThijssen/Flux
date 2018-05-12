@@ -22,6 +22,6 @@ namespace Flux
         float toDegrees(const float radians);
         float toRadians(const float degrees);
 
-        Vector3f directionFromRotation(Vector3f rotation, Vector3f initialDirection);
+        Vector3f directionFromRotation(Vector3f rotation, Vector3f initialDirection, bool normalized = true);
     }
 }

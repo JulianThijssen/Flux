@@ -28,7 +28,7 @@ namespace Flux
             return degrees * (PI / 180);
         }
 
-        Vector3f directionFromRotation(Vector3f rotation, Vector3f initialDirection)
+        Vector3f directionFromRotation(Vector3f rotation, Vector3f initialDirection, bool normalized)
         {
             Matrix4f yawMatrix;
             yawMatrix.rotate(rotation.y, 0, 1, 0);
@@ -40,7 +40,10 @@ namespace Flux
             direction = pitchMatrix.transform(initialDirection, 0);
             direction = yawMatrix.transform(direction, 0);
 
-            return direction.normalise();
+            if (normalized) {
+                return direction.normalise();
+            }
+            return direction;
         }
     }
 }
