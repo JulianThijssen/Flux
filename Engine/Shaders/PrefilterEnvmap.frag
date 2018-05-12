@@ -11,8 +11,9 @@ in vec2 pass_texCoords;
 
 out vec4 fragColor;
 
-#define PI 3.1415926535897932384626433832795
-#define TWO_PI 6.283185307179586476925286766559
+const float PI = 3.1415926535897932384626433832795;
+const float PI_OVER_TWO = PI / 2.0;
+const float TWO_PI = PI * 2.0;
 
 const float ONE_OVER_PI = 1.0 / PI;
 const float ONE_OVER_TWO_PI = 1.0 / TWO_PI;
@@ -54,8 +55,8 @@ vec3 toLinear(vec3 gammaColor) {
 }
 
 vec2 toUV(vec3 dir) {
-    float phi = atan(dir.z, dir.x);
-    float theta = acos(dir.y);
+    float phi = atan(dir.z, dir.x) - PI_OVER_TWO;
+    float theta = asin(-dir.y) + PI_OVER_TWO;
     return vec2(phi * ONE_OVER_TWO_PI, theta * ONE_OVER_PI);
 }
 
