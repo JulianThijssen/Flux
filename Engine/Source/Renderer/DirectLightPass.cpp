@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Framebuffer.h"
 #include "Util/Matrix4f.h"
+#include "Util/Math.h"
 #include "GGX.h"
 
 #include "DirectionalLight.h"
@@ -119,11 +120,7 @@ namespace Flux {
             if (light->hasComponent<DirectionalLight>()) {
                 DirectionalLight& directionalLight = light->getComponent<DirectionalLight>();
 
-                Matrix4f pitchMatrix;
-                pitchMatrix.rotate(transform.rotation.x, 1, 0, 0);
-                Matrix4f yawMatrix;
-                yawMatrix.rotate(transform.rotation.y, 0, 1, 0);
-                Vector3f direction = (yawMatrix * pitchMatrix * Vector3f(0, 0, -1)).normalise();
+                Vector3f direction = Math::directionFromRotation(transform.rotation, Vector3f(0, 0, -1));
 
                 shader.uniform3f("dirLight.direction", direction);
                 shader.uniform3f("dirLight.color", directionalLight.color);

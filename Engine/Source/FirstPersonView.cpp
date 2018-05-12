@@ -4,6 +4,7 @@
 #include "Util/Matrix4f.h"
 #include "Util/Vector3f.h"
 #include "Util/Vector2f.h"
+#include "Util/Math.h"
 
 namespace Flux {
     void FirstPersonView::start(Scene& scene) {
@@ -34,9 +35,6 @@ namespace Flux {
             transform.rotation.x = 90;
         }
 
-        float pitch = transform.rotation.x;
-        float yaw = transform.rotation.y;
-
         Vector3f direction;
         if (Input::isKeyDown(Input::KEY_W)) {
             direction.z = -1;
@@ -52,14 +50,7 @@ namespace Flux {
         }
 
         // Move
-        Matrix4f yawMatrix;
-        yawMatrix.rotate(yaw, 0, 1, 0);
-
-        Matrix4f pitchMatrix;
-        pitchMatrix.rotate(pitch, 1, 0, 0);
-
-        direction = pitchMatrix.transform(direction, 0);
-        direction = yawMatrix.transform(direction, 0);
+        direction = Math::directionFromRotation(transform.rotation, direction, false);
 
         transform.position += direction * 0.2f;
     }
