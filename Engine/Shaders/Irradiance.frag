@@ -1,4 +1,4 @@
-#version 150 core
+#version 330 core
 
 uniform samplerCube EnvMap;
 uniform sampler2D EnvTex;

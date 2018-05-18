@@ -1,4 +1,4 @@
-#version 150 core
+#version 330 core
 
 #define D_GGX
 #define G_Schlick

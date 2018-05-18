@@ -126,11 +126,6 @@ namespace Flux {
         glAttachShader(handle, vertexShader);
         glAttachShader(handle, fragmentShader);
 
-        glBindAttribLocation(handle, 0, "position");
-        glBindAttribLocation(handle, 1, "texCoords");
-        glBindAttribLocation(handle, 2, "normal");
-        glBindAttribLocation(handle, 3, "tangent");
-
         if (!linkProgram(handle)) {
             Log::error("Shader failed to link.");
             return false;

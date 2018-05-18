@@ -26,7 +26,7 @@
 * We do asin(-y) instead because the environment map is loaded in upside-down.
 */
 
-#version 150 core
+#version 330 core
 
 uniform sampler2D tex;
 
