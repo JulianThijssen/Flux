@@ -19,6 +19,7 @@
 #include "Renderer/FxaaPass.h"
 #include "Renderer/ColorGradingPass.h"
 #include "Renderer/FogPass.h"
+#include "Renderer/LightShaftPass.h"
 
 #include <memory>
 #include <ctime>
@@ -63,6 +64,7 @@ namespace Flux {
             return;
 
         std::unique_ptr<SkyPass> skyPass = std::make_unique<SkyPass>();
+        std::unique_ptr<LightShaftPass> lightShaftPass = std::make_unique<LightShaftPass>();
         std::unique_ptr<BloomPass> bloomPass = std::make_unique<BloomPass>();
 
         std::unique_ptr<GammaCorrectionPass> gammaCorrectionPass = std::make_unique<GammaCorrectionPass>();
@@ -71,6 +73,7 @@ namespace Flux {
         std::unique_ptr<FogPass> fogPass = std::make_unique<FogPass>();
 
         renderer->addHdrPass(std::move(skyPass));
+        renderer->addHdrPass(std::move(lightShaftPass));
         renderer->addHdrPass(std::move(bloomPass));
 
         renderer->addLdrPass(std::move(gammaCorrectionPass));

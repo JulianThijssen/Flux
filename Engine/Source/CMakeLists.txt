@@ -114,6 +114,8 @@ set(RENDERING
     ${DIR}/Renderer/ColorGradingPass.cpp
     ${DIR}/Renderer/FogPass.h
     ${DIR}/Renderer/FogPass.cpp
+    ${DIR}/Renderer/LightShaftPass.h
+    ${DIR}/Renderer/LightShaftPass.cpp
     ${DIR}/Renderer/GGX.h
     PARENT_SCOPE
 )
