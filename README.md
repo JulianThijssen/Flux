@@ -2,7 +2,7 @@
 
 Welcome to the Flux Rendering Engine repository. This application is meant to be an exploration into modern rendering techniques used in the game industry. One of the major improvements over its progenitor [Radiant](https://github.com/JulianThijssen/Radiant) are its Physically Based Rendering capabilities.
 
-![alt text](https://user-images.githubusercontent.com/2978176/28851201-51b9f942-7721-11e7-9a1c-70717a116295.png "Latest screenshot")
+![alt text](https://user-images.githubusercontent.com/2978176/40970690-9e450978-68bb-11e8-8d3d-60779c756651.png "Latest screenshot")
 
 ## Technology
 ### Implemented
@@ -19,12 +19,12 @@ Welcome to the Flux Rendering Engine repository. This application is meant to be
  - Shadow mapping
  - Deferred Rendering
  - Color Grading
+ - Fog
+ - Crepuscular rays
 
 ### Planned
  - Automatic exposure adjustment
- - Fog
  - Spherical Harmonics
- - Crepuscular rays
  - Omni-directional shadow mapping
  - Light probes
  - PBR Lens flares
