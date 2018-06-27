@@ -19,6 +19,8 @@ const float TWO_PI = PI * 2.0;
 const float ONE_OVER_PI = 1.0 / PI;
 const float ONE_OVER_TWO_PI = 1.0 / TWO_PI;
 
+const float MAX_RADIANCE = 100000;
+
 vec3 toLinear(vec3 gammaColor) {
     return pow(gammaColor, vec3(2.2));
 }
@@ -35,7 +37,7 @@ vec3 sampleSkybox(vec3 dir) {
 
 vec3 sampleSkysphere(vec3 dir) {
     vec2 uv = toUV(dir);
-    return textureLod(EnvTex, uv, 0).rgb;
+    return clamp(textureLod(EnvTex, uv, 0).rgb, 0, MAX_RADIANCE);
 }
 
 void main() {
