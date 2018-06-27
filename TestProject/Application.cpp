@@ -28,21 +28,6 @@
 #define DEFERRED
 
 namespace Flux {
-    void Application::exportScene() {
-        Editor::SceneDesc scene;
-        Editor::SceneImporter::Status importStatus = Editor::SceneImporter::loadScene(Path("res/Helmet.json"), scene);
-        if (importStatus == Editor::SceneImporter::Status::FileNotFound) {
-            std::cout << "Failed to find scene file.";
-            return;
-        }
-
-        Editor::SceneExporter::Status exportStatus = Editor::SceneExporter::exportScene(scene, Path("res/Helmet.scene"));
-        if (exportStatus == Editor::SceneExporter::Status::Failure) {
-            std::cout << "Failed to export scene file.";
-            return;
-        }
-    }
-
     void Application::startGame() {
         std::cout << "Flux version " << Flux_VERSION_MAJOR << "." << Flux_VERSION_MINOR << std::endl;
 
@@ -50,7 +35,7 @@ namespace Flux {
         if (!created)
             return;
 
-        bool loaded = SceneLoader::loadScene(Path("res/Helmet.scene"), currentScene);
+        bool loaded = SceneLoader::loadScene(Path("res/Ocean.scene"), currentScene);
         if (!loaded)
             return;
 
@@ -120,6 +105,5 @@ namespace Flux {
 
 int main() {
     Flux::Application app;
-    app.exportScene();
     app.startGame();
 }

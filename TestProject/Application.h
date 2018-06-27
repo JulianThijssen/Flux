@@ -12,7 +12,6 @@ namespace Flux {
     public:
         Application() : window("Flux", 1920, 1080) { }
 
-        void exportScene();
         void startGame();
         void update();
         void onFpsUpdated(int framesPerSecond) override;

@@ -1,4 +1,5 @@
 #include "SceneImporter.h"
+
 #include "ModelImporter.h"
 #include "Model.h"
 #include "SceneDesc.h"
@@ -15,8 +16,8 @@
 #include "Camera.h"
 #include "Transform.h"
 
-#include "Util/Path.h"
 #include "Util/File.h"
+#include "Path.h"
 
 #include "json.hpp"
 #include <fstream>
@@ -57,7 +58,7 @@ namespace Flux {
                 DirectionalLight* dirLight = new DirectionalLight();
                 dirLight->color.set(rad[0], rad[1], rad[2]);
                 light->addComponent(dirLight);
-                light->addComponent(new Camera(-20, 20, -20, 20, -50, 50));
+                light->addComponent(new Camera(-40, 40, -40, 40, -50, 50));
                 Transform* t1 = new Transform();
                 t1->rotation.set(dir[0], dir[1], dir[2]);
                 light->addComponent(t1);

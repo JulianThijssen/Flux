@@ -12,13 +12,31 @@ set(EDITOR_HEADERS
     ${DIR}/Sky.h
     ${DIR}/Skybox.h
     ${DIR}/Skysphere.h
+    ${DIR}/Camera.h
+    ${DIR}/Texture.h
+    ${DIR}/Vector3f.h
+    ${DIR}/Vector2f.h
+    ${DIR}/Matrix4f.h
+    ${DIR}/Math.h
+    ${DIR}/Path.h
+    ${DIR}/Log.h
     PARENT_SCOPE
 )
 
 set(EDITOR_SOURCES
+    ${DIR}/Application.cpp
+    ${DIR}/glad.c
     ${DIR}/Model.cpp
     ${DIR}/ModelImporter.cpp
     ${DIR}/SceneExporter.cpp
     ${DIR}/SceneImporter.cpp
+    ${DIR}/Camera.cpp
+    ${DIR}/Texture.cpp
+    ${DIR}/Vector3f.cpp
+    ${DIR}/Vector2f.cpp
+    ${DIR}/Matrix4f.cpp
+    ${DIR}/Math.cpp
+    ${DIR}/Path.cpp
+    ${DIR}/Log.cpp
     PARENT_SCOPE
 )
