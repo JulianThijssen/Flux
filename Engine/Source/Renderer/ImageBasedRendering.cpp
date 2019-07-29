@@ -1,7 +1,6 @@
 #include "Renderer/ImageBasedRendering.h"
 
 #include "Framebuffer.h"
-#include "Shader.h"
 #include "Renderer/RenderState.h"
 #include "Texture.h"
 #include "TextureUnit.h"
@@ -13,7 +12,7 @@ namespace Flux
 {
     void IrradianceMap::generate(const uint resolution)
     {
-        Shader shader;
+        ShaderProgram shader;
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/Irradiance.frag");
 
         Framebuffer framebuffer;
@@ -69,7 +68,7 @@ namespace Flux
 
     void PrefilterEnvmap::generate(const uint resolution)
     {
-        Shader shader;
+        ShaderProgram shader;
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/PrefilterEnvmap.frag");
 
         Framebuffer framebuffer;
@@ -147,7 +146,7 @@ namespace Flux
 
     void ScaleBiasTexture::generate()
     {
-        Shader shader;
+        ShaderProgram shader;
         shader.loadFromFile("res/Shaders/Quad.vert", "res/Shaders/BRDFintegration.frag");
 
         Framebuffer framebuffer;

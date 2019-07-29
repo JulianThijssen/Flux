@@ -49,7 +49,7 @@ namespace Flux {
         cameraBasis[10] = -1;
         cameraBasis = yawMatrix * pitchMatrix * cameraBasis;
 
-        Shader& shader = skyShader;
+        ShaderProgram& shader = skyShader;
         if (scene.skybox) { shader = skyboxShader; }
         else if (scene.skySphere) { shader = skysphereShader; }
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Scene.h"
-#include "Shader.h"
 
 #include "Renderer/RenderState.h"
 #include "RenderPhase.h"
@@ -10,8 +9,12 @@
 #include "Framebuffer.h"
 #include "Util/Size.h"
 
+#include <GDT/Shader.h>
+
 #include <vector>
 #include <memory>
+
+using GDT::ShaderProgram;
 
 namespace Flux {
     class Renderer {
@@ -25,8 +28,8 @@ namespace Flux {
         virtual bool create(const Scene& scene, const Size windowSize) = 0;
         virtual void onResize(const Size windowSize) = 0;
         virtual void update(const Scene& scene) = 0;
-        virtual void renderScene(const Scene& scene, Shader& shader) = 0;
-        virtual void renderMesh(const Scene& scene, Shader& shader, Entity* entity) = 0;
+        virtual void renderScene(const Scene& scene, ShaderProgram& shader) = 0;
+        virtual void renderMesh(const Scene& scene, ShaderProgram& shader, Entity* entity) = 0;
 
         const std::vector<std::unique_ptr<RenderPhase>>& getHdrPasses();
         const std::vector<std::unique_ptr<RenderPhase>>& getLdrPasses();

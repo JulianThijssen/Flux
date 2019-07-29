@@ -2,7 +2,6 @@
 
 #include "RenderPhase.h"
 
-#include "Shader.h"
 #include "Renderer/GBuffer.h"
 #include "Renderer/ImageBasedRendering.h"
 
@@ -24,7 +23,7 @@ namespace Flux
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
-        Shader shader;
+        ShaderProgram shader;
 
         const GBuffer* gBuffer;
         IblSceneInfo iblSceneInfo;

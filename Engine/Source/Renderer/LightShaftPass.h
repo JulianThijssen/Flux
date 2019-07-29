@@ -3,7 +3,6 @@
 #include "RenderPhase.h"
 
 #include "AddPass.h"
-#include "Shader.h"
 #include "Util/Size.h"
 
 #include <memory>
@@ -27,8 +26,8 @@ namespace Flux
         void setDecay(float decay);
 
     private:
-        Shader texShader;
-        Shader shader;
+        ShaderProgram texShader;
+        ShaderProgram shader;
 
         Size windowSize;
 

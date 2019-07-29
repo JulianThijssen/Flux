@@ -3,7 +3,6 @@
 #include "RenderPhase.h"
 #include "MultiplyPass.h"
 
-#include "Shader.h"
 #include "Renderer/GBuffer.h"
 
 #include <memory>
@@ -27,8 +26,8 @@ namespace Flux
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
-        Shader ssaoShader;
-        Shader blurShader;
+        ShaderProgram ssaoShader;
+        ShaderProgram blurShader;
 
         MultiplyPass multiplyPass;
 

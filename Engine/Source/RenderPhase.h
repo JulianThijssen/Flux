@@ -6,7 +6,11 @@
 #include "Scene.h"
 #include "Util/Size.h"
 
+#include <GDT/Shader.h>
+
 #include "nvToolsExt.h"
+
+using GDT::ShaderProgram;
 
 namespace Flux {
     class RenderPhase {

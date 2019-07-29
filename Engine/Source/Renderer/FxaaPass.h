@@ -2,7 +2,6 @@
 
 #include "RenderPhase.h"
 
-#include "Shader.h"
 #include "Util/Size.h"
 
 #include <memory>
@@ -22,7 +21,7 @@ namespace Flux
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
-        Shader shader;
+        ShaderProgram shader;
 
         Size windowSize;
     };

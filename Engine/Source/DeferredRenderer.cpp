@@ -159,7 +159,7 @@ namespace Flux {
         renderFramebuffer(ldrBuffer);
     }
 
-    void DeferredRenderer::renderScene(const Scene& scene, Shader& shader) {
+    void DeferredRenderer::renderScene(const Scene& scene, ShaderProgram& shader) {
         for (Entity* e : scene.entities) {
             if (!e->hasComponent<Mesh>())
                 continue;
@@ -181,7 +181,7 @@ namespace Flux {
         }
     }
 
-    void DeferredRenderer::renderMesh(const Scene& scene, Shader& shader, Entity* e) {
+    void DeferredRenderer::renderMesh(const Scene& scene, ShaderProgram& shader, Entity* e) {
         nvtxRangePushA("Mesh");
         Transform& transform = e->getComponent<Transform>();
         Mesh& mesh = e->getComponent<Mesh>();

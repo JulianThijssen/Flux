@@ -18,8 +18,6 @@ set(BASE
     ${DIR}/RenderPhase.h
     ${DIR}/Scene.h
     ${DIR}/Script.h
-    ${DIR}/Shader.h
-    ${DIR}/Shader.cpp
     ${DIR}/Skybox.h
     ${DIR}/Skybox.cpp
     ${DIR}/Texture.h

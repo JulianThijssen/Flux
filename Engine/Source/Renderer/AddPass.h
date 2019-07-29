@@ -2,8 +2,6 @@
 
 #include "RenderPhase.h"
 
-#include "Shader.h"
-
 #include <memory>
 
 namespace Flux
@@ -25,7 +23,7 @@ namespace Flux
     private:
         static const unsigned int MAX_SOURCES = 8;
 
-        Shader shader;
+        ShaderProgram shader;
 
         std::vector<Texture2D> textures;
         std::vector<float> weights;

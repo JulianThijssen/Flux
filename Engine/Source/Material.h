@@ -3,9 +3,15 @@
 #include "Texture.h"
 
 #include <GDT/Vector3f.h>
-namespace Flux {
-    class Shader;
 
+namespace GDT
+{
+    class ShaderProgram;
+}
+
+using GDT::ShaderProgram;
+
+namespace Flux {
     class Material {
     public:
         Material()
@@ -25,7 +31,7 @@ namespace Flux {
         GDT::Vector3f emission;
         float tilingX, tilingY;
 
-        void bind(Shader& shader) const;
-        void release(Shader& shader) const;
+        void bind(ShaderProgram& shader) const;
+        void release(ShaderProgram& shader) const;
     };
 }

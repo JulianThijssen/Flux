@@ -2,8 +2,6 @@
 
 #include "RenderPhase.h"
 
-#include "Shader.h"
-
 #include <memory>
 
 namespace Flux {
@@ -17,9 +15,9 @@ namespace Flux {
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
-        Shader skyboxShader;
-        Shader skysphereShader;
-        Shader skyShader;
-        Shader texShader;
+        ShaderProgram skyboxShader;
+        ShaderProgram skysphereShader;
+        ShaderProgram skyShader;
+        ShaderProgram texShader;
     };
 }

@@ -3,7 +3,6 @@
 #include "RenderPhase.h"
 
 #include "AddPass.h"
-#include "Shader.h"
 #include "Renderer/GBuffer.h"
 #include "Framebuffer.h"
 
@@ -25,7 +24,7 @@ namespace Flux
         void render(RenderState& renderState, const Scene& scene) override;
 
     private:
-        Shader shader;
+        ShaderProgram shader;
 
         const GBuffer* gBuffer;
 

@@ -1,7 +1,6 @@
 #include "Renderer/RenderState.h"
 
 #include "Framebuffer.h"
-#include "Shader.h"
 #include "Entity.h"
 #include "Transform.h"
 #include "Camera.h"
@@ -64,14 +63,14 @@ namespace Flux {
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
-    void RenderState::setCamera(Shader& shader, Entity& camera) {
+    void RenderState::setCamera(ShaderProgram& shader, Entity& camera) {
         Transform& ct = camera.getComponent<Transform>();
         Camera& cam = camera.getComponent<Camera>();
 
         setCamera(shader, ct, cam);
     }
 
-    void RenderState::setCamera(Shader& shader, Transform& t, Camera& cam) {
+    void RenderState::setCamera(ShaderProgram& shader, Transform& t, Camera& cam) {
         // Set the projection matrix from the camera parameters
         cam.loadProjectionMatrix(projMatrix);
 

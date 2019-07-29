@@ -2,6 +2,7 @@
 
 #include <GDT/Vector3f.h>
 #include <GDT/Matrix4f.h>
+#include <GDT/Shader.h>
 
 #include <glad/glad.h>
 
@@ -10,6 +11,8 @@
 
 using GDT::Vector3f;
 using GDT::Matrix4f;
+using GDT::ShaderProgram;
+
 namespace Flux {
     class Framebuffer;
     class Shader;
@@ -52,8 +55,8 @@ namespace Flux {
         void setClearColor(float r, float g, float b, float a);
         
         void drawQuad() const;
-        void setCamera(Shader& shader, Entity& camera);
-        void setCamera(Shader& shader, Transform& t, Camera& cam);
+        void setCamera(ShaderProgram& shader, Entity& camera);
+        void setCamera(ShaderProgram& shader, Transform& t, Camera& cam);
 
         Matrix4f projMatrix;
         Matrix4f viewMatrix;
