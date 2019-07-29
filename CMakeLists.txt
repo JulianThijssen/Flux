@@ -17,6 +17,7 @@ if(WIN32)
 endif(WIN32)
 
 target_link_libraries(${PROJECT} ${CMAKE_BINARY_DIR}/Release/Flux.lib)
+target_link_libraries(${PROJECT} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/$<CONFIGURATION>/GDT.lib)
 target_link_libraries(${PROJECT} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/assimp.lib)
 target_link_libraries(${PROJECT} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/glfw3.lib)
 target_link_libraries(${PROJECT} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/nvToolsExt64_1.lib)
@@ -37,6 +38,7 @@ if(WIN32)
    set_target_properties(${EDITOR} PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:CONSOLE")
 endif(WIN32)
 
+target_link_libraries(${EDITOR} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/$<CONFIGURATION>/GDT.lib)
 target_link_libraries(${EDITOR} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/assimp.lib)
 
 set(ENGINE "Flux")
@@ -77,6 +79,7 @@ source_group( Engine\\Util FILES ${UTIL})
 source_group( Engine\\Loaders FILES ${LOADERS})
 source_group( Engine\\Rendering FILES ${RENDERING})
 
+target_link_libraries(${ENGINE} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/$<CONFIGURATION>/GDT.lib)
 target_link_libraries(${ENGINE} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/assimp.lib)
 target_link_libraries(${ENGINE} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/glfw3.lib)
 target_link_libraries(${ENGINE} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/nvToolsExt64_1.lib)
@@ -84,7 +87,7 @@ target_link_libraries(${ENGINE} ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Libraries/nvT
 add_custom_command(TARGET ${ENGINE} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_SOURCE_DIR}/Engine/Binaries/"
-        ${CMAKE_BINARY_DIR}/Release)
+        ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
 
 add_custom_command(TARGET ${ENGINE} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
