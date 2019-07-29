@@ -58,16 +58,12 @@ set(UTIL
     ${DIR}/Util/Log.cpp
     ${DIR}/Util/Math.h
     ${DIR}/Util/Math.cpp
-    ${DIR}/Util/Matrix4f.h
-    ${DIR}/Util/Matrix4f.cpp
     ${DIR}/Util/Path.h
     ${DIR}/Util/Path.cpp
     ${DIR}/Util/Size.h
     ${DIR}/Util/String.h
     ${DIR}/Util/Vector2f.h
-    ${DIR}/Util/Vector3f.h
     ${DIR}/Util/Vector2f.cpp
-    ${DIR}/Util/Vector3f.cpp
     PARENT_SCOPE
 )
 

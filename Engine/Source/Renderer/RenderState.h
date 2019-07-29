@@ -1,13 +1,15 @@
 #pragma once
 
-#include "Util/Matrix4f.h"
-#include "Util/Vector3f.h"
+#include <GDT/Vector3f.h>
+#include <GDT/Matrix4f.h>
 
 #include <glad/glad.h>
 
 #include <vector>
 #include <unordered_map>
 
+using GDT::Vector3f;
+using GDT::Matrix4f;
 namespace Flux {
     class Framebuffer;
     class Shader;

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Component.h"
-#include "Util/Vector3f.h"
+
+#include <GDT/Vector3f.h>
+
+using GDT::Vector3f;
 
 namespace Flux {
     class Transform : public Component {

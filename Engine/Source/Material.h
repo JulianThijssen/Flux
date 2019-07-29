@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Texture.h"
-#include "Util/Vector3f.h"
 
+#include <GDT/Vector3f.h>
 namespace Flux {
     class Shader;
 
@@ -22,7 +22,7 @@ namespace Flux {
         Texture2D roughnessTex;
         Texture2D stencilTex;
         Texture2D emissionTex;
-        Vector3f emission;
+        GDT::Vector3f emission;
         float tilingX, tilingY;
 
         void bind(Shader& shader) const;

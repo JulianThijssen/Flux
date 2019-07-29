@@ -1,10 +1,11 @@
 #include "FirstPersonView.h"
 
 #include "Input/Input.h"
-#include "Util/Matrix4f.h"
-#include "Util/Vector3f.h"
 #include "Util/Vector2f.h"
 #include "Util/Math.h"
+
+#include <GDT/Vector3f.h>
+#include <GDT/Matrix4f.h>
 
 namespace Flux {
     void FirstPersonView::start(Scene& scene) {

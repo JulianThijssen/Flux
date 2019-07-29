@@ -8,12 +8,12 @@
 #include "Transform.h"
 #include "Camera.h"
 
-#include "Util/Matrix4f.h"
 #include "Util/Vector2f.h"
 #include "Util/Size.h"
 
-#include <glad/glad.h>
+#include <GDT/Matrix4f.h>
 
+#include <glad/glad.h>
 
 #include "nvToolsExt.h"
 
@@ -74,7 +74,7 @@ namespace Flux {
 
             for (int i = 0; i < NumSamples; i++) {
                 kernel[i].set(random(-1, 1), random(-1, 1), random(0, 1));
-                kernel[i].normalise();
+                kernel[i].normalize();
             }
 
             for (int i = 0; i < NumSamples; i++) {
@@ -121,7 +121,7 @@ namespace Flux {
         noise.reserve(NOISE_SIZE*NOISE_SIZE);
         for (int i = 0; i < NOISE_SIZE*NOISE_SIZE; i++) {
             Vector3f v(random(-1, 1), random(-1, 1), 0.0f);
-            v.normalise();
+            v.normalize();
             v = v * 0.5 + Vector3f(0.5, 0.5, 0.5);
             noise.push_back(v);
         }

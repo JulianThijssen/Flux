@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Component.h"
-#include "Util/Vector3f.h"
 #include "Framebuffer.h"
+
+#include <GDT/Vector3f.h>
 
 #include <memory>
 

@@ -6,8 +6,12 @@
 
 #include "Util/Path.h"
 
+#include <GDT/Vector3f.h>
+
 #include <vector>
 #include <iostream>
+
+using GDT::Vector3f;
 
 namespace Flux {
     Material* MaterialLoader::loadMaterial(Path path) {

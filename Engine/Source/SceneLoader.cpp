@@ -150,7 +150,7 @@ namespace Flux {
                 if (component == 't') {
                     Transform* t = new Transform();
                     inFile.read((char *)&t->position, sizeof(Vector3f));
-                    std::cout << "Position: " << t->position.str() << std::endl;
+                    std::cout << "Position: " << t->position << std::endl;
                     inFile.read((char *)&t->rotation, sizeof(Vector3f));
                     inFile.read((char *)&t->scale, sizeof(Vector3f));
                     e->addComponent(t);

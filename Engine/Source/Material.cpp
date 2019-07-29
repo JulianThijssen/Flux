@@ -1,10 +1,13 @@
 #include "Material.h"
 
-#include "Shader.h"
 #include "TextureUnit.h"
 
+#include <GDT/Shader.h>
+
+using GDT::ShaderProgram;
+
 namespace Flux {
-    void Material::bind(Shader& shader) const {
+    void Material::bind(ShaderProgram& shader) const {
         if (diffuseTex.isCreated()) {
             diffuseTex.bind(TextureUnit::ALBEDO);
             shader.uniform1i("material.diffuseMap", TextureUnit::ALBEDO);
@@ -39,7 +42,7 @@ namespace Flux {
         shader.uniform2f("material.tiling", tilingX, tilingY);
     }
 
-    void Material::release(Shader& shader) const {
+    void Material::release(ShaderProgram& shader) const {
         shader.uniform1i("material.hasDiffuseMap", 0);
         shader.uniform1i("material.hasNormalMap", 0);
         shader.uniform1i("material.hasMetalMap", 0);

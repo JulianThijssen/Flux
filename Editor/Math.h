@@ -11,10 +11,15 @@
 
 #pragma once
 
-namespace Flux
+namespace GDT
 {
     class Vector3f;
+}
 
+using GDT::Vector3f;
+
+namespace Flux
+{
     namespace Math
     {
         const float PI = 3.14159265359f;

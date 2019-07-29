@@ -12,9 +12,12 @@
 
 #include "Camera.h"
 
-#include "Util/Matrix4f.h"
 #include "Util/Math.h"
 #include <cmath>
+
+#include <GDT/Matrix4f.h>
+
+using GDT::Matrix4f;
 
 namespace Flux {
     Camera::Camera() {

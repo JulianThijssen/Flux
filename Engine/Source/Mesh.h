@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Component.h"
-#include "Util/Vector3f.h"
 #include "Util/Vector2f.h"
+
+#include <GDT/Vector3f.h>
 
 #include <vector>
 #include <string>
+
+using GDT::Vector3f;
 
 namespace Flux {
     class Mesh : public Component {

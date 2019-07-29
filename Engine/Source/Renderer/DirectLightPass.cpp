@@ -5,12 +5,13 @@
 #include "TextureUnit.h"
 #include "Texture.h"
 #include "Framebuffer.h"
-#include "Util/Matrix4f.h"
 #include "Util/Math.h"
 #include "GGX.h"
 
 #include "DirectionalLight.h"
 #include "AreaLight.h"
+
+#include <GDT/Matrix4f.h>
 
 namespace Flux {
     namespace

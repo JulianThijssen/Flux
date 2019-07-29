@@ -14,9 +14,7 @@ set(EDITOR_HEADERS
     ${DIR}/Skysphere.h
     ${DIR}/Camera.h
     ${DIR}/Texture.h
-    ${DIR}/Vector3f.h
     ${DIR}/Vector2f.h
-    ${DIR}/Matrix4f.h
     ${DIR}/Math.h
     ${DIR}/Path.h
     ${DIR}/Log.h
@@ -32,9 +30,7 @@ set(EDITOR_SOURCES
     ${DIR}/SceneImporter.cpp
     ${DIR}/Camera.cpp
     ${DIR}/Texture.cpp
-    ${DIR}/Vector3f.cpp
     ${DIR}/Vector2f.cpp
-    ${DIR}/Matrix4f.cpp
     ${DIR}/Math.cpp
     ${DIR}/Path.cpp
     ${DIR}/Log.cpp

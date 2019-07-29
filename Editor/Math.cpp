@@ -11,8 +11,11 @@
 
 #include "Math.h"
 
-#include "Matrix4f.h"
-#include "Vector3f.h"
+#include <GDT/Matrix4f.h>
+#include <GDT/Vector3f.h>
+
+using GDT::Matrix4f;
+using GDT::Vector3f;
 
 namespace Flux
 {
@@ -41,7 +44,7 @@ namespace Flux
             direction = yawMatrix.transform(direction, 0);
 
             if (normalized) {
-                return direction.normalise();
+                return direction.normalize();
             }
             return direction;
         }

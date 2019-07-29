@@ -14,9 +14,14 @@
 
 #include "Component.h"
 
-namespace Flux {
+namespace GDT
+{
     class Matrix4f;
+}
 
+using GDT::Matrix4f;
+
+namespace Flux {
     class Camera : public Component {
     public:
         Camera();

@@ -2,10 +2,14 @@
 
 #include "Framebuffer.h"
 #include "Component.h"
-#include "Util/Vector3f.h"
-#include "Util/Matrix4f.h"
+
+#include <GDT/Vector3f.h>
+#include <GDT/Matrix4f.h>
 
 #include <memory>
+
+using GDT::Vector3f;
+using GDT::Matrix4f;
 
 namespace Flux {
     class DirectionalLight : public Component {
