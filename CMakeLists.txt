@@ -53,6 +53,10 @@ configure_file (
   "${PROJECT_BINARY_DIR}/${ENGINE}Config.h"
 )
 
+IF(WIN32)
+    add_definitions(-DNOMINMAX)
+ENDIF()
+
 add_subdirectory(Engine/Source)
 
 include_directories("${PROJECT_BINARY_DIR}")
