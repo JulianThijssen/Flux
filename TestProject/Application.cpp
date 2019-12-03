@@ -35,7 +35,7 @@ namespace Flux {
         if (!created)
             return;
 
-        bool loaded = SceneLoader::loadScene(Path("res/Ocean.scene"), currentScene);
+        bool loaded = SceneLoader::loadScene(Path("res/TestScene.scene"), currentScene);
         if (!loaded)
             return;
 
