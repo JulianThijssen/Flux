@@ -65,17 +65,17 @@ The first step is to pull the repository from GitHub. You can do this in any way
 ### Linux | Mac
 This depends on your IDE / compiler. Follow their instructions for compiling source code. The code is untested on these platforms.
 
-# Dependencies
+## Demo Scene
+A test scene is available at: https://github.com/JulianThijssen/Flux/releases/download/v0.1.0/TestScene.zip
+
+Place the contents of this .zip file in a folder called `res` in your `Build` folder.
+
+## Dependencies
 Editor
  - Assimp 3.3.1
 
 Engine
  - GLFW 3.2.1
-
-## Demo Scene
-A test scene is available at: https://github.com/JulianThijssen/Flux/releases/download/v0.1.0/TestScene.zip
-
-Place the contents of this .zip file in a folder called `res` in your `Build` folder.
 
 ## License
 The source code and auxiliary files fall under a GPL License, which you can read about in LICENSE.md.
