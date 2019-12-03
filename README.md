@@ -54,15 +54,15 @@ The first step is to pull the repository from GitHub. You can do this in any way
 5. If no errors appear in the CMake log on the bottom, press `Generate` to generate the solution for your given IDE.
 6. Press `Open Project` to launch the IDE and the project.
 
-# Compilation
+## Compilation
 
-## Windows
+### Windows
 1. At the top of Visual Studio set the build mode (where it says `Debug`) to `Release`.
 2. Right click the project `TestProject` in the Solution Explorer and select Set as StartUp Project.
 3. Right click the project `Flux` and press `Build`, if that succeeds, right click the `TestProject` project and press `Build`.
 4. If all is well both builds should succeed and if you run the project with Ctrl+F5 it will launch `TestProject.exe`.
 
-## Linux | Mac
+### Linux | Mac
 This depends on your IDE / compiler. Follow their instructions for compiling source code. The code is untested on these platforms.
 
 # Dependencies
@@ -71,6 +71,11 @@ Editor
 
 Engine
  - GLFW 3.2.1
+
+## Demo Scene
+A test scene is available at: https://github.com/JulianThijssen/Flux/releases/download/v0.1.0/TestScene.zip
+
+Place the contents of this .zip file in a folder called `res` in your `Build` folder.
 
 ## License
 The source code and auxiliary files fall under a GPL License, which you can read about in LICENSE.md.
